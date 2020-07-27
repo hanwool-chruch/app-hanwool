@@ -12,15 +12,12 @@
 		"importHelpers": true,
 		"strictNullChecks": true,
 		"suppressImplicitAnyIndexErrors": true,
-		"noUnusedLocals": true,
 		"skipLibCheck": true,
 		"esModuleInterop": true,
 		"allowSyntheticDefaultImports": true,
 		"strict": true,
 		"resolveJsonModule": true,
-		"isolatedModules": true,
-		"experimentalDecorators": true,
-		"noEmit": true
+		"experimentalDecorators": true
 	},
 	"include": ["./client/src/**/*", "./server/src/**/*"],
 	"exclude": ["node_modules", "**/*.test.ts"]
