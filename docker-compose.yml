@@ -2,11 +2,11 @@ version: '3'
 
 services:
   nginx:
+    build:
+      context: ./
+      dockerfile: ./docker/nginx/Dockerfile
     image: nginx
     container_name: nginx
-    volumes:
-      - './docker/nginx/nginx.conf:/etc/nginx/nginx.conf'
-      - './client/dist:/etc/nginx/http'
     ports:
       - ${PORT}:80
   app:
