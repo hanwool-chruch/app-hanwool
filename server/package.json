@@ -1,0 +1,26 @@
+{
+	"name": "server",
+	"version": "1.0.0",
+	"description": "우아한테크캠프 3번째 프로젝트. - 이종구, 김현영",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/woowa-techcamp-2020/hkb-5.git"
+	},
+	"author": "",
+	"license": "ISC",
+	"bugs": {
+		"url": "https://github.com/woowa-techcamp-2020/hkb-5/issues"
+	},
+	"homepage": "https://github.com/woowa-techcamp-2020/hkb-5#readme",
+	"devDependencies": {
+		"@typescript-eslint/eslint-plugin": "^3.7.0",
+		"@typescript-eslint/parser": "^3.7.0",
+		"eslint": "^7.5.0",
+		"eslint-config-airbnb": "^18.2.0",
+		"eslint-config-prettier": "^6.11.0"
+	}
+}
