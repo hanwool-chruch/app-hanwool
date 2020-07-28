@@ -1,10 +1,14 @@
-# hkb-5
+# 우아한 가계부 - 5팀
 
 우아한테크캠프 3번째 프로젝트. - 이종구, 김현영
 
-# 개발환경
+## 데이터베이스 ERD
 
-## Client
+<img src="./assets/erd.png" alt="데이터베이스 ERD">
+
+## 개발환경
+
+### Client
 
 In `/client`, run
 
@@ -12,9 +16,9 @@ In `/client`, run
 npm run dev
 ```
 
-# Test
+## Test
 
-## Client
+### Client
 
 In `/client`, run
 
@@ -22,9 +26,9 @@ In `/client`, run
 npm test
 ```
 
-# Build
+## Build
 
-## Client
+### Client
 
 In `/client`, run
 
