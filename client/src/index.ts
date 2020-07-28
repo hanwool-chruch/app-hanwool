@@ -4,8 +4,8 @@ class App {
 	private container: HTMLElement;
 	constructor(contianer: HTMLElement) {
 		this.container = contianer;
-		this.container.appendChild(new Header().dom);
-		this.container.appendChild(new MainPanel().dom);
+		this.container.appendChild(new Header().getDom());
+		this.container.appendChild(new MainPanel().getDom());
 	}
 }
 

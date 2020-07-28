@@ -1,14 +1,15 @@
 import { IView, History } from './HistoryView';
+import { Component } from './Header';
 
 type HistoryListType = {
 	date: number;
 	data: History[];
 };
 
-export default class HistoryList implements IView {
-	dom: HTMLElement;
+export default class HistoryList extends Component implements IView {
 	list: HTMLElement;
 	constructor() {
+		super();
 		this.dom = document.createElement('div');
 		this.dom.innerHTML = `
         <input type="checkbox" /> <span>내용</span> <span>2000원</span>

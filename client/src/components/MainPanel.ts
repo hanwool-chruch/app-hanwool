@@ -1,4 +1,5 @@
 import HistoryView, { History } from './HistoryView';
+import { Component } from './Header';
 
 //날짜로 오름차순
 const testHistory: History[] = [
@@ -35,12 +36,12 @@ const testHistory: History[] = [
 		price: 6000,
 	},
 ];
-export default class MainPanel {
-	dom: HTMLElement;
+export default class MainPanel extends Component {
 	constructor() {
+		super();
 		this.dom = document.createElement('div');
 		const view = new HistoryView();
-		this.dom.appendChild(view.dom);
+		this.dom.appendChild(view.getDom());
 		setTimeout(() => {
 			view.load(testHistory);
 		}, 0);

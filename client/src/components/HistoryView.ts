@@ -1,5 +1,6 @@
 import Editor from './Editor';
 import HistoryList from './HistoryList';
+import { Component } from './Header';
 
 export type History = {
 	id: number;
@@ -13,16 +14,16 @@ export type History = {
 export interface IView {
 	load(histories: History[]): void;
 }
-export default class HistoryView implements HistoryView {
+export default class HistoryView extends Component implements HistoryView {
 	data: History[] | null = null;
-	dom: HTMLElement;
 	historyView: IView;
 
 	constructor() {
+		super();
 		this.dom = document.createElement('div');
-		this.dom.appendChild(new Editor().dom);
+		this.dom.appendChild(new Editor().getDom());
 		this.historyView = new HistoryList();
-		this.dom.appendChild(new HistoryList().dom);
+		this.dom.appendChild(new HistoryList().getDom());
 	}
 
 	load(histories: History[]): void {

@@ -1,6 +1,8 @@
-export default class Editor {
-	dom: HTMLElement;
+import { Component } from './Header';
+
+export default class Editor extends Component {
 	constructor() {
+		super();
 		this.dom = document.createElement('div');
 		this.dom.innerHTML = `
         <div>
