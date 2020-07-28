@@ -1,9 +1,9 @@
 version: '3'
 
 services:
-  nginx:
+  webserver:
     image: nginx
-    container_name: nginx
+    container_name: webserver
     volumes:
       - './docker/nginx/nginx.conf:/etc/nginx/nginx.conf'
       - './client/dist:/etc/nginx/http'
