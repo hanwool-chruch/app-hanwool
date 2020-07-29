@@ -20,22 +20,22 @@ export default class PieChart extends Component {
 
 	private render() {
 		const weightSum = this.data.reduce((acc, { weight }) => acc + weight, 0);
-		const svgString = this.data.reduce(
-			([acc, curAngle]: [string, number], item): any => {
-				const angle = getAngle(item.weight / weightSum);
-				const startCoord = getCoordinate(curAngle);
-				const finishCoord = getCoordinate(curAngle + angle);
 
-				return [
-					acc +
-						`<path d="M0 0 L ${startCoord.map((n) => n + '').join(' ')} A 1 1, 0, ${
-							angle > Math.PI ? '1, 1' : '0, 1'
-						}, ${finishCoord.map((n) => n + '').join(' ')} Z" fill="${item.color}"></path>`,
-					curAngle + angle,
-				];
-			},
-			['', 0]
-		)[0];
+		let curAngle = 0;
+		const svgString = this.data.map((item) => {
+			const angle = getAngle(item.weight / weightSum);
+			const startCoord = getCoordinate(curAngle);
+
+			curAngle += angle;
+			const finishCoord = getCoordinate(curAngle);
+
+			return `<path d="M0 0 
+                            L ${joinWithSpace(startCoord)} 
+                            A 1 1, 0, ${angle > Math.PI ? '1' : '0'}, 1 
+                            ${joinWithSpace(finishCoord)} 
+                            Z" 
+                    fill="${item.color}"></path>`;
+		});
 
 		this.dom!.innerHTML =
 			'<svg width="500" height="500" viewBox="-1.5 -1.5 3 3">' + svgString + '</svg>';
@@ -53,4 +53,8 @@ function getCoordinate(angle: number): [number, number] {
 	y = Math.round(y * 1000) / 1000;
 
 	return [x, y];
+}
+
+function joinWithSpace(numbers: number[]): string {
+	return numbers.map((n) => n + '').join(' ');
 }
