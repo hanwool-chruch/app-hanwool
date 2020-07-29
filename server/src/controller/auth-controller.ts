@@ -4,7 +4,7 @@ import { JsonResponse } from '../modules/util';
 import userController from './user-controller';
 import { User } from '../model';
 import jwt from 'jsonwebtoken';
-import { jwtSecret, tokenExpiresIn } from '../config/consts';
+import { jwtSecret, tokenExpiresIn, web_host } from '../config/consts';
 import logger from '../config/logger';
 import CustomError from '../exception/custom-error';
 
@@ -80,7 +80,7 @@ const googleRedirect = (req: Request, res: Response, next: NextFunction) => {
 		{ expiresIn: tokenExpiresIn }
 	);
 	res.cookie('authorization', token);
-	res.redirect('/');
+	res.redirect(web_host);
 };
 
 export default { emailSignUp, emailLogin, googleRedirect };
