@@ -1,5 +1,7 @@
 apidoc
 .DS_Store
+config.env
+
 # Logs
 logs
 *.log
