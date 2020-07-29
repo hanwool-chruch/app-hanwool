@@ -1,4 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
+import CustomError from '../exception/custom-error';
+import HttpStatus from 'http-status';
+import { User } from '../model';
 
 /**
  * @api {get} /user/:id Request User information
@@ -33,6 +36,45 @@ import { Request, Response, NextFunction } from 'express';
  *                  }
  *     }
  */
-const getUserById = async (req: Request, res: Response, next: NextFunction) => {};
+const findById = async (req: Request, res: Response, next: NextFunction) => {};
+const findAll = async (req: Request, res: Response, next: NextFunction) => {};
 
-export { getUserById };
+const checkUserPassword = async (data: any) => {
+	try {
+		if (!data.email || !data.password)
+			new CustomError(HttpStatus.BAD_REQUEST, 'no email or password');
+		const user = await User.findEmailUser(data.email);
+		if (!user) new CustomError(HttpStatus.BAD_REQUEST, `no user email(${data.email})`);
+		else if (user.password !== data.password)
+			new CustomError(HttpStatus.BAD_REQUEST, `no password match`);
+		return user;
+	} catch (err) {
+		throw err;
+	}
+};
+
+const findOrCreate = async (tokenUser: any, provider: string) => {
+	try {
+		const users = await User.findByEmail(tokenUser.email, provider);
+		if (users.length === 0) {
+			const user = await User.registerUser(tokenUser, 'user');
+			tokenUser.user_id = user.user_id;
+			const socialUser = User.registerUser(tokenUser, 'social_user');
+			return { user, socialUser };
+		} else {
+			const filteredUser = users.filter((user) => user?.provider === provider);
+			if (filteredUser) return { filteredUser };
+			else {
+				const user = users[0];
+				const user_id = user?.user_id;
+				tokenUser.user_id = user_id;
+				const socialUser = User.registerUser(tokenUser, 'social_user');
+				return { user, socialUser };
+			}
+		}
+	} catch (err) {
+		throw err;
+	}
+};
+
+export default { findById, findAll, checkUserPassword, findOrCreate };
