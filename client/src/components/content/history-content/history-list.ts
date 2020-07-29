@@ -25,12 +25,22 @@ export default class HistoryList extends Component implements IContent {
 	}
 
 	load(histories: History[]): void {
+		const list = document.getElementById('history-list') as HTMLElement;
 		this.zipHistory(histories).forEach((today) => {
-			const div = document.createElement('div');
-			div.innerText = today.date + '';
-			const list = document.getElementById('history-list') as HTMLElement;
-			list.appendChild(div);
-			this.list.appendChild(document.createElement('input'));
+			const todayLi = document.createElement('ol');
+			todayLi.innerText = today.date + '일';
+
+			today.data.forEach((history) => {
+				const historyLi = document.createElement('li');
+				historyLi.innerText =
+					history.historyDate.toDateString() +
+					history.category +
+					history.content +
+					history.payment +
+					history.price;
+				todayLi.appendChild(historyLi);
+			});
+			list.appendChild(todayLi);
 		});
 	}
 
