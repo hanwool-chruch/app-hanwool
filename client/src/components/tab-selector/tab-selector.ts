@@ -1,14 +1,13 @@
 import Component from '../component';
 
 export default class TabSelector extends Component {
+	// Remove hardcoded tab data
 	private tabs: string[] = ['내역', '달력', '통계'];
-	private curTab: string;
 	private onMoveTab: (tab: string) => void;
 	constructor(onMoveTab: (tab: string) => void) {
 		super();
 		this.dom = document.createElement('div');
 		this.dom.classList.add('tab-selector');
-		this.curTab = '';
 		this.onMoveTab = onMoveTab;
 		this.init();
 	}
@@ -22,6 +21,7 @@ export default class TabSelector extends Component {
 			this.onMoveTab(tabName);
 			const highlight: any = this.dom?.querySelector('.tab-highlight') as any;
 			const index = this.tabs.indexOf(tabName);
+			//TODO 위치 조절 필요
 			highlight.style.transform = `translateX(${index * 5}rem)`;
 		});
 	}
