@@ -13,6 +13,8 @@ services:
     build:
       context: ./server
     container_name: app
+    volumes:
+      - server_node_modules:/usr/src/app/node_modules
     environment:
       DB_HOST: ${DB_HOST}
       DB_PORT: ${DB_PORT}
@@ -35,3 +37,4 @@ services:
     container_name: db
 volumes:
   mysql_data:
+  server_node_modules:
