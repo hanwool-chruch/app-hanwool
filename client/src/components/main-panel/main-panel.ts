@@ -1,9 +1,9 @@
-import HistoryContent from './content/history-content/history-content';
-import Component from './component';
-import { History } from './content/abstract-content';
-import { AbstractContent } from './content/abstract-content';
-import MonthSelector from './month-selector';
-import TabSelector from './tab-selector';
+import HistoryContent from '../content/history-content/history-content';
+import Component from '../component';
+import { History } from '../content/abstract-content';
+import { AbstractContent } from '../content/abstract-content';
+import MonthSelector from '../month-selector';
+import TabSelector from '../tab-selector';
 
 //날짜로 오름차순
 const testHistory: History[] = [
@@ -46,7 +46,8 @@ export default class MainPanel extends Component {
 
 	constructor() {
 		super();
-		this.dom = document.createElement('div');
+		this.dom = document.createElement('main');
+		this.dom.classList.add('main-panel');
 		this.init();
 	}
 
