@@ -1,0 +1,14 @@
+.tab-selector {
+	display: flex;
+	background-color: #dddddd;
+	border-radius: 20px;
+	padding: 20px;
+	list-style: none;
+
+	& > li {
+		cursor: pointer;
+	}
+	& > li + li {
+		margin-left: 1rem;
+	}
+}
