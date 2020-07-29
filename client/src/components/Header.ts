@@ -1,13 +1,4 @@
-export abstract class Component {
-	protected dom: HTMLElement;
-	getDom(): HTMLElement {
-		return this.dom;
-	}
-}
-
-export interface Renderable {
-	render: () => void;
-}
+import Component from './component';
 
 export default class Header extends Component {
 	dom: HTMLElement;

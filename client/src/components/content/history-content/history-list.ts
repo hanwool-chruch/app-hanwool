@@ -1,12 +1,12 @@
-import { IView, History } from './HistoryView';
-import { Component } from './Header';
+import Component from '../../component';
+import { IContent, History } from '../icontent';
 
 type HistoryListType = {
 	date: number;
 	data: History[];
 };
 
-export default class HistoryList extends Component implements IView {
+export default class HistoryList extends Component implements IContent {
 	list: HTMLElement;
 	constructor() {
 		super();

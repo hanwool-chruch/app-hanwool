@@ -1,4 +1,4 @@
-import { Component } from './Header';
+import Component from '../../component';
 
 export default class Editor extends Component {
 	constructor() {
@@ -33,6 +33,4 @@ export default class Editor extends Component {
         </div>
         `;
 	}
-
-	render() {}
 }

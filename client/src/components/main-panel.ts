@@ -1,5 +1,6 @@
-import HistoryView, { History } from './HistoryView';
-import { Component } from './Header';
+import HistoryView from './content/history-content/history-view';
+import Component from './component';
+import { History } from './content/icontent';
 
 //날짜로 오름차순
 const testHistory: History[] = [

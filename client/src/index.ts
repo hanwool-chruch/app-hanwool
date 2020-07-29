@@ -1,5 +1,5 @@
-import Header from './components/Header';
-import MainPanel from './components/MainPanel';
+import Header from './components/header';
+import MainPanel from './components/main-panel';
 class App {
 	private container: HTMLElement;
 	constructor(contianer: HTMLElement) {
