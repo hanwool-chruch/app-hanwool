@@ -44,7 +44,8 @@ export default class MainPanel extends Component {
 
 	constructor() {
 		super();
-		this.dom = document.createElement('div');
+		this.dom = document.createElement('main');
+		this.dom.classList.add('main-panel');
 		this.init();
 	}
 
