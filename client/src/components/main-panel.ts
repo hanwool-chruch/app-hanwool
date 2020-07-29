@@ -2,7 +2,7 @@ import HistoryContent from './content/history-content/history-content';
 import Component from './component';
 import { History } from './content/abstract-content';
 import { AbstractContent } from './content/abstract-content';
-import MonthSelector from './content/month-selector';
+import MonthSelector from './month-selector';
 
 //날짜로 오름차순
 const testHistory: History[] = [
