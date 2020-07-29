@@ -1,6 +1,7 @@
-import HistoryView from './content/history-content/history-view';
+import HistoryContent from './content/history-content/history-content';
 import Component from './component';
-import { History } from './content/icontent';
+import { History } from './content/abstract-content';
+import { AbstractContent } from './content/abstract-content';
 
 //날짜로 오름차순
 const testHistory: History[] = [
@@ -38,13 +39,22 @@ const testHistory: History[] = [
 	},
 ];
 export default class MainPanel extends Component {
+	dom: HTMLElement;
+	contents: Array<AbstractContent> = [];
+
 	constructor() {
 		super();
 		this.dom = document.createElement('div');
-		const view = new HistoryView();
-		this.dom.appendChild(view.getDom());
-		setTimeout(() => {
-			view.load(testHistory);
-		}, 0);
+		this.init();
+	}
+
+	init() {
+		this.contents.push(new HistoryContent());
+		this.dom.appendChild(this.contents[0].getDom());
+		/**
+		 * todo
+		 * 달력 content, 통계 content appendChild
+		 */
+		this.contents[0].load(testHistory);
 	}
 }

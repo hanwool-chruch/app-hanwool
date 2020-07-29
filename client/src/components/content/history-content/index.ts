@@ -1,3 +1,4 @@
-import HistoryView from './history-view';
+import './history-content.scss';
+import HistoryContent from './history-content';
 
-export default HistoryView;
+export default HistoryContent;

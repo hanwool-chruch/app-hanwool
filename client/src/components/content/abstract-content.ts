@@ -1,3 +1,5 @@
+import Component from '../component';
+
 export type History = {
 	id: number;
 	price: number;
@@ -7,7 +9,7 @@ export type History = {
 	payment: string;
 };
 
-export interface IContent {
+export abstract class AbstractContent extends Component {
 	// 새로운 기록을 받아서 렌더/업데이트
-	load(histories: History[]): void;
+	abstract load(histories: History[]): void;
 }

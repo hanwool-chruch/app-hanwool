@@ -1,9 +1,18 @@
-import Component from '../../component';
+import Component from '../../../component';
 
 export default class Editor extends Component {
+	dom: HTMLElement;
 	constructor() {
 		super();
 		this.dom = document.createElement('div');
+		this.init();
+	}
+
+	init() {
+		this.render();
+	}
+
+	render() {
 		this.dom.innerHTML = `
         <div>
             <span>분류</span> <button>수입</button><button>지출</button> <button>내용 지우기</button>
