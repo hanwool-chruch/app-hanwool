@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { UserController } from '../controller';
 
 const userRouter = Router();
-userRouter.get('/:user_id', UserController.findUserById);
+userRouter.get('/:id', UserController.findById);
+userRouter.get('/', UserController.findAll);
 
 export default userRouter;

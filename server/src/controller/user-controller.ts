@@ -36,9 +36,10 @@ import { User } from '../model';
  *                  }
  *     }
  */
-const findUserById = async (req: Request, res: Response, next: NextFunction) => {};
+const findById = async (req: Request, res: Response, next: NextFunction) => {};
+const findAll = async (req: Request, res: Response, next: NextFunction) => {};
 
-const checkUser = async (data: any) => {
+const checkUserPassword = async (data: any) => {
 	try {
 		if (!data.email || !data.password)
 			new CustomError(HttpStatus.BAD_REQUEST, 'no email or password');
@@ -58,14 +59,17 @@ const findOrCreate = async (tokenUser: any, provider: string) => {
 		if (users.length === 0) {
 			const user = await User.registerUser(tokenUser, 'user');
 			tokenUser.user_id = user.user_id;
-			User.registerUser(tokenUser, 'social_user');
+			const socialUser = User.registerUser(tokenUser, 'social_user');
+			return { user, socialUser };
 		} else {
 			const filteredUser = users.filter((user) => user?.provider === provider);
-			if (filteredUser) return filteredUser;
+			if (filteredUser) return { filteredUser };
 			else {
-				const user_id = users[0]?.user_id;
+				const user = users[0];
+				const user_id = user?.user_id;
 				tokenUser.user_id = user_id;
-				User.registerUser(tokenUser, 'social_user');
+				const socialUser = User.registerUser(tokenUser, 'social_user');
+				return { user, socialUser };
 			}
 		}
 	} catch (err) {
@@ -73,4 +77,4 @@ const findOrCreate = async (tokenUser: any, provider: string) => {
 	}
 };
 
-export { findUserById, checkUser, findOrCreate };
+export default { findById, findAll, checkUserPassword, findOrCreate };

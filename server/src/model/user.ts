@@ -13,20 +13,25 @@ const findById = async (id: string) => {
 	return [...userData][0][0];
 };
 
-const findByEmail = async (
-	email: string,
-	provider: string
-): Promise<Array<UserDTO.RESPONSE | null>> => {
+const findByEmail = async (email: string): Promise<Array<UserDTO.RESPONSE | null>> => {
 	let userData;
 	try {
-		userData = await mysql.connect((con: any) =>
-			con.query(
-				`SELECT u.user_id, u.name, u.email, u.image, u.create_date, p.provider_name FROM user u INNER JOIN provider p ON u.user_id = p.user_id where u.email = '${email}'`
-			)
-		);
+		userData = await Promise.all([
+			mysql.connect((con: any) =>
+				con.query(
+					`SELECT u.user_id, u.name, u.email, u.image, u.create_date, p.provider_name FROM user u INNER JOIN email_user p ON u.user_id = p.user_id where u.email = '${email}'`
+				)
+			),
+			mysql.connect((con: any) =>
+				con.query(
+					`SELECT u.user_id, u.name, u.email, u.image, u.create_date, p.provider_name FROM user u INNER JOIN social_user p ON u.user_id = p.user_id where u.email = '${email}'`
+				)
+			),
+		]);
 	} catch (err) {
 		throw err;
 	}
+
 	return [...userData][0];
 };
 

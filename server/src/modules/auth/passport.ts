@@ -4,7 +4,7 @@ import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import logger from '../../config/logger';
 import { Request } from 'express';
 import { jwtSecret, googleCredentials } from '../../config/consts';
-import { checkUser } from '../../controller/user-controller';
+import userController from '../../controller/user-controller';
 
 const jwtFromRequest = (req: Request) => {
 	let token = null;
@@ -18,7 +18,7 @@ const opts = { jwtFromRequest, secretOrKey };
 
 const jwt = new JwtStrategy(opts, (jwt_payload: any, done) => {
 	logger.info('JWT BASED AUTH GETTING CALLED');
-	if (checkUser(jwt_payload.data)) {
+	if (userController.checkUserPassword(jwt_payload.data)) {
 		return done(null, jwt_payload.data);
 	} else {
 		return done(null, false);

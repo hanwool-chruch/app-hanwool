@@ -1,6 +1,9 @@
 interface CREATE {
-	uid: string;
+	email: string;
 	name: string;
+	image: string | null;
+	provider: string;
+	password: string;
 }
 
 interface RESPONSE {
