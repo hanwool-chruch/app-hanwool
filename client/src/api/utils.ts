@@ -16,23 +16,23 @@ const createParams = (data: JSON) => {
 		: '';
 };
 
-const GET = async (uri: string, data: JSON) =>
-	await fetch(`${uri}${createParams(data)}`, defaultOptions('GET'));
+const GET = (uri: string, data: JSON) =>
+	fetch(`${uri}${createParams(data)}`, defaultOptions('GET'));
 
-const POST = async (uri: string, data: JSON) =>
-	await fetch(`${uri}`, {
+const POST = (uri: string, data: JSON) =>
+	fetch(`${uri}`, {
 		...defaultOptions('POST'),
 		body: JSON.stringify(data),
 	});
 
-const PUT = async (uri: string, data: JSON) =>
-	await fetch(`${uri}`, {
+const PUT = (uri: string, data: JSON) =>
+	fetch(`${uri}`, {
 		...defaultOptions('PUT'),
 		body: JSON.stringify(data),
 	});
 
-const PATCH = async (uri: string, data: JSON) =>
-	await fetch(`${uri}`, {
+const PATCH = (uri: string, data: JSON) =>
+	fetch(`${uri}`, {
 		...defaultOptions('PATCH'),
 		body: JSON.stringify(data),
 	});
