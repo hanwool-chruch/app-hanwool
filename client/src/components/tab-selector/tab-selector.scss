@@ -1,14 +1,32 @@
 .tab-selector {
-	display: flex;
-	background-color: #dddddd;
-	border-radius: 20px;
-	padding: 20px;
-	list-style: none;
+	display: block;
+	position: relative;
+	ul {
+		display: flex;
+		background-color: #dddddd;
+		border-radius: 20px;
+		padding: 20px;
+		list-style: none;
 
-	& > li {
-		cursor: pointer;
+		& li {
+			cursor: pointer;
+			z-index: 2;
+			width: 4rem;
+			text-align: center;
+		}
+		& li + li {
+			margin-left: 1rem;
+		}
 	}
-	& > li + li {
-		margin-left: 1rem;
+
+	.tab-highlight {
+		position: absolute;
+		z-index: 1;
+		background-color: white;
+		width: 5rem;
+		height: 2rem;
+		border-radius: 1rem;
+		transition: transform 0.5s;
+		top: 1rem;
 	}
 }
