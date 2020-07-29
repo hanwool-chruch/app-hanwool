@@ -2,6 +2,8 @@ import HistoryContent from './content/history-content/history-content';
 import Component from './component';
 import { History } from './content/abstract-content';
 import { AbstractContent } from './content/abstract-content';
+import MonthSelector from './month-selector';
+import TabSelector from './tab-selector';
 
 //날짜로 오름차순
 const testHistory: History[] = [
@@ -49,6 +51,19 @@ export default class MainPanel extends Component {
 	}
 
 	init() {
+		let curMonth = 6;
+		const monthSelector = new MonthSelector(6, (diff: number) => {
+			curMonth += diff;
+			return curMonth;
+		});
+
+		const tabSelector = new TabSelector((tab) => {
+			console.log(tab);
+			alert(`Move to ${tab} tab`);
+		});
+
+		this.getDom().appendChild(monthSelector.getDom());
+		this.getDom().appendChild(tabSelector.getDom());
 		this.contents.push(new HistoryContent());
 		this.dom.appendChild(this.contents[0].getDom());
 		/**
