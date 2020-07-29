@@ -20,7 +20,6 @@ export default class HistoryList extends Component implements IContent {
 		this.dom.appendChild(this.list);
 
 		const div = document.createElement('div');
-		div.innerText = 'asdf';
 		this.list.appendChild(div);
 	}
 
