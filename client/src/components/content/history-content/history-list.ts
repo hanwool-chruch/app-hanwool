@@ -1,12 +1,12 @@
-import { IView, History } from './HistoryView';
-import { Component } from './Header';
+import Component from '../../component';
+import { IContent, History } from '../icontent';
 
 type HistoryListType = {
 	date: number;
 	data: History[];
 };
 
-export default class HistoryList extends Component implements IView {
+export default class HistoryList extends Component implements IContent {
 	list: HTMLElement;
 	constructor() {
 		super();
@@ -20,17 +20,26 @@ export default class HistoryList extends Component implements IView {
 		this.dom.appendChild(this.list);
 
 		const div = document.createElement('div');
-		div.innerText = 'asdf';
 		this.list.appendChild(div);
 	}
 
 	load(histories: History[]): void {
+		const list = document.getElementById('history-list') as HTMLElement;
 		this.zipHistory(histories).forEach((today) => {
-			const div = document.createElement('div');
-			div.innerText = today.date + '';
-			const list = document.getElementById('history-list') as HTMLElement;
-			list.appendChild(div);
-			this.list.appendChild(document.createElement('input'));
+			const todayLi = document.createElement('ol');
+			todayLi.innerText = today.date + '일';
+
+			today.data.forEach((history) => {
+				const historyLi = document.createElement('li');
+				historyLi.innerText =
+					history.historyDate.toDateString() +
+					history.category +
+					history.content +
+					history.payment +
+					history.price;
+				todayLi.appendChild(historyLi);
+			});
+			list.appendChild(todayLi);
 		});
 	}
 
