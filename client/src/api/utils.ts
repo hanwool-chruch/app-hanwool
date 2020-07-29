@@ -11,7 +11,7 @@ const createParams = (data: JSON) => {
 	return data
 		? '?' +
 				Object.keys(data)
-					.map((k) => k + '=' + data[k])
+					.map((k) => encodeURIComponent(k) + '=' + encodeURIComponent(data[k]))
 					.join('&')
 		: '';
 };
