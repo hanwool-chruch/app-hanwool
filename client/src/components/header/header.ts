@@ -5,6 +5,7 @@ export default class Header extends Component {
 	constructor() {
 		super();
 		this.dom = document.createElement('header');
+		this.dom.classList.add('global-header');
 		this.init();
 	}
 
