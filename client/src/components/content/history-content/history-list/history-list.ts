@@ -29,17 +29,18 @@ export default class HistoryList extends AbstractContent {
 		<div class="history-list-filter">
 			<div class="label-checkbox earned">
 				<input type="checkbox" id="history-list-earned-checkbox" ${this.filter.earned ? 'checked' : ''}/>
-				<label for="history-list-earned-checkbox"><span>수입</span> <span>0 원</span></label>
+				<label for="history-list-earned-checkbox"><span>수입</span> <span id="history-filter-earned-amount">0 원</span></label>
 			</div>
 			<div class="label-checkbox spent">
 				<input type="checkbox" id="history-list-spent-checkbox" ${this.filter.spent ? 'checked' : ''}/>
-				<label for="history-list-spent-checkbox"><span>지출</span> <span>0 원</span></label>
+				<label for="history-list-spent-checkbox"><span>지출</span> <span id="history-filter-spent-amount">0 원</span></label>
 			</div>
 		</div>
 		`;
 		this.dom.appendChild(this.list);
 
 		setTimeout(() => {
+			debugger;
 			document
 				.getElementById('history-list-earned-checkbox')
 				?.addEventListener('change', (evt: any) => {
@@ -60,6 +61,23 @@ export default class HistoryList extends AbstractContent {
 		while (this.list.hasChildNodes()) {
 			this.list.removeChild(this.list.firstChild!);
 		}
+
+		const totalSum = this.histories.reduce(
+			({ earned, spent }, h) => {
+				if (h.price > 0) return { earned: earned + h.price, spent };
+				else return { earned, spent: spent - h.price };
+			},
+			{ earned: 0, spent: 0 }
+		);
+
+		setTimeout(() => {
+			document.getElementById(
+				'history-filter-earned-amount'
+			)!.innerText = `${totalSum.earned.toLocaleString()} 원`;
+			document.getElementById(
+				'history-filter-spent-amount'
+			)!.innerText = `${totalSum.spent.toLocaleString()} 원`;
+		}, 0);
 
 		const histories = this.histories.filter((h) => {
 			if (h.price > 0) return this.filter.earned;
