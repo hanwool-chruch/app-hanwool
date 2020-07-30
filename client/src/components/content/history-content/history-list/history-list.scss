@@ -25,7 +25,7 @@ $earned-color: #29b6ae;
 		}
 
 		.hitem-price {
-			width: 4rem;
+			min-width: 5rem;
 		}
 
 		& * {
@@ -54,6 +54,20 @@ $earned-color: #29b6ae;
 		}
 	}
 
+	.label-checkbox {
+		label {
+			font-size: 1.2rem;
+		}
+
+		&.earned label {
+			color: $earned-color;
+		}
+
+		&.spent label {
+			color: $spent-color;
+		}
+	}
+
 	.history-today-header {
 		display: flex;
 		border-top: 2px solid black;
@@ -62,6 +76,7 @@ $earned-color: #29b6ae;
 		& * {
 			font-size: 1.5rem;
 		}
+
 		.hheader-date {
 		}
 		.hheader-day {
