@@ -1,5 +1,5 @@
 import Editor from './editor/editor';
-import HistoryList from './history-list/history-list';
+import HistoryList from './history-list';
 import { AbstractContent, History } from '../abstract-content';
 
 export default class HistoryContent extends AbstractContent {
@@ -15,14 +15,13 @@ export default class HistoryContent extends AbstractContent {
 
 	init() {
 		this.dom?.appendChild(new Editor().getDom());
-		this.dom?.appendChild(new HistoryList().getDom());
+		this.dom?.appendChild(this.historyList.getDom());
 	}
 
 	load(histories: History[]): void {
 		if (!this.data) {
 			this.data = histories;
 		}
-
 		this.historyList.load(this.data);
 	}
 }

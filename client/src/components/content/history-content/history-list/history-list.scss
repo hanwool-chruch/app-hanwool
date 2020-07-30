@@ -1,0 +1,110 @@
+$spent-color: #3979ff;
+$earned-color: #29b6ae;
+.history-list {
+	.history-list-filter {
+		display: flex;
+		justify-content: space-between;
+
+		.label-checkbox {
+			margin: 0.5rem auto;
+		}
+	}
+
+	.history-item {
+		display: flex;
+		border-top: 1px solid #555555;
+		padding: 1rem 0;
+
+		.hitem-category {
+			width: 6rem;
+			height: 2rem;
+			border-radius: 1.5rem;
+			text-align: center;
+			color: white;
+		}
+
+		.hitem-content {
+			flex-grow: 1;
+		}
+
+		.hitem-payment {
+			color: gray;
+			width: 4rem;
+			text-align: center;
+		}
+
+		.hitem-price {
+			min-width: 5rem;
+		}
+
+		& * {
+			font-size: 1.5rem;
+			line-height: 1.5;
+		}
+
+		&.earned {
+			.hitem-category {
+				background-color: $earned-color;
+			}
+
+			.hitem-price {
+				color: $earned-color;
+			}
+		}
+
+		&.spent {
+			.hitem-category {
+				background-color: $spent-color;
+			}
+
+			.hitem-price {
+				color: $spent-color;
+			}
+		}
+	}
+
+	.label-checkbox {
+		label {
+			font-size: 1.4rem;
+		}
+
+		&.earned label {
+			color: $earned-color;
+		}
+
+		&.spent label {
+			color: $spent-color;
+		}
+	}
+
+	.history-today-header {
+		display: flex;
+		border-top: 2px solid black;
+		padding: 1rem 0;
+
+		& * {
+			font-size: 1.5rem;
+		}
+
+		.hheader-date {
+		}
+		.hheader-day {
+			flex-grow: 1;
+			margin-left: 0.3rem;
+			color: gray;
+			font-size: 1.3rem;
+		}
+		.hheader-price {
+			min-width: 4rem;
+			text-align: right;
+			font-size: 1.2rem;
+			&.earned {
+				color: $earned-color;
+			}
+
+			&.spent {
+				color: $spent-color;
+			}
+		}
+	}
+}
