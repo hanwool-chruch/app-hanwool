@@ -16,14 +16,13 @@ export default class HistoryContent extends AbstractContent {
 	init() {
 		this.dom?.classList.add('history-content');
 		this.dom?.appendChild(new Editor().getDom());
-		this.dom?.appendChild(new HistoryList().getDom());
+		this.dom?.appendChild(this.historyList.getDom());
 	}
 
 	load(histories: History[]): void {
 		if (!this.data) {
 			this.data = histories;
 		}
-
 		this.historyList.load(this.data);
 	}
 }
