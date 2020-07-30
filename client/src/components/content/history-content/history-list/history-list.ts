@@ -34,20 +34,24 @@ export default class HistoryList extends AbstractContent {
 		 * 테이블 태그 정리
 		 */
 		this.groupByDay(histories).forEach((today) => {
-			const todayLi = document.createElement('ol');
-			todayLi.innerText = today.day + '일';
+			const todayLi = document.createElement('li');
 
+			const sum = today.dailyHistory.reduce(
+				({ earned, spent }, h) => {
+					if (h.price > 0) return { earned: earned + h.price, spent };
+					else return { earned, spent: spent - h.price };
+				},
+				{ earned: 0, spent: 0 }
+			);
+			todayLi.appendChild(createTodayHeader(today.dailyHistory[0].historyDate, sum));
+
+			const todayList = document.createElement('ol');
 			today.dailyHistory.forEach((history) => {
-				const historyLi = document.createElement('li');
-				historyLi.innerText =
-					history.historyDate.toDateString() +
-					history.category +
-					history.content +
-					history.payment +
-					history.price;
-				todayLi.appendChild(historyLi);
+				const historyLi = createHistoryLi(history);
+				todayList.appendChild(historyLi);
 			});
-			this.list.appendChild(todayLi);
+			todayLi.appendChild(todayList);
+			document.getElementById('history-list')!.appendChild(todayLi);
 		});
 	}
 
@@ -66,4 +70,22 @@ export default class HistoryList extends AbstractContent {
 			return acc;
 		}, []);
 	}
+}
+
+const days = ['일', '월', '화', '수', '목', '금', '토'];
+
+function createTodayHeader(date: Date, sum: { earned?: number; spent?: number }): HTMLDivElement {
+	const header = document.createElement('div');
+	header.innerHTML = `<span>${date.getMonth()} 월 ${date.getDate()} 일</span> <span>${
+		days[date.getDate()]
+	}</span>${typeof sum.earned === 'number' ? `<span>+${sum.earned}</span>` : ''}${
+		typeof sum.spent === 'number' ? `<span>-${sum.spent}</span>` : ''
+	}`;
+	return header;
+}
+
+function createHistoryLi(history: History): HTMLLIElement {
+	const list = document.createElement('li');
+	list.innerText = history.category + history.content + history.payment + history.price;
+	return list;
 }
