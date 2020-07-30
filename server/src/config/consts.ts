@@ -7,6 +7,7 @@ const env = process.env.NODE_ENV || 'development';
 const logs = env === 'production' ? 'combined' : 'dev';
 const port = process.env.PORT || '3000';
 const url = `${process.env.URL || 'http://localhost'}:${port}`;
+const web_host = process.env.WEB_HOST || 'http://localhost:5500';
 const jwtSecret = process.env.JWT_SECRET || 'secret';
 const googleCredentials = {
 	clientId: process.env.GOOGLE_CLIENT_ID || '',
@@ -14,4 +15,4 @@ const googleCredentials = {
 };
 const tokenExpiresIn = '6h';
 
-export { env, logs, port, url, jwtSecret, googleCredentials, tokenExpiresIn };
+export { env, logs, port, url, jwtSecret, googleCredentials, tokenExpiresIn, web_host };

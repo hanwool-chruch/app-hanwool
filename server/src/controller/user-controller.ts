@@ -55,7 +55,7 @@ const checkUserPassword = async (data: any) => {
 
 const findOrCreate = async (tokenUser: any, provider: string) => {
 	try {
-		const users = await User.findByEmail(tokenUser.email, provider);
+		const users = await User.findByEmail(tokenUser.email);
 		if (users.length === 0) {
 			const user = await User.registerUser(tokenUser, 'user');
 			tokenUser.user_id = user.user_id;
