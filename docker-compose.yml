@@ -1,26 +1,26 @@
 version: '3'
 
 services:
-  webserver:
-    image: nginx
-    container_name: webserver
-    volumes:
-      - './docker/nginx/nginx.conf:/etc/nginx/nginx.conf'
-      - './client/dist:/etc/nginx/http'
-    ports:
-      - ${PORT}:80
-  app:
-    build:
-      context: ./server
-    container_name: app
-    volumes:
-      - server_node_modules:/usr/src/app/node_modules
-    environment:
-      DB_HOST: ${DB_HOST}
-      DB_PORT: ${DB_PORT}
-      DB_USER: ${DB_USER}
-      DB_PASSWORD: ${DB_PASSWORD}
-      DB_NAME: ${DB_NAME}
+  # webserver:
+  #   image: nginx
+  #   container_name: webserver
+  #   volumes:
+  #     - './docker/nginx/nginx.conf:/etc/nginx/nginx.conf'
+  #     - './client/dist:/etc/nginx/http'
+  #   ports:
+  #     - ${PORT}:80
+  # app:
+  #   build:
+  #     context: ./server
+  #   container_name: app
+  #   volumes:
+  #     - server_node_modules:/usr/src/app/node_modules
+  #   environment:
+  #     DB_HOST: ${DB_HOST}
+  #     DB_PORT: ${DB_PORT}
+  #     DB_USER: ${DB_USER}
+  #     DB_PASSWORD: ${DB_PASSWORD}
+  #     DB_NAME: ${DB_NAME}
   db:
     image: mysql:5.7
     environment:
@@ -37,4 +37,4 @@ services:
     container_name: db
 volumes:
   mysql_data:
-  server_node_modules:
+  # server_node_modules:
