@@ -7,7 +7,6 @@ type DailyListType = {
 
 export default class HistoryList extends AbstractContent {
 	dom: HTMLElement;
-	private list: HTMLElement;
 	private histories: History[] = [];
 	private filter: {
 		earned: boolean;
@@ -18,8 +17,6 @@ export default class HistoryList extends AbstractContent {
 		super();
 		this.dom = document.createElement('div');
 		this.dom.classList.add('history-list');
-		this.list = document.createElement('ol');
-		this.list.id = 'history-list';
 		this.filter = { earned: true, spent: true };
 		this.init();
 	}
@@ -28,55 +25,49 @@ export default class HistoryList extends AbstractContent {
 		this.dom.innerHTML = `
 		<div class="history-list-filter">
 			<div class="label-checkbox earned">
-				<input type="checkbox" id="history-list-earned-checkbox" ${this.filter.earned ? 'checked' : ''}/>
+				<input type="checkbox" id="history-list-earned-checkbox" checked />
 				<label for="history-list-earned-checkbox"><span>수입</span> <span id="history-filter-earned-amount">0 원</span></label>
 			</div>
 			<div class="label-checkbox spent">
-				<input type="checkbox" id="history-list-spent-checkbox" ${this.filter.spent ? 'checked' : ''}/>
+				<input type="checkbox" id="history-list-spent-checkbox" checked />
 				<label for="history-list-spent-checkbox"><span>지출</span> <span id="history-filter-spent-amount">0 원</span></label>
 			</div>
 		</div>
+		<ol id="history-list"></ol>
 		`;
-		this.dom.appendChild(this.list);
 
-		setTimeout(() => {
-			document
-				.getElementById('history-list-earned-checkbox')
-				?.addEventListener('change', (evt: any) => {
-					this.filter.earned = evt.target.checked;
-					this.update();
-				});
+		this.listener();
+	}
 
-			document
-				.getElementById('history-list-spent-checkbox')
-				?.addEventListener('change', (evt: any) => {
-					this.filter.spent = evt.target.checked;
-					this.update();
-				});
+	private listener() {
+		const earnedCheckbox = this.dom.querySelector(
+			'#history-list-earned-checkbox'
+		) as HTMLInputElement;
+		earnedCheckbox.addEventListener('change', () => {
+			this.filter.earned = earnedCheckbox.checked;
+			this.updateList();
+		});
+
+		const spentCheckbox = this.dom.querySelector(
+			'#history-list-spent-checkbox'
+		) as HTMLInputElement;
+		spentCheckbox.addEventListener('change', () => {
+			this.filter.spent = spentCheckbox.checked;
+			this.updateList();
 		});
 	}
 
-	private update() {
-		while (this.list.hasChildNodes()) {
-			this.list.removeChild(this.list.firstChild!);
-		}
+	private updateList() {
+		const list = this.dom.querySelector('#history-list') as HTMLOListElement;
+		while (list.hasChildNodes()) list.removeChild(list.firstChild!);
 
-		const totalSum = this.histories.reduce(
-			({ earned, spent }, h) => {
-				if (h.price > 0) return { earned: earned + h.price, spent };
-				else return { earned, spent: spent - h.price };
-			},
-			{ earned: 0, spent: 0 }
-		);
+		const totalSum = calcTotal(this.histories);
 
-		setTimeout(() => {
-			document.getElementById(
-				'history-filter-earned-amount'
-			)!.innerText = `${totalSum.earned.toLocaleString()} 원`;
-			document.getElementById(
-				'history-filter-spent-amount'
-			)!.innerText = `${totalSum.spent.toLocaleString()} 원`;
-		}, 0);
+		const earnedLabel = this.dom.querySelector('#history-filter-earned-amount') as HTMLLabelElement;
+		earnedLabel.innerText = `${totalSum.earned.toLocaleString()} 원`;
+
+		const spentLabel = this.dom.querySelector('#history-filter-spent-amount') as HTMLLabelElement;
+		spentLabel.innerText = `${totalSum.spent.toLocaleString()} 원`;
 
 		const histories = this.histories.filter((h) => {
 			if (h.price > 0) return this.filter.earned;
@@ -86,13 +77,7 @@ export default class HistoryList extends AbstractContent {
 		for (const today of groupByDay(histories)) {
 			const todayLi = document.createElement('li');
 
-			const sum = today.dailyHistory.reduce(
-				({ earned, spent }, h) => {
-					if (h.price > 0) return { earned: earned + h.price, spent };
-					else return { earned, spent: spent - h.price };
-				},
-				{ earned: 0, spent: 0 }
-			);
+			const sum = calcTotal(today.dailyHistory);
 			todayLi.appendChild(createTodayHeader(today.dailyHistory[0].historyDate, sum));
 
 			const todayList = document.createElement('ol');
@@ -100,23 +85,18 @@ export default class HistoryList extends AbstractContent {
 				const historyLi = createHistoryLi(history);
 				todayList.appendChild(historyLi);
 			});
-
 			todayLi.appendChild(todayList);
-			this.list.appendChild(todayLi);
-			setTimeout(() => {
-				document.getElementById('history-list')!.appendChild(todayLi);
-			}, 0);
+
+			list.appendChild(todayLi);
 		}
 	}
-
-	private addEventListeners() {}
 
 	load(histories: History[]): void {
 		/**
 		 * 테이블 태그 정리
 		 */
 		this.histories = histories;
-		this.update();
+		this.updateList();
 	}
 }
 
@@ -174,4 +154,14 @@ function formatPrice(price: number, earned?: boolean): string {
 	if (typeof earned === 'undefined')
 		return `${price > 0 ? '+' : '-'}${Math.abs(price).toLocaleString()}원`;
 	return `${earned ? '+' : '-'}${Math.abs(price).toLocaleString()}원`;
+}
+
+function calcTotal(histories: History[]): { earned: number; spent: number } {
+	return histories.reduce(
+		({ earned, spent }, h) => {
+			if (h.price > 0) return { earned: earned + h.price, spent };
+			else return { earned, spent: spent - h.price };
+		},
+		{ earned: 0, spent: 0 }
+	);
 }
