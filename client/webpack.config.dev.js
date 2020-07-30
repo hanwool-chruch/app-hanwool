@@ -1,5 +1,6 @@
 const commonConfig = require('./webpack.config.common');
 const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
 	...commonConfig,
@@ -51,5 +52,5 @@ module.exports = {
 			inject: true, // inject built script in the end of body tag
 			alwaysWriteToDisk: true,
 		}),
-	]
+	],
 };
