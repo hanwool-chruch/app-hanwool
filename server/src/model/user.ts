@@ -5,7 +5,7 @@ const findById = async (id: string) => {
 	let userData;
 	try {
 		userData = await mysql.connect((con: any) =>
-			con.query(`SELECT user_id, uid, name FROM user where user.user_id = '${id}'`)
+			con.query(`SELECT user_id, name, email, create_date FROM user where user.user_id = '${id}'`)
 		);
 	} catch (err) {
 		throw err;
