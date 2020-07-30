@@ -12,6 +12,7 @@ export default class HistoryList extends AbstractContent {
 	constructor() {
 		super();
 		this.dom = document.createElement('div');
+		this.dom.classList.add('history-list');
 		this.list = document.createElement('ol');
 		this.init();
 	}
@@ -76,11 +77,12 @@ const days = ['일', '월', '화', '수', '목', '금', '토'];
 
 function createTodayHeader(date: Date, sum: { earned?: number; spent?: number }): HTMLDivElement {
 	const header = document.createElement('div');
-	header.innerHTML = `<span>${date.getMonth()} 월 ${date.getDate()} 일</span> <span>${
-		days[date.getDate()]
-	}</span>${typeof sum.earned === 'number' ? `<span>+${sum.earned}</span>` : ''}${
-		typeof sum.spent === 'number' ? `<span>-${sum.spent}</span>` : ''
-	}`;
+	header.classList.add('history-today-header');
+	header.innerHTML = `
+	<div class="hheader-date">${date.getMonth()} 월 ${date.getDate()} 일</div>
+	<div class="hheader-day">${days[date.getDate()]}</div>
+	${typeof sum.earned === 'number' ? `<div class="hheader-price earned">+${sum.earned}</div>` : ''}
+	${typeof sum.spent === 'number' ? `<div class="hheader-price spent">-${sum.spent}</div>` : ''}`;
 	return header;
 }
 
