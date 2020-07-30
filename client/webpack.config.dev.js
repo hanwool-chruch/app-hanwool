@@ -1,3 +1,4 @@
+const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const commonConfig = require('./webpack.config.common');
 
@@ -20,11 +21,11 @@ module.exports = {
 			},
 			{
 				test: /\.css$/,
-				use: ['css-loader'],
+				use: ['style-loader', 'css-loader'],
 			},
 			{
 				test: /\.s[ac]ss$/,
-				use: ['css-loader', 'sass-loader'],
+				use: ['style-loader', 'css-loader', 'sass-loader'],
 			},
 		],
 	},

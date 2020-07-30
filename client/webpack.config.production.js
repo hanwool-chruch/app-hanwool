@@ -1,3 +1,4 @@
+const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin');
@@ -34,9 +35,7 @@ module.exports = {
 		new CleanWebpackPlugin({
 			cleanAfterEveryBuildPatterns: ['dist'],
 		}),
-		new MiniCssExtractPlugin({
-			filename: 'style.css',
-		}),
+
 		new HtmlWebpackPlugin({
 			template: path.resolve(__dirname, './public/index.html'),
 			filename: path.resolve(__dirname, './dist/index.html'),
