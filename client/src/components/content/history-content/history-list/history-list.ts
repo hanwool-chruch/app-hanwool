@@ -34,7 +34,7 @@ export default class HistoryList extends AbstractContent {
 		/**
 		 * 테이블 태그 정리
 		 */
-		this.groupByDay(histories).forEach((today) => {
+		groupByDay(histories).forEach((today) => {
 			const todayLi = document.createElement('li');
 
 			const sum = today.dailyHistory.reduce(
@@ -55,24 +55,23 @@ export default class HistoryList extends AbstractContent {
 			document.getElementById('history-list')!.appendChild(todayLi);
 		});
 	}
-
-	private groupByDay(histories: History[]): DailyListType[] {
-		return histories.reduce((acc: DailyListType[], curHistory: History) => {
-			// 그 날이 없으면 그 날 새로 만들기
-			if (acc.length === 0 || acc[0].day !== curHistory.historyDate.getDate()) {
-				acc.push({
-					day: curHistory.historyDate.getDate(),
-					dailyHistory: [curHistory],
-				});
-				// 있는 날에 추가
-			} else {
-				acc[0].dailyHistory.push(curHistory);
-			}
-			return acc;
-		}, []);
-	}
 }
 
+function groupByDay(histories: History[]): DailyListType[] {
+	return histories.reduce((acc: DailyListType[], curHistory: History) => {
+		// 그 날이 없으면 그 날 새로 만들기
+		if (acc.length === 0 || acc[0].day !== curHistory.historyDate.getDate()) {
+			acc.push({
+				day: curHistory.historyDate.getDate(),
+				dailyHistory: [curHistory],
+			});
+			// 있는 날에 추가
+		} else {
+			acc[0].dailyHistory.push(curHistory);
+		}
+		return acc;
+	}, []);
+}
 const days = ['일', '월', '화', '수', '목', '금', '토'];
 
 function createTodayHeader(date: Date, sum: { earned?: number; spent?: number }): HTMLDivElement {
