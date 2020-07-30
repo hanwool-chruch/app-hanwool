@@ -26,13 +26,15 @@ export default class HistoryList extends AbstractContent {
 
 	init() {
 		this.dom.innerHTML = `
-		<div class="label-checkbox earned">
-			<input type="checkbox" id="history-list-earned-checkbox" ${this.filter.earned ? 'checked' : ''}/>
-			<label for="history-list-earned-checkbox"><span>수입</span> <span>0 원</span></label>
-		</div>
-		<div class="label-checkbox spent">
-			<input type="checkbox" id="history-list-spent-checkbox" ${this.filter.spent ? 'checked' : ''}/>
-			<label for="history-list-spent-checkbox"><span>지출</span> <span>0 원</span></label>
+		<div class="history-list-filter">
+			<div class="label-checkbox earned">
+				<input type="checkbox" id="history-list-earned-checkbox" ${this.filter.earned ? 'checked' : ''}/>
+				<label for="history-list-earned-checkbox"><span>수입</span> <span>0 원</span></label>
+			</div>
+			<div class="label-checkbox spent">
+				<input type="checkbox" id="history-list-spent-checkbox" ${this.filter.spent ? 'checked' : ''}/>
+				<label for="history-list-spent-checkbox"><span>지출</span> <span>0 원</span></label>
+			</div>
 		</div>
 		`;
 		this.dom.appendChild(this.list);
