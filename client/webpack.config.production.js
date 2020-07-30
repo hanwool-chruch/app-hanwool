@@ -1,9 +1,9 @@
+const commonConfig = require('./webpack.config.common');
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const commonConfig = require('./webpack.config.common');
 
 module.exports = {
 	...commonConfig,
@@ -33,12 +33,14 @@ module.exports = {
 	},
 	plugins: [
 		new CleanWebpackPlugin({
-			cleanAfterEveryBuildPatterns: ['dist'],
+			cleanAfterEveryBuildPatterns: ['../server/public/static'],
 		}),
-
+		new MiniCssExtractPlugin({
+			filename: 'style.css',
+		}),
 		new HtmlWebpackPlugin({
 			template: path.resolve(__dirname, './public/index.html'),
-			filename: path.resolve(__dirname, './dist/index.html'),
+			filename: path.resolve(__dirname, '../server/public/index.html'),
 			inject: true, // inject built script in the end of body tag
 			alwaysWriteToDisk: true,
 		}),

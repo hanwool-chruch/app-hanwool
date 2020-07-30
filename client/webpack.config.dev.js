@@ -1,9 +1,25 @@
+const commonConfig = require('./webpack.config.common');
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const commonConfig = require('./webpack.config.common');
 
 module.exports = {
 	...commonConfig,
+	devServer: {
+		contentBase: path.resolve(__dirname, '../server/public'),
+		publicPath: '/static/',
+		compress: true,
+		port: 5500,
+		hot: true,
+		proxy: {
+			'/api': {
+				target: {
+					host: 'localhost',
+					// protocol: config.dev.proxyProtocol, // 백엔드 프로토콜 'http'
+					port: 3000,
+				},
+			},
+		},
+	},
 	devtool: 'source-map',
 	mode: 'development',
 	module: {
@@ -32,7 +48,7 @@ module.exports = {
 	plugins: [
 		new HtmlWebpackPlugin({
 			template: path.resolve(__dirname, './public/index.html'),
-			filename: path.resolve(__dirname, './dist/index.html'),
+			filename: path.resolve(__dirname, '../server/public/index.html'),
 			inject: true, // inject built script in the end of body tag
 			alwaysWriteToDisk: true,
 		}),
