@@ -40,7 +40,6 @@ export default class HistoryList extends AbstractContent {
 		this.dom.appendChild(this.list);
 
 		setTimeout(() => {
-			debugger;
 			document
 				.getElementById('history-list-earned-checkbox')
 				?.addEventListener('change', (evt: any) => {
