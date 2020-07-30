@@ -1,6 +1,7 @@
+import './styles/global.scss';
+
 import Header from './components/header';
 import MainPanel from './components/main-panel';
-import './global.scss';
 class App {
 	private container: HTMLElement;
 	constructor(contianer: HTMLElement) {
