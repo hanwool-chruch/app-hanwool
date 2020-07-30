@@ -8,9 +8,9 @@ CREATE TABLE `user` (
 );
 
 CREATE TABLE `social_user` (
-  `social_id` INT NOT NULL AUTO_INCREMENT,
+  `social_id` VARCHAR(128) NOT NULL,
   `social_email` VARCHAR(256) NOT NULL,
-  `last_access_token` VARCHAR(45) NULL,
+  `last_access_token` VARCHAR(128) NULL,
   `user_id` INT NOT NULL,
   `provider` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`social_id`),
