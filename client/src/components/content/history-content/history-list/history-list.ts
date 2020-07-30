@@ -19,49 +19,52 @@ export default class HistoryList extends AbstractContent {
 		this.dom = document.createElement('div');
 		this.dom.classList.add('history-list');
 		this.list = document.createElement('ol');
+		this.list.id = 'history-list';
 		this.filter = { earned: true, spent: true };
 		this.init();
 	}
 
 	init() {
-		this.dom.appendChild;
-		this.render();
-		this.list.id = 'history-list';
+		this.dom.innerHTML = `
+		<div class="label-checkbox earned">
+			<input type="checkbox" id="history-list-earned-checkbox" ${this.filter.earned ? 'checked' : ''}/>
+			<label for="history-list-earned-checkbox"><span>수입</span> <span>0 원</span></label>
+		</div>
+		<div class="label-checkbox spent">
+			<input type="checkbox" id="history-list-spent-checkbox" ${this.filter.spent ? 'checked' : ''}/>
+			<label for="history-list-spent-checkbox"><span>지출</span> <span>0 원</span></label>
+		</div>
+		`;
 		this.dom.appendChild(this.list);
 
 		setTimeout(() => {
-			this.addEventListeners();
-		}, 0);
+			document
+				.getElementById('history-list-earned-checkbox')
+				?.addEventListener('change', (evt: any) => {
+					this.filter.earned = evt.target.checked;
+					this.update();
+				});
+
+			document
+				.getElementById('history-list-spent-checkbox')
+				?.addEventListener('change', (evt: any) => {
+					this.filter.spent = evt.target.checked;
+					this.update();
+				});
+		});
 	}
 
-	private render() {
-		this.dom.innerHTML = '';
+	private update() {
+		while (this.list.hasChildNodes()) {
+			this.list.removeChild(this.list.firstChild!);
+		}
+
 		const histories = this.histories.filter((h) => {
 			if (h.price > 0) return this.filter.earned;
 			else return this.filter.spent;
 		});
-		const sum = histories.reduce(
-			({ earned, spent }, h) => {
-				if (h.price > 0) return { earned: earned + h.price, spent };
-				else return { earned, spent: spent - h.price };
-			},
-			{ earned: 0, spent: 0 }
-		);
-		this.dom.innerHTML = `
-		<div class="label-checkbox earned">
-			<input type="checkbox" id="history-list-earned-checkbox" ${this.filter.earned ? 'checked' : ''}/> 
-			<label for="history-list-earned-checkbox"><span>수입</span> <span>${sum.earned.toLocaleString()} 원</span></label>
-		</div>
-		<div class="label-checkbox spent">
-			<input type="checkbox" id="history-list-spent-checkbox" ${this.filter.spent ? 'checked' : ''}/> 
-			<label for="history-list-spent-checkbox"><span>지출</span> <span>${sum.spent.toLocaleString()} 원</span></label>
-		</div>
-		`;
-		setTimeout(() => {
-			this.addEventListeners();
-		}, 0);
 
-		groupByDay(this.histories).forEach((today) => {
+		for (const today of groupByDay(histories)) {
 			const todayLi = document.createElement('li');
 
 			const sum = today.dailyHistory.reduce(
@@ -78,33 +81,23 @@ export default class HistoryList extends AbstractContent {
 				const historyLi = createHistoryLi(history);
 				todayList.appendChild(historyLi);
 			});
+
 			todayLi.appendChild(todayList);
-			document.getElementById('history-list')!.appendChild(todayLi);
-		});
+			this.list.appendChild(todayLi);
+			setTimeout(() => {
+				document.getElementById('history-list')!.appendChild(todayLi);
+			}, 0);
+		}
 	}
 
-	private addEventListeners() {
-		document
-			.getElementById('history-list-earned-checkbox')
-			?.addEventListener('change', (evt: any) => {
-				this.filter.earned = evt.target.checked;
-				this.render();
-			});
-
-		document
-			.getElementById('history-list-spent-checkbox')
-			?.addEventListener('change', (evt: any) => {
-				this.filter.spent = evt.target.checked;
-				this.render();
-			});
-	}
+	private addEventListeners() {}
 
 	load(histories: History[]): void {
 		/**
 		 * 테이블 태그 정리
 		 */
 		this.histories = histories;
-		this.render();
+		this.update();
 	}
 }
 
