@@ -86,6 +86,14 @@ function createTodayHeader(date: Date, sum: { earned?: number; spent?: number })
 
 function createHistoryLi(history: History): HTMLLIElement {
 	const list = document.createElement('li');
-	list.innerText = history.category + history.content + history.payment + history.price;
+	list.classList.add('history-item');
+	list.classList.add(history.price > 0 ? 'earned' : 'spent');
+	// list.innerText = history.category + history.content + history.payment + history.price;
+	list.innerHTML = `
+	<div class="hitem-category">${history.category}</div>
+	<div class="hitem-content">${history.content}</div>
+	<div class="hitem-payment">${history.payment}</div>
+	<div class="hitem-price">${history.price}</div>
+	`;
 	return list;
 }

@@ -1,0 +1,54 @@
+$spent-color: #3979ff;
+$earned-color: #29b6ae;
+.history-item {
+	display: flex;
+	border-top: 1px solid #555555;
+	padding: 1rem 0;
+
+	.hitem-category {
+		width: 6rem;
+		height: 2rem;
+		border-radius: 1.5rem;
+		text-align: center;
+		color: white;
+	}
+
+	.hitem-content {
+		flex-grow: 1;
+	}
+
+	.hitem-payment {
+		color: gray;
+		width: 4rem;
+		text-align: center;
+	}
+
+	.hitem-price {
+		width: 4rem;
+	}
+
+	& * {
+		font-size: 1.5rem;
+		line-height: 1.5;
+	}
+
+	&.earned {
+		.hitem-category {
+			background-color: $earned-color;
+		}
+
+		.hitem-price {
+			color: $earned-color;
+		}
+	}
+
+	&.spent {
+		.hitem-category {
+			background-color: $spent-color;
+		}
+
+		.hitem-price {
+			color: $spent-color;
+		}
+	}
+}
