@@ -7,7 +7,7 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 module.exports = {
 	entry: './src/index.ts',
 	output: {
-		path: path.resolve(__dirname, 'dist/static'),
+		path: path.resolve(__dirname, '../server/public/static'),
 		filename: 'bundle.js',
 	},
 	resolve: {
@@ -38,34 +38,17 @@ module.exports = {
 	},
 	plugins: [
 		new CleanWebpackPlugin({
-			cleanAfterEveryBuildPatterns: ['dist'],
+			cleanAfterEveryBuildPatterns: ['../server/public/static'],
 		}),
 		new MiniCssExtractPlugin({
 			filename: 'style.css',
 		}),
 		new HtmlWebpackPlugin({
 			template: path.resolve(__dirname, './public/index.html'),
-			filename: path.resolve(__dirname, './dist/index.html'),
+			filename: path.resolve(__dirname, '../server/public/index.html'),
 			inject: true, // inject built script in the end of body tag
 			alwaysWriteToDisk: true,
 		}),
 		new HtmlWebpackHarddiskPlugin(),
 	],
-	devServer: {
-		contentBase: path.join(__dirname, './dist'),
-		publicPath: '/static/',
-		compress: true,
-		port: 5500,
-		hot: true,
-		proxy: {
-			'/api': {
-				target: {
-					host: 'localhost',
-					// protocol: config.dev.proxyProtocol, // 백엔드 프로토콜 'http'
-					port: 3000,
-				},
-			},
-		},
-	},
-	mode: 'development',
 };
