@@ -21,7 +21,7 @@ export default class HistoryContent extends AbstractContent {
 	}
 
 	load(histories: History[]): void {
-		if (!this.data) {
+		if (this.data !== histories) {
 			this.data = histories;
 		}
 		this.historyList.load(this.data);
