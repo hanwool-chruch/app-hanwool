@@ -1,10 +1,7 @@
-import { env } from '../../config/consts';
+import { databaseConfig } from '../../config/consts';
 
 const database = {
-	database: env === 'production' ? process.env.PORD_DB : process.env.DEV_DB,
-	user: process.env.DB_USER,
-	password: process.env.DB_PW,
-	host: process.env.DB_HOST,
+	...databaseConfig,
 	waitForConnections: true,
 	connectionLimit: 10,
 	queueLimit: 0,
