@@ -89,7 +89,7 @@ export default class Editor extends Component {
 		const inputPrice = this.dom.querySelector('.input-price') as HTMLInputElement;
 
 		toggles.addEventListener('click', (e: Event) => this.toggleClickHandler(e, chkClassify));
-		initFormBtn.addEventListener('click', this.reload);
+		initFormBtn.addEventListener('click', this.reload.bind(this));
 		confirmBtn.addEventListener('click', () => this.confirmBtnClickHandler(chkClassify));
 		/**
 		 * TODO
@@ -142,6 +142,8 @@ export default class Editor extends Component {
 
 	private reload() {
 		this.render();
+		this.initHistoryDate();
+		this.appendChilds();
 		this.listener();
 	}
 
