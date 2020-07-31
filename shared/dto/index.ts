@@ -1,3 +1,6 @@
-import * as UserDTO from './user-dto';
+import * as UserDto from './user-dto';
+import * as PaymentDto from './payment-dto';
+import * as CategoryDto from './category-dto';
+import * as ServiceDto from './service-dto';
 
-export { UserDTO };
+export { UserDto, PaymentDto, CategoryDto, ServiceDto };

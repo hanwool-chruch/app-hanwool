@@ -1,5 +1,5 @@
 import http from 'http';
-import { env, port } from './config/consts';
+import { env, port, databaseConfig } from './config/consts';
 import logger from './config/logger';
 import app from './config/express';
 import { mysql } from './modules/database/mysql';
@@ -16,7 +16,7 @@ const runServer = async () => {
 	});
 	try {
 		await mysql.ping();
-		logger.info('db connected');
+		logger.info(`db connected ${databaseConfig.host} (${databaseConfig.database})`);
 	} catch (e) {
 		logger.error(e);
 		stopServer(server, 'db is failed to start');

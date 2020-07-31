@@ -5,19 +5,27 @@ import compression from 'compression';
 import helmet from 'helmet';
 import cors from 'cors';
 import path from 'path';
-import logger from './logger';
+import { LoggerStream } from './logger';
 import { logs } from './consts';
 import errorHandler from '../exception/error-handler';
 import passport from 'passport';
 import strategies from '../modules/auth/passport';
-import { router, authRouter, userRouter } from '../router';
+import {
+	router,
+	authRouter,
+	userRouter,
+	serviceRouter,
+	categoryRouter,
+	paymentRouter,
+} from '../router';
 
 const app = express();
-app.use(morgan(logs, { stream: logger }));
+app.use(morgan(logs, { stream: new LoggerStream() }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cors());
 app.use(helmet());
+app.use(compression());
 
 app.use(express.static(path.join(__dirname, '../../public')));
 app.set('views', path.join(__dirname, '../../public'));
@@ -31,8 +39,10 @@ passport.use(strategies.google);
 app.use('/', router);
 app.use('/api/auth', authRouter);
 app.use('/api/user', userRouter);
+app.use('/api/service', serviceRouter);
+app.use('/api/category', categoryRouter);
+app.use('/api/payment', paymentRouter);
 
-app.use(compression());
 app.use(errorHandler);
 
 export default app;
