@@ -1,9 +1,9 @@
 import HistoryModel from '../history-model';
-import { History, AddHistoryDto } from '@shared/dto/history-dto';
+import { AddHistoryDto } from '@shared/dto/history-dto';
 
 describe('HistoryModel', () => {
 	it('can add histories', async (done) => {
-		const obs = new HistoryModel();
+		const obs = new HistoryModel(0);
 		const fn = jest.fn();
 		obs.subscribe(fn);
 
@@ -23,7 +23,7 @@ describe('HistoryModel', () => {
 	});
 
 	it('persists consistency', async (done) => {
-		const obs = new HistoryModel();
+		const obs = new HistoryModel(0);
 		const fn = jest.fn();
 		obs.subscribe(fn);
 
@@ -58,7 +58,7 @@ describe('HistoryModel', () => {
 	});
 
 	it('removes history', async (done) => {
-		const obs = new HistoryModel();
+		const obs = new HistoryModel(0);
 		let testData: any;
 		const fn = jest.fn((data) => (testData = data[0]));
 		obs.subscribe(fn);
