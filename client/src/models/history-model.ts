@@ -16,8 +16,10 @@ export default class HistoryModel extends Observable<History[]> {
 	constructor(servideId: number) {
 		super();
 		this.data = [];
-		this.load();
 		this.serviceId = servideId;
+		setTimeout(() => {
+			this.load();
+		}, 0);
 	}
 
 	private async load(): Promise<void> {
