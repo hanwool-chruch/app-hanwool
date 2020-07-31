@@ -1,6 +1,6 @@
 import HistoryContent from '../content/history-content';
 import Component from '../component';
-import { History } from '../content/abstract-content';
+import { History } from '@shared/dto/history-dto';
 import { AbstractContent } from '../content/abstract-content';
 import MonthSelector from '../month-selector';
 import TabSelector from '../tab-selector';
