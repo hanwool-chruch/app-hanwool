@@ -1,14 +1,30 @@
 import Observable from './observable';
 import { History, AddHistoryDto } from '@shared/dto/history-dto';
+import { load } from '../api/apiMocks';
 
 const apiMock = (data: any) =>
 	new Promise((resolve) => resolve({ ...data, id: ~~(Math.random() * 1000) }));
 
 export default class HistoryModel extends Observable<History[]> {
 	private data: History[];
-	constructor() {
+	private serviceId: number;
+
+	/**
+	 *
+	 * @param servideId {number} - set service id
+	 */
+	constructor(servideId: number) {
 		super();
 		this.data = [];
+		this.load();
+		this.serviceId = servideId;
+	}
+
+	private async load(): Promise<void> {
+		// TODO: api call
+		const data = await load(this.serviceId);
+		this.data = data;
+		this.notify(this.data);
 	}
 
 	async add(h: AddHistoryDto): Promise<void> {
