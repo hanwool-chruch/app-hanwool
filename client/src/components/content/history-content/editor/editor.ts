@@ -1,20 +1,46 @@
 import Component from '../../../component';
+import { CategoryApi, PaymentApi } from '../../../../api';
+import { PaymentDto, CategoryDto } from '../../../../../../shared/dto';
 
 export default class Editor extends Component {
 	dom: HTMLElement;
+	private paymentSelector: HTMLSelectElement;
+	private incomeCategorySelector: HTMLSelectElement;
+	private outcomeCategorySelector: HTMLSelectElement;
+
 	constructor() {
 		super();
 		this.dom = document.createElement('div');
+		this.paymentSelector = document.createElement('select');
+		this.incomeCategorySelector = document.createElement('select');
+		this.outcomeCategorySelector = document.createElement('select');
 		this.init();
 	}
 
-	init() {
-		this.dom.classList.add('editor');
+	async init() {
+		this.initClassList();
+		await this.fetchSelectorData();
 		this.render();
+		this.initHistoryDate();
+		this.appendChilds();
 		this.listener();
 	}
 
-	render() {
+	private initClassList() {
+		this.dom.classList.add('editor');
+		this.paymentSelector.classList.add('select-payment');
+		this.incomeCategorySelector.classList.add('select-category');
+		this.outcomeCategorySelector.classList.add('select-category');
+	}
+
+	private appendChilds() {
+		const categorySection = this.dom.querySelector('.category-sector') as HTMLElement;
+		const paymentSection = this.dom.querySelector('.payment-section') as HTMLElement;
+		categorySection.appendChild(this.outcomeCategorySelector);
+		paymentSection.appendChild(this.paymentSelector);
+	}
+
+	private render() {
 		this.dom.innerHTML = `
         <div class="editor-row">
             <div class="toggle-group">
@@ -30,24 +56,11 @@ export default class Editor extends Component {
                 <span class="item-title">날짜</span>
                 <input type="date" class="input-date"> 
             </div>
-            <div class="child-input">
+            <div class="child-input category-sector">
                 <span class="item-title">카테고리</span>
-                <select class="select-category">
-                    <option>쇼핑/뷰티</option>
-                    <option>식비</option>
-                    <option>월급</option>
-                    <option>생활</option>
-                    <option>카페/간식</option>
-                    <option>문화/여가</option>
-                </select>
             </div>
-            <div class="child-input">
+            <div class="child-input payment-section">
                 <span class="item-title">결제수단</span>
-                <select class="select-payment">
-                    <option>현금</option>
-                    <option>신한카드</option>
-                    <option>국민카드</option>                    
-                </select>
             </div>
         </div>
         <div class="editor-row">
@@ -68,11 +81,12 @@ export default class Editor extends Component {
         `;
 	}
 
-	listener() {
+	private listener() {
 		const chkClassify = this.dom.querySelector('.chk-classify') as HTMLInputElement;
 		const toggles = this.dom.querySelector('.toggle-group') as HTMLElement;
 		const initFormBtn = this.dom.querySelector('.clear-btn') as HTMLElement;
 		const confirmBtn = this.dom.querySelector('.confirm') as HTMLElement;
+		const inputPrice = this.dom.querySelector('.input-price') as HTMLInputElement;
 
 		toggles.addEventListener('click', (e: Event) => this.toggleClickHandler(e, chkClassify));
 		initFormBtn.addEventListener('click', this.reload);
@@ -83,21 +97,71 @@ export default class Editor extends Component {
 		 */
 	}
 
-	reload() {
+	private async fetchSelectorData() {
+		const service_id = 1;
+		const paymentDto: PaymentDto.GET_DATA = { service_id };
+		const categoryDto: CategoryDto.GET_DATA = { service_id };
+		try {
+			const paymentRes = await PaymentApi.findAll(paymentDto);
+			const payments = (await paymentRes.json()).result;
+			console.log('payments', payments);
+
+			for (let i = 0; i < payments.length; i++) {
+				const payment = document.createElement('option');
+				payment.text = payments[i].payment_name;
+				payment.value = payments[i].payment_name;
+				this.paymentSelector.add(payment);
+			}
+
+			const categoryRes = await CategoryApi.findAll(categoryDto);
+			const categories = (await categoryRes.json()).result;
+			console.log('categories', categories);
+			const incomeCategories = [];
+			const outcomeCategories = [];
+			for (let i = 0; i < categories.length; i++) {
+				const category = document.createElement('option');
+				category.text = categories[i].category_name;
+				category.value = categories[i].category_name;
+				if (categories[i].for_income) {
+					incomeCategories.push(categories[i]);
+					this.incomeCategorySelector.add(category);
+				} else {
+					outcomeCategories.push(categories[i]);
+					this.outcomeCategorySelector.add(category);
+				}
+			}
+		} catch (err) {
+			throw err;
+		}
+	}
+
+	private initHistoryDate() {
+		const inputDate = this.dom.querySelector('.input-date') as HTMLInputElement;
+		inputDate.valueAsDate = new Date();
+	}
+
+	private reload() {
 		this.render();
 		this.listener();
 	}
 
-	toggleClickHandler(e: Event, chkClassify: HTMLInputElement) {
+	private toggleClickHandler(e: Event, chkClassify: HTMLInputElement) {
 		const toggle = e.target as HTMLElement;
-		if (toggle.classList.contains('income')) {
+		const selector = this.dom.querySelector('.select-category') as HTMLSelectElement;
+		const selectorParent = selector.parentElement as HTMLElement;
+
+		if (toggle.classList.contains('income') && !chkClassify.checked) {
 			chkClassify.checked = true;
-		} else {
+			selector.remove();
+			selectorParent.appendChild(this.incomeCategorySelector);
+		} else if (toggle.classList.contains('outcome') && chkClassify.checked) {
 			chkClassify.checked = false;
+			selector.remove();
+			selectorParent.appendChild(this.outcomeCategorySelector);
 		}
 	}
 
-	confirmBtnClickHandler(chkClassify: HTMLInputElement) {
+	private confirmBtnClickHandler(chkClassify: HTMLInputElement) {
 		const inputDate = this.dom.querySelector('.input-date') as HTMLInputElement;
 		const selectCategory = this.dom.querySelector('.select-category') as HTMLSelectElement;
 		const selectPayment = this.dom.querySelector('.select-payment') as HTMLSelectElement;
@@ -122,7 +186,7 @@ export default class Editor extends Component {
 	 * TODO
 	 * 아이템 모델에 등록 구현
 	 */
-	storeHistory(data: any) {
+	private storeHistory(data: any) {
 		alert(JSON.stringify(data));
 	}
 }
