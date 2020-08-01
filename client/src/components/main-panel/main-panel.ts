@@ -7,7 +7,7 @@ import HistoryModel from '../../models/history-model';
 
 export default class MainPanel extends Component {
 	dom: HTMLElement;
-	contents: Array<AbstractContent> = [];
+	contents: AbstractContent[] = [];
 	//TODO resolve dependency
 	historyModel?: HistoryModel;
 
