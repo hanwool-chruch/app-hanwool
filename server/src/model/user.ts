@@ -1,5 +1,5 @@
 import { mysql } from '../modules/database/mysql';
-import { UserDTO } from '../../../shared/dto';
+import { UserDTO } from '@shared/dto';
 
 const findById = async (id: string) => {
 	let userData;
