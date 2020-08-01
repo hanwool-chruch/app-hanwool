@@ -13,7 +13,7 @@ const findById = async (id: string) => {
 	return [...userData][0][0];
 };
 
-const findByEmail = async (email: string): Promise<Array<UserDto.RESPONSE | null>> => {
+const findByEmail = async (email: string): Promise<UserDTO.RESPONSE[]> => {
 	let userData;
 	try {
 		userData = await Promise.all([
@@ -35,7 +35,7 @@ const findByEmail = async (email: string): Promise<Array<UserDto.RESPONSE | null
 	return [...userData][0];
 };
 
-const findEmailUser = async (email: string): Promise<UserDto.EMAIL_RESPONSE | null> => {
+const findEmailUser = async (email: string): Promise<UserDTO.EMAIL_RESPONSE> => {
 	let userData;
 	try {
 		userData = await mysql.connect((con: any) =>
