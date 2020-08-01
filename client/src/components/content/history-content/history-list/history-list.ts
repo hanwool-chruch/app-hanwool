@@ -1,4 +1,5 @@
-import { AbstractContent, History } from '../../abstract-content';
+import { AbstractContent } from '../../abstract-content';
+import { History } from '@shared/dto/history-dto';
 
 type DailyListType = {
 	day: number;

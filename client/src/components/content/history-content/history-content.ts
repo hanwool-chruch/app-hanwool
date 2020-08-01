@@ -1,6 +1,7 @@
 import Editor from './editor';
 import HistoryList from './history-list';
-import { AbstractContent, History } from '../abstract-content';
+import { AbstractContent } from '../abstract-content';
+import { History } from '@shared/dto/history-dto';
 
 export default class HistoryContent extends AbstractContent {
 	data: History[] | null = null;
@@ -20,9 +21,9 @@ export default class HistoryContent extends AbstractContent {
 	}
 
 	load(histories: History[]): void {
-		if (!this.data) {
-			this.data = histories;
-		}
+		if (this.data === histories) return;
+
+		this.data = histories;
 		this.historyList.load(this.data);
 	}
 }

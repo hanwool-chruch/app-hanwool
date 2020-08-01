@@ -17,7 +17,11 @@
 		"allowSyntheticDefaultImports": true,
 		"strict": true,
 		"resolveJsonModule": true,
-		"experimentalDecorators": true
+		"experimentalDecorators": true,
+		"baseUrl": ".",
+		"paths": {
+			"@shared/*": ["shared/*"]
+		}
 	},
 	"include": ["./client/src/**/*", "./server/src/**/*"],
 	"exclude": ["node_modules", "**/*.test.ts"]
