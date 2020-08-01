@@ -19,14 +19,6 @@ export default class MainPanel extends Component {
 	}
 
 	init() {
-		// TODO: resolve dependency
-		// first parameter of conttructor of HistoryModel is service id
-		// default servide id is 1, for now.
-		this.historyModel = new HistoryModel(1);
-		this.historyModel.subscribe((data) => {
-			this.contents[0].load(data);
-		});
-
 		let curMonth = 6;
 		const monthSelector = new MonthSelector(6, (diff: number) => {
 			curMonth += diff;
@@ -42,5 +34,13 @@ export default class MainPanel extends Component {
 		this.getDom().appendChild(tabSelector.getDom());
 		this.contents.push(new HistoryContent());
 		this.dom.appendChild(this.contents[0].getDom());
+
+		// TODO: resolve dependency
+		// first parameter of conttructor of HistoryModel is service id
+		// default servide id is 1, for now.
+		this.historyModel = new HistoryModel(1);
+		this.historyModel.subscribe((data) => {
+			this.contents[0].load(data);
+		});
 	}
 }
