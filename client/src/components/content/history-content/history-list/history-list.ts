@@ -36,6 +36,7 @@ export default class HistoryList extends AbstractContent {
 		this.listener();
 	}
 
+	// add event listeners
 	private listener() {
 		const earnedCheckbox = this.dom.querySelector(
 			'#history-list-earned-checkbox'
