@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import bodyParser from 'body-parser';
 import morgan from 'morgan';
 import compression from 'compression';
@@ -10,14 +10,7 @@ import { logs } from './consts';
 import errorHandler from '../exception/error-handler';
 import passport from 'passport';
 import strategies from '../modules/auth/passport';
-import {
-	router,
-	authRouter,
-	userRouter,
-	serviceRouter,
-	categoryRouter,
-	paymentRouter,
-} from '../router';
+import router from '../router';
 
 const app = express();
 app.use(morgan(logs, { stream: new LoggerStream() }));
@@ -37,12 +30,6 @@ passport.use(strategies.jwt);
 passport.use(strategies.google);
 
 app.use('/', router);
-app.use('/api/auth', authRouter);
-app.use('/api/user', userRouter);
-app.use('/api/service', serviceRouter);
-app.use('/api/category', categoryRouter);
-app.use('/api/payment', paymentRouter);
-
 app.use(errorHandler);
 
 export default app;

@@ -1,6 +1,7 @@
 import Component from '../component';
 
 export default class MonthSelector extends Component {
+	dom: HTMLElement;
 	private month: number;
 	private onMoveMonth: (diffMonth: number) => number;
 	// TODO: display year
@@ -20,22 +21,35 @@ export default class MonthSelector extends Component {
 
 	init(): void {
 		this.render();
-		this.dom?.querySelector('#goto_prev_month_button')?.addEventListener('click', () => {
+		this.listener();
+	}
+
+	listener() {
+		const prevBtn = this.dom.querySelector('#goto_prev_month_button') as HTMLButtonElement;
+		const nextBtn = this.dom.querySelector('#goto_next_month_button') as HTMLButtonElement;
+		const monthArea = this.dom.querySelector('span') as HTMLSpanElement;
+		prevBtn.addEventListener('click', () => {
 			this.month = this.onMoveMonth(-1);
-			this.init();
+			monthArea.innerHTML = `${this.month} 월`;
 		});
 
-		this.dom?.querySelector('#goto_next_month_button')?.addEventListener('click', () => {
+		nextBtn.addEventListener('click', () => {
 			this.month = this.onMoveMonth(1);
-			this.init();
+			monthArea.innerHTML = `${this.month} 월`;
 		});
 	}
 
 	render(): void {
-		this.dom!.innerHTML = `
+		this.dom.innerHTML = `
         <button id="goto_prev_month_button">◁</button>
         <span>${this.month} 월</span>
         <button id="goto_next_month_button">▷</button>
         `;
+	}
+
+	public setMonth(month: number) {
+		this.month = month;
+		const monthArea = this.dom.querySelector('span') as HTMLSpanElement;
+		monthArea.innerHTML = `${this.month} 월`;
 	}
 }
