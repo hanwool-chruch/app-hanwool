@@ -7,6 +7,20 @@ $earned-color: #29b6ae;
 	flex-wrap: nowrap;
 	align-items: center;
 
+	.calendar-list-filter {
+		width: 400px;
+		display: flex;
+		justify-content: space-between;
+
+		.earned {
+			color: $earned-color;
+		}
+
+		.spent {
+			color: $spent-color;
+		}
+	}
+
 	#calendar-grid {
 		width: 800px;
 		display: grid;
@@ -14,7 +28,7 @@ $earned-color: #29b6ae;
 		grid-template-rows: 25px;
 		grid-auto-rows: 100px;
 
-		& > div.cal-item {
+		& > div {
 			border: 1px solid white;
 			display: flex;
 			flex-direction: column;

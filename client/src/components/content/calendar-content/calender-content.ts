@@ -55,7 +55,22 @@ export default class CalendarContent extends AbstractContent {
 		});
 	}
 
+	private setTotalPrice() {
+		const totalPrice = calcTotal(this.data);
+
+		const earnedAmountLabel = this.dom!.querySelector(
+			'#calendar-filter-earned-amount'
+		) as HTMLSpanElement;
+		earnedAmountLabel.innerText = `${totalPrice.earned.toLocaleString()} 원`;
+
+		const spentAmountLabel = this.dom!.querySelector(
+			'#calendar-filter-spent-amount'
+		) as HTMLSpanElement;
+		spentAmountLabel.innerText = `${totalPrice.spent.toLocaleString()} 원`;
+	}
+
 	private render() {
+		this.setTotalPrice();
 		const grid = this.dom!.querySelector('#calendar-grid') as HTMLDivElement;
 		grid.innerHTML = `
 		<div class="red">일</div>
