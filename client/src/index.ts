@@ -14,10 +14,10 @@ class App {
 		this.container.appendChild(new MainPanel().getDom());
 		this.container.appendChild(
 			new PieChart([
-				{ color: 'yellow', name: '1', weight: 9 },
-				{ color: 'red', name: '2', weight: 3 },
-				{ color: 'green', name: '3', weight: 1 },
-				{ color: 'purple', name: '4', weight: 2 },
+				{ color: 'yellow', name: '콩밥', weight: 9 },
+				{ color: 'red', name: '설탕', weight: 3 },
+				{ color: 'green', name: 'HTTP', weight: 1 },
+				{ color: 'purple', name: '스케이트', weight: 2 },
 			]).getDom()
 		);
 	}
