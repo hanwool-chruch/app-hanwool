@@ -21,14 +21,4 @@ const databaseConfig = {
 	host: process.env.DB_HOST,
 };
 
-export {
-	env,
-	logs,
-	port,
-	url,
-	jwtSecret,
-	googleCredentials,
-	tokenExpiresIn,
-	web_host,
-	databaseConfig,
-};
+export { env, logs, port, url, jwtSecret, googleCredentials, tokenExpiresIn, databaseConfig };
