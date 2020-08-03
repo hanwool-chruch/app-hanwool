@@ -1,0 +1,60 @@
+$spent-color: #3979ff;
+$earned-color: #29b6ae;
+.calendar-content {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	flex-wrap: nowrap;
+	align-items: center;
+
+	.earned {
+		color: $earned-color;
+	}
+	.spent {
+		color: $spent-color;
+	}
+
+	.calendar-list-filter {
+		width: 400px;
+		display: flex;
+		justify-content: space-between;
+	}
+
+	#calendar-grid {
+		width: 800px;
+		display: grid;
+		grid-template-columns: repeat(7, 1fr);
+		grid-template-rows: 25px;
+		grid-auto-rows: 100px;
+
+		& > div {
+			border: 1px solid white;
+			display: flex;
+			flex-direction: column;
+			justify-content: space-between;
+
+			.cal-item-price > div {
+				min-height: 1rem;
+				text-align: right;
+				margin-right: 0.5rem;
+			}
+		}
+
+		.gray {
+			color: gray;
+		}
+		.red {
+			color: red;
+		}
+
+		.today {
+			.cal-date-div {
+				width: 1rem;
+				height: 1rem;
+				border-radius: 50%;
+				text-align: center;
+				background-color: $earned-color;
+			}
+		}
+	}
+}

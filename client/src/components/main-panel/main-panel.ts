@@ -4,13 +4,16 @@ import Component from '../component';
 import { AbstractContent } from '../content/abstract-content';
 import MonthSelector from '../month-selector';
 import TabSelector from '../tab-selector';
+import HistoryModel from '../../models/history-model';
+import CalendarContent from '../content/calendar-content';
 
-class MainPanel extends Component {
+export default class MainPanel extends Component {
 	dom: HTMLElement;
 	monthSelector: any | null;
 	tabSelector: any | null;
 	contents: Map<String, AbstractContent>;
 	router: any;
+	historyModel?: HistoryModel;
 
 	constructor() {
 		super();
@@ -109,7 +112,10 @@ class MainPanel extends Component {
 		this.monthSelector?.setMonth(yearAndMonth.split('-')[1]);
 		this.tabSelector.setHighlight(tabName);
 		this.router.loadView(page);
+		this.historyModel = new HistoryModel(1);
+// 		this.historyModel.subscribe((data) => {
+// 			this.contents[0].load(data);
+// 			this.contents[1].load(data);
+// 		});
 	}
 }
-
-export default MainPanel;

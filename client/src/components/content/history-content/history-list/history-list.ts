@@ -1,9 +1,6 @@
-import { AbstractContent, History } from '../../abstract-content';
-
-type DailyListType = {
-	day: number;
-	dailyHistory: History[];
-};
+import { AbstractContent } from '../../abstract-content';
+import { History } from '@shared/dto/history-dto';
+import { groupByDate, calcTotal } from '../../../../utils';
 
 export default class HistoryList extends AbstractContent {
 	dom: HTMLElement;
@@ -39,6 +36,7 @@ export default class HistoryList extends AbstractContent {
 		this.listener();
 	}
 
+	// add event listeners
 	private listener() {
 		const earnedCheckbox = this.dom.querySelector(
 			'#history-list-earned-checkbox'
@@ -74,7 +72,7 @@ export default class HistoryList extends AbstractContent {
 			else return this.filter.spent;
 		});
 
-		for (const today of groupByDay(histories)) {
+		for (const today of groupByDate(histories)) {
 			const todayLi = document.createElement('li');
 
 			const sum = calcTotal(today.dailyHistory);
@@ -100,21 +98,6 @@ export default class HistoryList extends AbstractContent {
 	}
 }
 
-function groupByDay(histories: History[]): DailyListType[] {
-	return histories.reduce((acc: DailyListType[], curHistory: History) => {
-		// 그 날이 없으면 그 날 새로 만들기
-		if (acc.length === 0 || acc[0].day !== curHistory.historyDate.getDate()) {
-			acc.push({
-				day: curHistory.historyDate.getDate(),
-				dailyHistory: [curHistory],
-			});
-			// 있는 날에 추가
-		} else {
-			acc[0].dailyHistory.push(curHistory);
-		}
-		return acc;
-	}, []);
-}
 const days = ['일', '월', '화', '수', '목', '금', '토'];
 
 function createTodayHeader(date: Date, sum: { earned?: number; spent?: number }): HTMLDivElement {
@@ -154,14 +137,4 @@ function formatPrice(price: number, earned?: boolean): string {
 	if (typeof earned === 'undefined')
 		return `${price > 0 ? '+' : '-'}${Math.abs(price).toLocaleString()}원`;
 	return `${earned ? '+' : '-'}${Math.abs(price).toLocaleString()}원`;
-}
-
-function calcTotal(histories: History[]): { earned: number; spent: number } {
-	return histories.reduce(
-		({ earned, spent }, h) => {
-			if (h.price > 0) return { earned: earned + h.price, spent };
-			else return { earned, spent: spent - h.price };
-		},
-		{ earned: 0, spent: 0 }
-	);
 }
