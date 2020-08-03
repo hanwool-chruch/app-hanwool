@@ -4,6 +4,7 @@ import { AbstractContent } from '../content/abstract-content';
 import MonthSelector from '../month-selector';
 import TabSelector from '../tab-selector';
 import HistoryModel from '../../models/history-model';
+import CalendarContent from '../content/calendar-content';
 
 export default class MainPanel extends Component {
 	dom: HTMLElement;
@@ -33,7 +34,9 @@ export default class MainPanel extends Component {
 		this.getDom().appendChild(monthSelector.getDom());
 		this.getDom().appendChild(tabSelector.getDom());
 		this.contents.push(new HistoryContent());
+		this.contents.push(new CalendarContent());
 		this.dom.appendChild(this.contents[0].getDom());
+		this.dom.appendChild(this.contents[1].getDom());
 
 		// TODO: resolve dependency
 		// first parameter of conttructor of HistoryModel is service id
@@ -41,6 +44,7 @@ export default class MainPanel extends Component {
 		this.historyModel = new HistoryModel(1);
 		this.historyModel.subscribe((data) => {
 			this.contents[0].load(data);
+			this.contents[1].load(data);
 		});
 	}
 }
