@@ -1,3 +1,5 @@
+$spent-color: #3979ff;
+$earned-color: #29b6ae;
 .calendar-content {
 	width: 100%;
 	display: flex;
@@ -12,8 +14,41 @@
 		grid-template-rows: 25px;
 		grid-auto-rows: 100px;
 
-		& > div {
+		& > div.cal-item {
 			border: 1px solid white;
+			display: flex;
+			flex-direction: column;
+			justify-content: space-between;
+
+			.cal-item-price > div {
+				min-height: 1rem;
+				text-align: right;
+				margin-right: 0.5rem;
+			}
+		}
+
+		.gray {
+			color: gray;
+		}
+		.red {
+			color: red;
+		}
+
+		.today {
+			.cal-date-div {
+				width: 1rem;
+				height: 1rem;
+				border-radius: 50%;
+				text-align: center;
+				background-color: $earned-color;
+			}
+		}
+
+		.earned {
+			color: $earned-color;
+		}
+		.spent {
+			color: $spent-color;
 		}
 	}
 }
