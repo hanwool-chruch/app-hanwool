@@ -104,7 +104,6 @@ export default class Editor extends Component {
 		try {
 			const paymentRes = await PaymentApi.findAll(paymentDto);
 			const payments = (await paymentRes.json()).result;
-			console.log('payments', payments);
 
 			for (let i = 0; i < payments.length; i++) {
 				const payment = document.createElement('option');
@@ -115,7 +114,6 @@ export default class Editor extends Component {
 
 			const categoryRes = await CategoryApi.findAll(categoryDto);
 			const categories = (await categoryRes.json()).result;
-			console.log('categories', categories);
 			const incomeCategories = [];
 			const outcomeCategories = [];
 			for (let i = 0; i < categories.length; i++) {
