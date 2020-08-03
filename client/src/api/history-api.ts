@@ -4,7 +4,7 @@ import { ApiSuccessResponse } from '@shared/dto/api-response';
 
 const create = (data: AddHistoryDto): Promise<History> =>
 	POST('/api/history', data)
-		.then((res) => {
+		.then((res: any) => {
 			if (res.ok) return res.json();
 			else {
 				//TODO: Error handling
