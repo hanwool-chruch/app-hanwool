@@ -8,12 +8,11 @@ export default class CalendarContent extends AbstractContent {
 	private filter: {
 		earned: boolean;
 		spent: boolean;
-	};
+	} = { earned: true, spent: true };
 
 	constructor() {
 		super();
 		this.dom = document.createElement('div');
-		this.filter = { earned: true, spent: true };
 		this.init();
 	}
 
@@ -71,6 +70,7 @@ export default class CalendarContent extends AbstractContent {
 
 	private render() {
 		this.setTotalPrice();
+
 		const grid = this.dom!.querySelector('#calendar-grid') as HTMLDivElement;
 		grid.innerHTML = `
 		<div class="red">일</div>
@@ -82,23 +82,29 @@ export default class CalendarContent extends AbstractContent {
 		<div>토</div>
 		`;
 
-		// What if there's no history in this month?
+		// TODO: What if there's no history in this month?
+		// Set today if no history, for now.
 		// Representitive date of the month
 		const refDate = this.data!.length > 0 ? this.data![0].historyDate : (new Date() as Date);
 
-		const firstDateOfMonth = new Date(refDate.getFullYear(), refDate.getMonth(), 1);
 		const lastDateOfMonth = new Date(refDate.getFullYear(), refDate.getMonth() + 1, 0);
 
-		const iterDate = new Date(firstDateOfMonth.getTime());
+		const iterDate = new Date(refDate.getFullYear(), refDate.getMonth(), 1);
+		// Change date of iterDate to sunday of this week
 		iterDate.setDate(iterDate.getDate() - iterDate.getDay());
+
+		// 이번주인데 저번달
 		while (iterDate.getDate() !== 1) {
 			grid.innerHTML += createCalendarItem(iterDate, true);
 			iterDate.setDate(iterDate.getDate() + 1);
 		}
+		// 이번달
 		while (iterDate.getMonth() === lastDateOfMonth.getMonth()) {
 			grid.innerHTML += createCalendarItem(iterDate, false);
 			iterDate.setDate(iterDate.getDate() + 1);
 		}
+
+		// 마지막주인데 다음달
 		while (iterDate.getDay() !== 0) {
 			grid.innerHTML += createCalendarItem(iterDate, true);
 			iterDate.setDate(iterDate.getDate() + 1);
@@ -131,6 +137,10 @@ export default class CalendarContent extends AbstractContent {
 		});
 	}
 
+	/**
+	 *
+	 * @param histories {History[]} - should have at leat one item to render calendar
+	 */
 	load(histories: History[]): void {
 		if (this.data === histories) return;
 

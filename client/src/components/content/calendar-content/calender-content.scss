@@ -7,18 +7,17 @@ $earned-color: #29b6ae;
 	flex-wrap: nowrap;
 	align-items: center;
 
+	.earned {
+		color: $earned-color;
+	}
+	.spent {
+		color: $spent-color;
+	}
+
 	.calendar-list-filter {
 		width: 400px;
 		display: flex;
 		justify-content: space-between;
-
-		.earned {
-			color: $earned-color;
-		}
-
-		.spent {
-			color: $spent-color;
-		}
 	}
 
 	#calendar-grid {
@@ -56,13 +55,6 @@ $earned-color: #29b6ae;
 				text-align: center;
 				background-color: $earned-color;
 			}
-		}
-
-		.earned {
-			color: $earned-color;
-		}
-		.spent {
-			color: $spent-color;
 		}
 	}
 }
