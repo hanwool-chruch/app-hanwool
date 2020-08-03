@@ -109,3 +109,4 @@ dist
 
 # build file
 server/public
+conti-deploy.sh*
