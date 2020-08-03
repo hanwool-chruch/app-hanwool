@@ -7,8 +7,6 @@ const env = process.env.NODE_ENV || 'development';
 const logs = env === 'production' ? 'combined' : 'dev';
 const port = process.env.PORT || '3000';
 const url = `${process.env.URL || 'http://localhost'}:${port}`;
-const web_host =
-	env === 'production' ? process.env.WEB_HOST || 'http://localhost:3000' : 'http://localhost:3000';
 const jwtSecret = process.env.JWT_SECRET || 'secret';
 const googleCredentials = {
 	clientId: process.env.GOOGLE_CLIENT_ID || '',
