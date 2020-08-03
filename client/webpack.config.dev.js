@@ -45,12 +45,4 @@ module.exports = {
 			},
 		],
 	},
-	plugins: [
-		new HtmlWebpackPlugin({
-			template: path.resolve(__dirname, './public/index.html'),
-			filename: path.resolve(__dirname, '../server/public/index.html'),
-			inject: true, // inject built script in the end of body tag
-			alwaysWriteToDisk: true,
-		}),
-	],
 };
