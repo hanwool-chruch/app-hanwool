@@ -5,9 +5,15 @@ import { groupByDate, calcTotal } from '../../../utils';
 export default class CalendarContent extends AbstractContent {
 	data: History[] = [];
 
+	private filter: {
+		earned: boolean;
+		spent: boolean;
+	};
+
 	constructor() {
 		super();
 		this.dom = document.createElement('div');
+		this.filter = { earned: true, spent: true };
 		this.init();
 	}
 
@@ -27,7 +33,26 @@ export default class CalendarContent extends AbstractContent {
 		<div id="calendar-grid">
 		</div>
 		`;
-		this.render();
+		this.listener();
+	}
+
+	// add event listeners
+	private listener() {
+		const earnedCheckbox = this.dom!.querySelector(
+			'#calendar-list-earned-checkbox'
+		) as HTMLInputElement;
+		earnedCheckbox.addEventListener('change', () => {
+			this.filter.earned = earnedCheckbox.checked;
+			this.render();
+		});
+
+		const spentCheckbox = this.dom!.querySelector(
+			'#calendar-list-spent-checkbox'
+		) as HTMLInputElement;
+		spentCheckbox.addEventListener('change', () => {
+			this.filter.spent = spentCheckbox.checked;
+			this.render();
+		});
 	}
 
 	private render() {
@@ -63,16 +88,18 @@ export default class CalendarContent extends AbstractContent {
 			grid.innerHTML += createCalendarItem(iterDate, true);
 			iterDate.setDate(iterDate.getDate() + 1);
 		}
+
+		this.addDaySummary();
 	}
 
-	load(histories: History[]): void {
-		if (this.data === histories) return;
-
-		this.data = histories;
-		this.render();
+	private addDaySummary() {
+		const histories = this.data.filter((h) => {
+			if (h.price > 0) return this.filter.earned;
+			else return this.filter.spent;
+		});
 
 		// 이번달의 결제기록을 날짜별로 묶은 후 그 날의 수입/지출 데이터 추가
-		const dateDate = groupByDate(this.data).map((dayData) => ({
+		const dateDate = groupByDate(histories).map((dayData) => ({
 			...dayData,
 			...calcTotal(dayData.dailyHistory),
 		}));
@@ -87,6 +114,13 @@ export default class CalendarContent extends AbstractContent {
 			</div>
 			`;
 		});
+	}
+
+	load(histories: History[]): void {
+		if (this.data === histories) return;
+
+		this.data = histories;
+		this.render();
 	}
 }
 
