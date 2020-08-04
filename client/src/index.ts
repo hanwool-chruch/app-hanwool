@@ -1,10 +1,6 @@
 import './styles/global.scss';
 import Header from './components/header';
 import MainPanel from './components/main-panel';
-<<<<<<< HEAD
-=======
-import './global.scss';
->>>>>>> 4a7a54a334e72608f1a071fe09ba6f84b6c465d7
 import PieChart from './components/content/statistics-content/pie-chart';
 class App {
 	private container: HTMLElement;
