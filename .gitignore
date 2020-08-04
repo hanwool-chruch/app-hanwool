@@ -108,4 +108,5 @@ dist
 .tern-port
 
 # build file
-server/public/static
+server/public
+conti-deploy.sh*
