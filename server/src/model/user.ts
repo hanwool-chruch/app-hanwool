@@ -1,5 +1,5 @@
 import { mysql } from '../modules/database/mysql';
-import { UserDTO } from '@shared/dto';
+import { UserDto } from '@shared/dto';
 
 const findById = async (id: string) => {
 	let userData;
@@ -13,7 +13,7 @@ const findById = async (id: string) => {
 	return [...userData][0][0];
 };
 
-const findByEmail = async (email: string): Promise<UserDTO.RESPONSE[]> => {
+const findByEmail = async (email: string): Promise<UserDto.RESPONSE[]> => {
 	let userData;
 	try {
 		userData = await Promise.all([
@@ -35,7 +35,7 @@ const findByEmail = async (email: string): Promise<UserDTO.RESPONSE[]> => {
 	return [...userData][0];
 };
 
-const findEmailUser = async (email: string): Promise<UserDTO.EMAIL_RESPONSE | null> => {
+const findEmailUser = async (email: string): Promise<UserDto.EMAIL_RESPONSE | null> => {
 	let userData;
 	try {
 		userData = await mysql.connect((con: any) =>
@@ -49,7 +49,7 @@ const findEmailUser = async (email: string): Promise<UserDTO.EMAIL_RESPONSE | nu
 	else return null;
 };
 
-const registerUser = async (user: UserDTO.CREATE, table: string) => {
+const registerUser = async (user: UserDto.CREATE, table: string) => {
 	let userData;
 	try {
 		userData = await mysql.connect((con: any) => {
