@@ -1,21 +1,35 @@
 import Component from '../component';
+import ActionManager from '../../utils/action-manager';
+import { popstateType } from '../../index';
+import TabName from '../../utils/tab-name';
+
+interface TabSelectorState {
+	tabs: Array<string>;
+}
 
 export default class TabSelector extends Component {
-	// Remove hardcoded tab data
 	dom: HTMLElement;
-	private tabs: string[] = ['내역', '달력', '통계'];
-	private onMoveTab: (tab: string) => void;
-	constructor(onMoveTab: (tab: string) => void) {
+	private state: TabSelectorState;
+
+	constructor(state: TabSelectorState) {
 		super();
 		this.dom = document.createElement('div');
-		this.dom.classList.add('tab-selector');
-		this.onMoveTab = onMoveTab;
+		this.state = state;
 		this.init();
+		this.initEventManager();
 	}
 
 	init(): void {
+		this.dom.classList.add('tab-selector');
 		this.render();
 		this.listener();
+	}
+
+	private initEventManager() {
+		ActionManager.subscribe('popstate', (data: popstateType) => {
+			const tabName = TabName[data.viewName];
+			this.setHighlight(tabName);
+		});
 	}
 
 	listener() {
@@ -23,14 +37,15 @@ export default class TabSelector extends Component {
 			const targetDom = evt.target as HTMLElement;
 			const tabName = targetDom.dataset.name;
 			if (!tabName) return;
-			this.onMoveTab(tabName);
+			const viewName = TabName[tabName];
+			ActionManager.notify('changeTab', { viewName });
 			this.setHighlight(tabName);
 		});
 	}
 
 	//TODO 위치 조절 필요
 	setHighlight(page: string) {
-		const index = this.tabs.indexOf(page);
+		const index = this.state.tabs.indexOf(page);
 		const highlight = this.dom.querySelector('.tab-highlight') as HTMLElement;
 		highlight.style.transform = `translateX(${index * 5}rem)`;
 		//TODO style -> css로 넣어야됩니다.
@@ -40,7 +55,7 @@ export default class TabSelector extends Component {
 		this.dom!.innerHTML = `
 		<div class="tab-highlight"></div>
 		<ul>
-			${this.tabs
+			${this.state.tabs
 				.map(
 					(tab) => `
 					<li data-name="${tab}">${tab}</li>

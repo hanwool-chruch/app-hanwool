@@ -1,4 +1,5 @@
-import MonthSelector from './month-selector';
+import MonthSelector, { MonthSelectorState } from './month-selector';
 import './month-selector.scss';
 
+export { MonthSelectorState };
 export default MonthSelector;
