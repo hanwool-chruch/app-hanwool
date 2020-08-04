@@ -1,6 +1,6 @@
 import { AbstractContent } from './components/content/abstract-content';
 import NotFoundPage from './pages/not-found';
-import { History } from './components/content/abstract-content';
+import { History } from '@shared/dto/history-dto';
 
 const testHistory: History[] = [
 	{

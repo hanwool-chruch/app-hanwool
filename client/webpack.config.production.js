@@ -1,8 +1,6 @@
 const commonConfig = require('./webpack.config.common');
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const HtmlWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 module.exports = {
@@ -38,6 +36,5 @@ module.exports = {
 		new MiniCssExtractPlugin({
 			filename: 'style.css',
 		}),
-		new HtmlWebpackHarddiskPlugin(),
 	],
 };
