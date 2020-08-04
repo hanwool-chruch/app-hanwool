@@ -1,4 +1,4 @@
-export type History = {
+type History = {
 	id: number;
 	price: number;
 	content: string;
@@ -7,4 +7,34 @@ export type History = {
 	payment: string;
 };
 
-export type AddHistoryDto = Omit<History, 'id'>;
+type AddHistoryDto = Omit<History, 'id'>;
+
+type CREATE = {
+	price: number;
+	content: string;
+	historyDate: Date;
+	category_id: number;
+	payment_id: number;
+	service_id: number;
+};
+
+type GET_DATA = {
+	service_id: number;
+	startDate: Date;
+	endDate: Date;
+};
+
+type UPDATE = {
+	history_id: number;
+	price: number;
+	content: string;
+	historyDate: Date;
+	category_id: number;
+	payment_id: number;
+};
+
+type REMOVE = {
+	history_id: number;
+};
+
+export { History, AddHistoryDto, CREATE, GET_DATA, UPDATE, REMOVE };
