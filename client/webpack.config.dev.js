@@ -9,6 +9,7 @@ module.exports = {
 		compress: true,
 		port: 5500,
 		hot: true,
+		historyApiFallback: true,
 		proxy: {
 			'/api': {
 				target: {
