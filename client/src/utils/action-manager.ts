@@ -17,8 +17,31 @@ type SubscriberType = {
 	observer: Subscriber<any>;
 };
 
+class Observable {
+	private observers: Map<string, Array<Subscriber<any>>>;
+
+	constructor() {
+		this.observers = new Map();
+	}
+
+	subscribe({ key, observer }: { key: string; observer: Subscriber<any> }) {
+		if (!this.observers.has(key)) {
+			this.observers.set(key, new Array<Subscriber<any>>());
+		}
+		this.observers.get(key)!.push(observer);
+	}
+
+	notify({ key, data }: { key: string; data: any }) {
+		if (this.observers.has(key)) {
+			this.observers.get(key)!.forEach((subscriber) => subscriber(data));
+		} else {
+			throw new Error(`no subscriber in ${key}`);
+		}
+	}
+}
+
 class ActionManager {
-	private observers: Map<String, Array<Subscriber<any>>>;
+	private observers: Map<ACTION_KEYS, Array<Subscriber<any>>>;
 
 	constructor() {
 		this.observers = new Map();
@@ -40,7 +63,7 @@ class ActionManager {
 	}
 }
 
-export { ActionManager as Observable };
+export { Observable };
 export default new ActionManager();
 
 /**
