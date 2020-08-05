@@ -42,6 +42,14 @@ export const load = (serviceId: number): Promise<History[]> => {
 				payment: '현금',
 				price: 6000,
 			},
+			{
+				category: '시계',
+				historyDate: new Date('2020-08-04'),
+				content: '수리',
+				id: 5,
+				payment: '외상',
+				price: -8000,
+			},
 		]);
 	}
 };
