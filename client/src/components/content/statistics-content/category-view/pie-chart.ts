@@ -24,7 +24,7 @@ export default class PieChart extends Component {
 		let svgString = '';
 		if (this.data.length === 1) {
 			svgString = `<circle cx="0" cy="0" r="1" fill="${this.data[0].color}"/>
-			${createLabel(Math.PI, this.data[0].name)}
+			${createLabel(Math.PI, this.data[0].name, 100)}
 			`;
 		} else {
 			const weightSum = this.data.reduce((acc, { weight }) => acc + weight, 0);
@@ -44,7 +44,7 @@ export default class PieChart extends Component {
                             ${joinWithSpace(finishCoord)} 
                             Z" 
 					fill="${item.color}"></path>
-					${createLabel(curAngle - angle / 2, item.name)}
+					${createLabel(curAngle - angle / 2, item.name, Math.round((item.weight / weightSum) * 100))}
 					`;
 				})
 				.join('');
@@ -54,7 +54,7 @@ export default class PieChart extends Component {
 	}
 }
 
-function createLabel(angle: number, name: string) {
+function createLabel(angle: number, name: string, persentage: number) {
 	const labelCoord = getCoordinate(angle);
 	return `
 	<g>
@@ -78,7 +78,7 @@ function createLabel(angle: number, name: string) {
 			${angle > Math.PI ? 'dx=-0.3' : ''}
 			dy="-0.03"
 			font-size="0.1">
-			${name}
+			${name} ${persentage}%
 		</text>
 	</g>
 	`;
