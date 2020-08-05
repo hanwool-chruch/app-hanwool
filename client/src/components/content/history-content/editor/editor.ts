@@ -1,7 +1,7 @@
 import Component from '../../../component';
 import { CategoryApi, PaymentApi } from '../../../../api';
 import { PaymentDto, CategoryDto } from '@shared/dto';
-import ActionManager from '../../../../utils/action-manager';
+import ActionManager, { ADD_HISTORY_ACTION } from '../../../../utils/action-manager';
 
 interface HistoryDataType {
 	user_id: number;
@@ -189,7 +189,7 @@ class Editor extends Component {
 			content: inputContent.value,
 		};
 
-		ActionManager.notify({ key: 'addHistory', data: data });
+		ActionManager.notify({ key: ADD_HISTORY_ACTION, data: data });
 		this.reload();
 	}
 }

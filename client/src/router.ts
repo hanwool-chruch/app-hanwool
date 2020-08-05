@@ -1,4 +1,12 @@
-import ActionManager, { Observable } from './utils/action-manager';
+import ActionManager, {
+	Observable,
+	CHANGE_DATE_ACTION,
+	CHANGE_TAB_ACTION,
+	POP_STATE_ACTION,
+	ADD_HISTORY_ACTION,
+	EDIT_HISTORY_ACTION,
+	REMOVE_HISTORY_ACTION,
+} from './utils/action-manager';
 import { MonthSelectorState } from './components/month-selector';
 import { popstateType } from './index';
 import { HistoryDataType } from './components/content/history-content/editor';
@@ -54,7 +62,7 @@ class Router extends Observable {
 
 	private initEventManager() {
 		ActionManager.subscribe({
-			key: 'changeDate',
+			key: CHANGE_DATE_ACTION,
 			observer: (data: MonthSelectorState) => {
 				if (this.current.yearAndMonth === `${data.year}-${data.month}`) {
 					console.info('already load year and month', this.current.yearAndMonth);
@@ -67,7 +75,7 @@ class Router extends Observable {
 		});
 
 		ActionManager.subscribe({
-			key: 'changeTab',
+			key: CHANGE_TAB_ACTION,
 			observer: (data) => {
 				if (this.current.viewName === data.viewName) {
 					console.info('already load view', this.current.viewName);
@@ -80,7 +88,7 @@ class Router extends Observable {
 		});
 
 		ActionManager.subscribe({
-			key: 'popstate',
+			key: POP_STATE_ACTION,
 			observer: (data: popstateType) => {
 				this.setYearAndMonth(data.year, data.month);
 				this.setViewName(data.viewName);
@@ -97,21 +105,21 @@ class Router extends Observable {
 		});
 
 		ActionManager.subscribe({
-			key: 'addHistory',
+			key: ADD_HISTORY_ACTION,
 			observer: (data: HistoryDataType) => {
 				this.notify({ key: 'addHistory', data: data });
 			},
 		});
 
 		ActionManager.subscribe({
-			key: 'editHistory',
+			key: EDIT_HISTORY_ACTION,
 			observer: (data: HistoryDataType) => {
 				this.notify({ key: 'editHistory', data: data });
 			},
 		});
 
 		ActionManager.subscribe({
-			key: 'removeHistory',
+			key: REMOVE_HISTORY_ACTION,
 			observer: (data: { history_id: number; historyDate: string }) => {
 				this.notify({ key: 'removeHistory', data: data });
 			},
