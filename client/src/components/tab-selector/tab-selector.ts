@@ -5,6 +5,7 @@ import TabName from '../../utils/tab-name';
 
 interface TabSelectorState {
 	tabs: Array<string>;
+	currentTab: string;
 }
 
 export default class TabSelector extends Component {
@@ -23,6 +24,7 @@ export default class TabSelector extends Component {
 		this.dom.classList.add('tab-selector');
 		this.render();
 		this.listener();
+		this.setHighlight(this.state.currentTab);
 	}
 
 	private initEventManager() {
@@ -46,6 +48,8 @@ export default class TabSelector extends Component {
 	//TODO 위치 조절 필요
 	setHighlight(page: string) {
 		const index = this.state.tabs.indexOf(page);
+		if (index < 0) return;
+		this.state.currentTab = page;
 		const highlight = this.dom.querySelector('.tab-highlight') as HTMLElement;
 		highlight.style.transform = `translateX(${index * 5}rem)`;
 		//TODO style -> css로 넣어야됩니다.
