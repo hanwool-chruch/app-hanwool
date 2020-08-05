@@ -1,5 +1,6 @@
 import { AbstractContent } from '../abstract-content';
 import { History } from '@shared/dto/history-dto';
+import PieChart, { ChartItem } from './pie-chart';
 
 export default class CategoryView extends AbstractContent {
 	dom: HTMLElement;
@@ -12,50 +13,56 @@ export default class CategoryView extends AbstractContent {
 
 	init() {
 		this.dom.classList.add('category-stat-view');
-		this.dom.innerHTML = `
-            category
-		`;
-		this.listener();
+		this.dom.innerHTML = ``;
 	}
 
-	// add event listeners
-	private listener() {}
-
-	private render() {}
+	private render(histories: History[]) {
+		this.dom.appendChild(new PieChart(formatChartItem(histories)).getDom());
+	}
 
 	/**
 	 *
 	 * @param histories {History[]} - should have at leat one item to render calendar
 	 */
 	load(histories: History[]): void {
-		this.render();
+		this.render(histories);
 	}
 }
 
-// function createCalendarItem(date: Date, gray: boolean) {
-// 	let className = '';
-// 	if (gray) className = 'gray';
-// 	else if (isToday(date)) className = 'today';
-// 	else if (isSunday(date)) className = 'red';
-// 	return `<div id="${createIdOfDay(date)}" class="cal-item ${className}">
-// 		<div class="cal-date-div">
-// 		${date.getDate()}
-// 		</div>
-// 	</div>`;
-// }
+function formatChartItem(histories: History[]): ChartItem[] {
+	//TODO refactor
+	const sumByCat = histories.reduce((acc, h) => {
+		if (h.price > 0) return acc;
+		if (!acc[h.category]) acc[h.category] = 0;
+		acc[h.category] -= h.price;
+		return acc;
+	}, {});
 
-// function groupByDate(histories: History[]): DailyListType[] {
-// 	return histories.reduce((acc: DailyListType[], curHistory: History) => {
-// 		// 그 날이 없으면 그 날 새로 만들기
-// 		if (acc.length === 0 || acc[0].day !== curHistory.historyDate.getDate()) {
-// 			acc.push({
-// 				day: curHistory.historyDate.getDate(),
-// 				dailyHistory: [curHistory],
-// 			});
-// 			// 있는 날에 추가
-// 		} else {
-// 			acc[0].dailyHistory.push(curHistory);
-// 		}
-// 		return acc;
-// 	}, []);
-// }
+	const priceCategory = Object.keys(sumByCat)
+		.reduce((acc: any, k) => {
+			return [...acc, [sumByCat[k], k]];
+		}, [])
+		.sort() as [number, string][];
+
+	const topFive = priceCategory.slice(0, 5);
+	const topFiveCat = topFive.map(([_, name]) => name);
+	const restPrice = priceCategory.reduce((acc, [price, name]) => {
+		if (topFiveCat.includes(name)) return acc;
+		else return acc + price;
+	}, 0);
+
+	const result = [
+		...topFive.map(([price, name]) => {
+			return { name, weight: price, color: '#' + getRandomColor() };
+		}),
+	];
+	if (restPrice !== 0) {
+		result.push({ name: '나머지', weight: restPrice, color: '#' + getRandomColor() });
+	}
+	console.log(getRandomColor());
+	return result;
+}
+
+function getRandomColor() {
+	return Math.floor(Math.random() * 16777215).toString(16);
+}
