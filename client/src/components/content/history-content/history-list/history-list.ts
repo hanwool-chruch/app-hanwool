@@ -104,7 +104,7 @@ function createTodayHeader(date: Date, sum: { earned?: number; spent?: number })
 	const header = document.createElement('div');
 	header.classList.add('history-today-header');
 	header.innerHTML = `
-	<div class="hheader-date">${date.getMonth()} 월 ${date.getDate()} 일</div>
+	<div class="hheader-date">${date.getMonth() + 1} 월 ${date.getDate()} 일</div>
 	<div class="hheader-day">${days[date.getDate()]}</div>
 	${
 		typeof sum.earned === 'number'
