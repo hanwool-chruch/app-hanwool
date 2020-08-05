@@ -102,27 +102,6 @@ class Router extends Observable {
 				this.notify({ key: 'loadView', data: { viewName: data.viewName } });
 			},
 		});
-
-		ActionManager.subscribe({
-			key: ADD_HISTORY_ACTION,
-			observer: (data) => {
-				this.notify({ key: ADD_HISTORY_ACTION, data: data });
-			},
-		});
-
-		ActionManager.subscribe({
-			key: EDIT_HISTORY_ACTION,
-			observer: (data) => {
-				this.notify({ key: 'editHistory', data: data });
-			},
-		});
-
-		ActionManager.subscribe({
-			key: REMOVE_HISTORY_ACTION,
-			observer: (data: { history_id: number; historyDate: string }) => {
-				this.notify({ key: 'removeHistory', data: data });
-			},
-		});
 	}
 
 	public updateCurrentUrl() {

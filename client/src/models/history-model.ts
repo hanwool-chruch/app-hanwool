@@ -1,20 +1,16 @@
-import { Observable, AddHistoryData } from '../utils/action-manager';
+import actionManager, {
+	Observable,
+	AddHistoryData,
+	EditHistoryData,
+	ADD_HISTORY_ACTION,
+	EDIT_HISTORY_ACTION,
+	REMOVE_HISTORY_ACTION,
+} from '../utils/action-manager';
 import { History, AddHistoryDto } from '@shared/dto/history-dto';
 import { load } from '../api/apiMocks';
 import { insertAt } from '../utils/insert-item-at';
 import { YearAndMonth } from '../router';
 import Router from '../router';
-
-interface EditHistoryType {
-	history_id: number;
-	user_id: number;
-	service_id: number;
-	historyDate: string;
-	category: number;
-	payment: number;
-	price: number;
-	content: string;
-}
 
 const apiMock = (data: any) =>
 	new Promise((resolve) => resolve({ ...data, id: ~~(Math.random() * 1000) }));
@@ -47,23 +43,23 @@ class HistoryModel extends Observable {
 			},
 		});
 
-		Router.subscribe({
-			key: 'addHistory',
+		actionManager.subscribe({
+			key: ADD_HISTORY_ACTION,
 			observer: (data) => {
 				this.add(data);
 			},
 		});
 
-		Router.subscribe({
-			key: 'editHistory',
+		actionManager.subscribe({
+			key: EDIT_HISTORY_ACTION,
 			observer: (data) => {
 				this.edit(data);
 			},
 		});
 
-		Router.subscribe({
-			key: 'removeHistory',
-			observer: (data: { history_id: number; historyDate: string }) => {
+		actionManager.subscribe({
+			key: REMOVE_HISTORY_ACTION,
+			observer: (data) => {
 				this.remove(data);
 			},
 		});
@@ -123,7 +119,7 @@ class HistoryModel extends Observable {
 		}
 	}
 
-	async edit(h: EditHistoryType): Promise<void> {
+	async edit(h: EditHistoryData): Promise<void> {
 		try {
 			const response: History = (await apiMock(h)) as any;
 
