@@ -57,7 +57,6 @@ export default class MainPanel extends Component {
 		HistoryManager.subscribe({
 			key: 'sendToViews',
 			observer: (data) => {
-				console.info('sendToViews');
 				this.contents.forEach((content) => content.load(data));
 			},
 		});
