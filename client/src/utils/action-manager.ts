@@ -1,5 +1,15 @@
 type Subscriber<T> = (data: T) => void;
 
+type NotifyType = {
+	key: string;
+	data: any;
+};
+
+type SubscriberType = {
+	key: string;
+	observer: Subscriber<any>;
+};
+
 class ActionManager {
 	private observers: Map<String, Array<Subscriber<any>>>;
 
@@ -7,14 +17,14 @@ class ActionManager {
 		this.observers = new Map();
 	}
 
-	subscribe(key: string, observer: Subscriber<any>) {
+	subscribe({ key, observer }: SubscriberType) {
 		if (!this.observers.has(key)) {
 			this.observers.set(key, new Array<Subscriber<any>>());
 		}
 		this.observers.get(key)!.push(observer);
 	}
 
-	notify(key: string, data: any) {
+	notify({ key, data }: NotifyType) {
 		if (this.observers.has(key)) {
 			this.observers.get(key)!.forEach((subscriber) => subscriber(data));
 		} else {

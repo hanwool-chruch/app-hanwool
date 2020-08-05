@@ -26,8 +26,11 @@ export default class MonthSelector extends Component {
 	}
 
 	private initEventManager() {
-		ActionManager.subscribe('popstate', (data: popstateType) => {
-			this.setYearAndMonth({ year: data.year, month: data.month });
+		ActionManager.subscribe({
+			key: 'popstate',
+			observer: (data: popstateType) => {
+				this.setYearAndMonth({ year: data.year, month: data.month });
+			},
 		});
 	}
 
@@ -43,7 +46,7 @@ export default class MonthSelector extends Component {
 				this.state.month = 12;
 			}
 			monthArea.innerHTML = `${this.state.year}년 ${this.state.month} 월`;
-			ActionManager.notify('changeDate', this.state);
+			ActionManager.notify({ key: 'changeDate', data: this.state });
 		});
 
 		nextBtn.addEventListener('click', () => {
@@ -53,7 +56,7 @@ export default class MonthSelector extends Component {
 				this.state.month = 1;
 			}
 			monthArea.innerHTML = `${this.state.year}년 ${this.state.month} 월`;
-			ActionManager.notify('changeDate', this.state);
+			ActionManager.notify({ key: 'changeDate', data: this.state });
 		});
 	}
 

@@ -40,7 +40,7 @@ class App {
 			const month = parseInt(yearAndMonth[1]);
 			const viewName = routeArr[2];
 			const popData: popstateType = { serviceId, year, month, viewName };
-			ActionManager.notify('popstate', popData);
+			ActionManager.notify({ key: 'popstate', data: popData });
 		});
 	}
 }

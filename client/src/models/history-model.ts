@@ -36,25 +36,37 @@ class HistoryModel extends Observable {
 	}
 
 	private initEventManager() {
-		Router.subscribe('loadHistory', (data) => {
-			if (this.year === data.year && this.month === data.month) {
-				console.info('already load year and month', `${data.year}-${data.month}`);
-				return;
-			}
-			this.setYearAndMonth({ year: data.year, month: data.month });
-			this.load();
+		Router.subscribe({
+			key: 'loadHistory',
+			observer: (data) => {
+				if (this.year === data.year && this.month === data.month) {
+					console.info('already load year and month', `${data.year}-${data.month}`);
+					return;
+				}
+				this.setYearAndMonth({ year: data.year, month: data.month });
+				this.load();
+			},
 		});
 
-		Router.subscribe('addHistory', (data: HistoryDataType) => {
-			this.add(data);
+		Router.subscribe({
+			key: 'addHistory',
+			observer: (data: HistoryDataType) => {
+				this.add(data);
+			},
 		});
 
-		Router.subscribe('editHistory', (data: EditHistoryType) => {
-			this.edit(data);
+		Router.subscribe({
+			key: 'editHistory',
+			observer: (data: EditHistoryType) => {
+				this.edit(data);
+			},
 		});
 
-		Router.subscribe('removeHistory', (data: { history_id: number; historyDate: string }) => {
-			this.remove(data);
+		Router.subscribe({
+			key: 'removeHistory',
+			observer: (data: { history_id: number; historyDate: string }) => {
+				this.remove(data);
+			},
 		});
 	}
 
@@ -68,7 +80,7 @@ class HistoryModel extends Observable {
 			const data = await load(this.serviceId);
 			const key = `${this.year}-${this.month}`;
 			this.data.set(key, data);
-			this.notify('sendToViews', data);
+			this.notify({ key: 'sendToViews', data: data });
 		} catch (err) {
 			throw new Error(`load data error`);
 		}
@@ -86,7 +98,7 @@ class HistoryModel extends Observable {
 			}
 			const newData = insertHistory(data, response);
 			this.data.set(key, newData);
-			this.notify('sendToViews', newData);
+			this.notify({ key: 'sendToViews', data: newData });
 		} catch (err) {
 			throw new Error(`add data error`);
 		}
@@ -106,7 +118,7 @@ class HistoryModel extends Observable {
 
 			const newData = data.filter((history) => history.id !== h.history_id);
 			this.data.set(key, newData);
-			this.notify('sendToViews', newData);
+			this.notify({ key: 'sendToViews', data: newData });
 		} catch (err) {
 			throw new Error(`remove data error`);
 		}
@@ -127,7 +139,7 @@ class HistoryModel extends Observable {
 			let newData = data.filter((history) => history.id !== h.history_id);
 			newData = insertHistory(newData, response);
 			this.data.set(key, newData);
-			this.notify('sendToViews', newData);
+			this.notify({ key: 'sendToViews', data: newData });
 		} catch (err) {
 			throw new Error(`edit data error`);
 		}

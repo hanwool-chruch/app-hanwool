@@ -34,7 +34,7 @@ class Router extends Observable {
 	public init() {
 		const routeArr = location.pathname.replace(this.root, '').split('/');
 		if (routeArr.length !== 3) {
-			this.notify('loadView', { viewName: 'not-found' });
+			this.notify({ key: 'loadView', data: { viewName: 'not-found' } });
 			return;
 		}
 
@@ -46,58 +46,76 @@ class Router extends Observable {
 
 		this.setYearAndMonth(year, month);
 		this.setViewName(viewName);
-		this.notify('loadHistory', { serviceId, year, month });
-		this.notify('loadView', { viewName });
+		this.notify({ key: 'loadHistory', data: { serviceId, year, month } });
+		this.notify({ key: 'loadView', data: { viewName } });
 
 		this.updateCurrentUrl();
 	}
 
 	private initEventManager() {
-		ActionManager.subscribe('changeDate', (data: MonthSelectorState) => {
-			if (this.current.yearAndMonth === `${data.year}-${data.month}`) {
-				console.info('already load year and month', this.current.yearAndMonth);
-				return;
-			}
-			this.setYearAndMonth(data.year, data.month);
-			this.updateCurrentUrl();
-			this.notify('loadHistory', { ...data, serviceId: this.current.serviceId });
+		ActionManager.subscribe({
+			key: 'changeDate',
+			observer: (data: MonthSelectorState) => {
+				if (this.current.yearAndMonth === `${data.year}-${data.month}`) {
+					console.info('already load year and month', this.current.yearAndMonth);
+					return;
+				}
+				this.setYearAndMonth(data.year, data.month);
+				this.updateCurrentUrl();
+				this.notify({ key: 'loadHistory', data: { ...data, serviceId: this.current.serviceId } });
+			},
 		});
 
-		ActionManager.subscribe('changeTab', (data) => {
-			if (this.current.viewName === data.viewName) {
-				console.info('already load view', this.current.viewName);
-				return;
-			}
-			this.setViewName(data.viewName);
-			this.updateCurrentUrl();
-			this.notify('loadView', { viewName: data.viewName });
+		ActionManager.subscribe({
+			key: 'changeTab',
+			observer: (data) => {
+				if (this.current.viewName === data.viewName) {
+					console.info('already load view', this.current.viewName);
+					return;
+				}
+				this.setViewName(data.viewName);
+				this.updateCurrentUrl();
+				this.notify({ key: 'loadView', data: { viewName: data.viewName } });
+			},
 		});
 
-		ActionManager.subscribe('popstate', (data: popstateType) => {
-			this.setYearAndMonth(data.year, data.month);
-			this.setViewName(data.viewName);
-			this.notify('loadHistory', {
-				serviceId: this.current.serviceId,
-				year: data.year,
-				month: data.month,
-			});
-			this.notify('loadView', { viewName: data.viewName });
+		ActionManager.subscribe({
+			key: 'popstate',
+			observer: (data: popstateType) => {
+				this.setYearAndMonth(data.year, data.month);
+				this.setViewName(data.viewName);
+				this.notify({
+					key: 'loadHistory',
+					data: {
+						serviceId: this.current.serviceId,
+						year: data.year,
+						month: data.month,
+					},
+				});
+				this.notify({ key: 'loadView', data: { viewName: data.viewName } });
+			},
 		});
 
-		ActionManager.subscribe('addHistory', (data: HistoryDataType) => {
-			this.notify('addHistory', data);
+		ActionManager.subscribe({
+			key: 'addHistory',
+			observer: (data: HistoryDataType) => {
+				this.notify({ key: 'addHistory', data: data });
+			},
 		});
 
-		ActionManager.subscribe('editHistory', (data: HistoryDataType) => {
-			this.notify('editHistory', data);
+		ActionManager.subscribe({
+			key: 'editHistory',
+			observer: (data: HistoryDataType) => {
+				this.notify({ key: 'editHistory', data: data });
+			},
 		});
 
-		ActionManager.subscribe(
-			'removeHistory',
-			(data: { history_id: number; historyDate: string }) => {
-				this.notify('removeHistory', data);
-			}
-		);
+		ActionManager.subscribe({
+			key: 'removeHistory',
+			observer: (data: { history_id: number; historyDate: string }) => {
+				this.notify({ key: 'removeHistory', data: data });
+			},
+		});
 	}
 
 	public updateCurrentUrl() {

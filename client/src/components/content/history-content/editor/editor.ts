@@ -189,7 +189,7 @@ class Editor extends Component {
 			content: inputContent.value,
 		};
 
-		ActionManager.notify('addHistory', data);
+		ActionManager.notify({ key: 'addHistory', data: data });
 		this.reload();
 	}
 }
