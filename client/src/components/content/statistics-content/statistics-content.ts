@@ -17,7 +17,7 @@ export default class StatisticsContent extends AbstractContent {
 	}
 
 	init() {
-		this.dom.classList.add('calendar-content');
+		this.dom.classList.add('statistics-content');
 		this.dom.innerHTML = `
 		<div id="stat-view-select">
       		<label><input type="radio" name="stat-view" value="category" checked>카테고리별 지출</label>

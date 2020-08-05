@@ -7,10 +7,28 @@ $earned-color: #29b6ae;
 	flex-wrap: nowrap;
 	align-items: center;
 
+	#stat-view {
+		width: 80%;
+	}
 	.earned {
 		color: $earned-color;
 	}
 	.spent {
 		color: $spent-color;
+	}
+	.category-list-chart-item {
+		display: grid;
+		grid-template-columns: 100px 80px 1fr 100px;
+
+		border-top: 1px solid white;
+		padding: 1rem 0;
+		height: 5rem;
+
+		div {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 1.5rem;
+		}
 	}
 }
