@@ -69,3 +69,12 @@ input:focus {
 	flex-wrap: nowrap;
 	align-items: center;
 }
+
+.flex {
+	display: flex;
+}
+
+.flex-spacebetween {
+	display: flex;
+	justify-content: space-between;
+}

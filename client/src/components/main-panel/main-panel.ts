@@ -7,6 +7,7 @@ import HistoryContent from '../content/history-content';
 import CalendarContent from '../content/calendar-content';
 import Router from '../../router';
 import HistoryModel from '../../models/history-model';
+import StatisticsContent from '../content/statistics-content';
 
 export default class MainPanel extends Component {
 	protected dom: HTMLElement;
@@ -57,7 +58,7 @@ export default class MainPanel extends Component {
 	initViews() {
 		const historyContent = new HistoryContent();
 		const calendarContent = new CalendarContent();
-		const statisticsContent = new HistoryContent();
+		const statisticsContent = new StatisticsContent();
 		this.contents.set('history', historyContent);
 		this.contents.set('calendar', calendarContent);
 		this.contents.set('statistics', statisticsContent);

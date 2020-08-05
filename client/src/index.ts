@@ -2,12 +2,12 @@ import './styles/global.scss';
 
 import HistoryModel from './models/history-model';
 import Router from './router';
-import ActionManager from './utils/action-manager';
 import Component from './components/component';
 import ServicePage from './pages/service-page';
 import LoginPage from './pages/login-page';
 import SignupPage from './pages/signup-page';
 import NotFoundPage from './pages/not-found-page';
+import ActionManager, { POP_STATE_ACTION } from './utils/action-manager';
 
 export interface popstateType {
 	serviceId: number;
@@ -71,7 +71,7 @@ class App {
 				const month = parseInt(yearAndMonth[1]);
 				const viewName = routeArr[2];
 				const popData: popstateType = { serviceId, year, month, viewName };
-				ActionManager.notify({ key: 'popstate', data: popData });
+				ActionManager.notify({ key: POP_STATE_ACTION, data: popData });
 			} catch (err) {
 				this.changePage(route);
 			}
