@@ -22,13 +22,16 @@ export default class MainPanel extends Component {
 	init() {
 		this.dom.classList.add('main-panel');
 
-		const locationDate = location.pathname.replace('/', '').split('/')[1].split('-');
+		const routeArr = location.pathname.replace('/', '').split('/');
+		const locationDate = routeArr[1].split('-');
 		const monthState = { year: parseInt(locationDate[0]), month: parseInt(locationDate[1]) };
 		const monthSelector = new MonthSelector(monthState);
 
 		const tabs = ['내역', '달력', '통계'];
+		const currentTab = TabName[routeArr[2]];
 		const tabState = {
 			tabs: tabs,
+			currentTab: currentTab,
 		};
 		const tabSelector = new TabSelector(tabState);
 
@@ -36,7 +39,6 @@ export default class MainPanel extends Component {
 		this.dom.appendChild(tabSelector.getDom());
 
 		this.initViews();
-		this.changeView('history');
 	}
 
 	initViews() {
