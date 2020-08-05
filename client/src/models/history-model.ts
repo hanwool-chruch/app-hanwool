@@ -39,10 +39,18 @@ class HistoryModel extends Observable {
 		Router.subscribe({
 			key: 'loadHistory',
 			observer: (data) => {
-				if (this.year === data.year && this.month === data.month) {
-					console.info('already load year and month', `${data.year}-${data.month}`);
+				if (
+					this.year === data.year &&
+					this.month === data.month &&
+					this.serviceId === data.serviceId
+				) {
+					console.info(
+						'already load year and month',
+						`${data.serviceId}/${data.year}-${data.month}`
+					);
 					return;
 				}
+				this.setServiceId(data.serviceId);
 				this.setYearAndMonth({ year: data.year, month: data.month });
 				this.load();
 			},
@@ -78,7 +86,7 @@ class HistoryModel extends Observable {
 		// TODO: api call
 		try {
 			const data = await load(this.serviceId);
-			const key = `${this.year}-${this.month}`;
+			const key = `${this.serviceId}/${this.year}-${this.month}`;
 			this.data.set(key, data);
 			this.notify({ key: 'sendToViews', data: data });
 		} catch (err) {
@@ -148,6 +156,10 @@ class HistoryModel extends Observable {
 	setYearAndMonth(yearAndMonth: YearAndMonth) {
 		this.year = yearAndMonth.year;
 		this.month = yearAndMonth.month;
+	}
+
+	setServiceId(serviceId: number) {
+		this.serviceId = serviceId;
 	}
 }
 

@@ -6,7 +6,7 @@ import TabName from '../../utils/tab-name';
 import HistoryContent from '../content/history-content';
 import CalendarContent from '../content/calendar-content';
 import Router from '../../router';
-import HistoryManager from '../../models/history-model';
+import HistoryModel from '../../models/history-model';
 
 export default class MainPanel extends Component {
 	protected dom: HTMLElement;
@@ -17,29 +17,41 @@ export default class MainPanel extends Component {
 		this.dom = document.createElement('main');
 		this.contents = new Map<string, AbstractContent>();
 		this.init();
-		this.initEventManager();
 	}
 
 	init() {
 		this.dom.classList.add('main-panel');
 
-		const routeArr = location.pathname.replace('/', '').split('/');
-		const locationDate = routeArr[1].split('-');
-		const monthState = { year: parseInt(locationDate[0]), month: parseInt(locationDate[1]) };
-		const monthSelector = new MonthSelector(monthState);
+		try {
+			const route = location.pathname.replace('/', '');
+			const routeArr = route.split('/');
+			const locationDate = routeArr[1].split('-');
+			const monthState = { year: parseInt(locationDate[0]), month: parseInt(locationDate[1]) };
+			const monthSelector = new MonthSelector(monthState);
 
-		const tabs = ['내역', '달력', '통계'];
-		const currentTab = TabName[routeArr[2]];
-		const tabState = {
-			tabs: tabs,
-			currentTab: currentTab,
-		};
-		const tabSelector = new TabSelector(tabState);
+			const tabs = ['내역', '달력', '통계'];
+			const currentTab = TabName[routeArr[2]];
+			const tabState = { tabs, currentTab };
+			const tabSelector = new TabSelector(tabState);
 
-		this.dom.appendChild(monthSelector.getDom());
-		this.dom.appendChild(tabSelector.getDom());
-
-		this.initViews();
+			this.dom.appendChild(monthSelector.getDom());
+			this.dom.appendChild(tabSelector.getDom());
+		} catch (err) {
+			const now = new Date();
+			const monthSelector = new MonthSelector({
+				year: now.getFullYear(),
+				month: now.getMonth() + 1,
+			});
+			const tabs = ['내역', '달력', '통계'];
+			const currentTab = TabName['history'];
+			const tabState = { tabs, currentTab };
+			const tabSelector = new TabSelector(tabState);
+			this.dom.appendChild(monthSelector.getDom());
+			this.dom.appendChild(tabSelector.getDom());
+		} finally {
+			this.initViews();
+			this.initEventManager();
+		}
 	}
 
 	initViews() {
@@ -53,7 +65,7 @@ export default class MainPanel extends Component {
 
 	private initEventManager() {
 		Router.subscribe({ key: 'loadView', observer: (data) => this.changeView(data.viewName) });
-		HistoryManager.subscribe({
+		HistoryModel.subscribe({
 			key: 'sendToViews',
 			observer: (data) => {
 				console.info('sendToViews');
