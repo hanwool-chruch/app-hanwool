@@ -9,7 +9,6 @@ import ActionManager, {
 } from './utils/action-manager';
 import { MonthSelectorState } from './components/month-selector';
 import { popstateType } from './index';
-import { HistoryDataType } from './components/content/history-content/editor';
 
 interface CurrentData {
 	serviceId: number;
@@ -106,14 +105,14 @@ class Router extends Observable {
 
 		ActionManager.subscribe({
 			key: ADD_HISTORY_ACTION,
-			observer: (data: HistoryDataType) => {
-				this.notify({ key: 'addHistory', data: data });
+			observer: (data) => {
+				this.notify({ key: ADD_HISTORY_ACTION, data: data });
 			},
 		});
 
 		ActionManager.subscribe({
 			key: EDIT_HISTORY_ACTION,
-			observer: (data: HistoryDataType) => {
+			observer: (data) => {
 				this.notify({ key: 'editHistory', data: data });
 			},
 		});

@@ -36,9 +36,7 @@ type PopStateSubscriber = {
 };
 
 // AddHistory
-type AddHistoryData = {
-	user_id: number;
-	service_id: number;
+export type AddHistoryData = {
 	historyDate: string;
 	category: number;
 	payment: number;

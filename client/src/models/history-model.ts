@@ -1,10 +1,9 @@
-import { Observable } from '../utils/action-manager';
+import { Observable, AddHistoryData } from '../utils/action-manager';
 import { History, AddHistoryDto } from '@shared/dto/history-dto';
 import { load } from '../api/apiMocks';
 import { insertAt } from '../utils/insert-item-at';
 import { YearAndMonth } from '../router';
 import Router from '../router';
-import { HistoryDataType } from '../components/content/history-content/editor';
 
 interface EditHistoryType {
 	history_id: number;
@@ -50,14 +49,14 @@ class HistoryModel extends Observable {
 
 		Router.subscribe({
 			key: 'addHistory',
-			observer: (data: HistoryDataType) => {
+			observer: (data) => {
 				this.add(data);
 			},
 		});
 
 		Router.subscribe({
 			key: 'editHistory',
-			observer: (data: EditHistoryType) => {
+			observer: (data) => {
 				this.edit(data);
 			},
 		});
@@ -86,7 +85,7 @@ class HistoryModel extends Observable {
 		}
 	}
 
-	async add(h: HistoryDataType): Promise<void> {
+	async add(h: AddHistoryData): Promise<void> {
 		try {
 			const response: History = (await apiMock(h)) as any;
 			const dateArr = h.historyDate.split('. ');
