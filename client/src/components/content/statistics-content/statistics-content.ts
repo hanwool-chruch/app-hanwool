@@ -19,9 +19,13 @@ export default class StatisticsContent extends AbstractContent {
 	init() {
 		this.dom.classList.add('statistics-content');
 		this.dom.innerHTML = `
-		<div id="stat-view-select">
-      		<label><input type="radio" name="stat-view" value="category" checked>카테고리별 지출</label>
-			<label><input type="radio" name="stat-view" value="daily">일별 지출</label>
+		<div class="flex-spacebetween">
+			<div id="stat-view-select">
+				<label><input type="radio" name="stat-view" value="category" checked>카테고리별 지출</label>
+				<label><input type="radio" name="stat-view" value="daily">일별 지출</label>
+			</div>
+			<div id="statistics-content-monthly-spent">
+			</div>
 		</div>
 		<div id="stat-view">
 		</div>
@@ -68,5 +72,12 @@ export default class StatisticsContent extends AbstractContent {
 	 */
 	load(histories: History[]): void {
 		this.views.forEach((view) => view.load(histories));
+		const spentOfTheMonth = histories
+			.filter((h) => h.price < 0)
+			.reduce((acc: number, p) => acc - p.price, 0);
+
+		this.dom.querySelector(
+			'#statistics-content-monthly-spent'
+		)!.innerHTML = `이번달에 쓴 돈: ${spentOfTheMonth.toLocaleString()} 원`;
 	}
 }
