@@ -17,7 +17,6 @@ export default class TabSelector extends Component {
 		this.dom = document.createElement('div');
 		this.state = state;
 		this.init();
-		this.initEventManager();
 	}
 
 	init(): void {
@@ -25,6 +24,7 @@ export default class TabSelector extends Component {
 		this.render();
 		this.listener();
 		this.setHighlight(this.state.currentTab);
+		this.initEventManager();
 	}
 
 	private initEventManager() {
