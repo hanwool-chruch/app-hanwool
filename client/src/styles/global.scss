@@ -60,3 +60,12 @@ input::placeholder {
 input:focus {
 	outline: 0;
 }
+
+.flex {
+	display: flex;
+}
+
+.flex-spacebetween {
+	display: flex;
+	justify-content: space-between;
+}
