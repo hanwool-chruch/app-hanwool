@@ -41,7 +41,8 @@ table {
 }
 
 input,
-select {
+select,
+button {
 	min-height: 35px;
 	font-family: inherit;
 	font-size: 100%;
@@ -54,9 +55,17 @@ select {
 }
 
 input::placeholder {
-	color: rgba(255, 255, 255, 0.8);
+	color: rgba(149, 149, 149, 0.5);
 }
 
 input:focus {
 	outline: 0;
+}
+
+#app {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	flex-wrap: nowrap;
+	align-items: center;
 }
