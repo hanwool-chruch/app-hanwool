@@ -1,0 +1,16 @@
+$spent-color: #3979ff;
+$earned-color: #29b6ae;
+.statistics-content {
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	flex-wrap: nowrap;
+	align-items: center;
+
+	.earned {
+		color: $earned-color;
+	}
+	.spent {
+		color: $spent-color;
+	}
+}
