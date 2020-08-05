@@ -1,10 +1,16 @@
-const defaultOptions = (method: string) => {
-	return {
+const defaultOptions = (method: string, token?: string) => {
+	const options = {
 		method: method,
-		header: {
+		headers: {
 			'Content-Type': 'application/json',
 		},
 	};
+
+	if (token) {
+		options.headers['Authorization'] = token;
+	}
+
+	return options;
 };
 
 const createParams = (data: Object) => {
@@ -16,25 +22,34 @@ const createParams = (data: Object) => {
 		: '';
 };
 
-const GET = (uri: string, data: Object): any =>
-	fetch(`${uri}${createParams(data)}`, defaultOptions('GET'));
+const GET = (uri: string, data: Object, token?: string): any =>
+	fetch(`${uri}${createParams(data)}`, defaultOptions('GET', token));
 
-const POST = (uri: string, data: Object): any =>
+const HEAD = (uri: string, data: Object, token?: string): any =>
+	fetch(`${uri}${createParams(data)}`, defaultOptions('HEAD', token));
+
+const POST = (uri: string, data: Object, token?: string): any =>
 	fetch(`${uri}`, {
-		...defaultOptions('POST'),
+		body: JSON.stringify(data),
+		...defaultOptions('POST', token),
+	});
+
+const PUT = (uri: string, data: Object, token?: string): any =>
+	fetch(`${uri}`, {
+		...defaultOptions('PUT', token),
 		body: JSON.stringify(data),
 	});
 
-const PUT = (uri: string, data: Object): any =>
+const PATCH = (uri: string, data: Object, token?: string): any =>
 	fetch(`${uri}`, {
-		...defaultOptions('PUT'),
+		...defaultOptions('PATCH', token),
 		body: JSON.stringify(data),
 	});
 
-const PATCH = (uri: string, data: Object): any =>
+const DELETE = (uri: string, data: Object, token?: string): any =>
 	fetch(`${uri}`, {
-		...defaultOptions('PATCH'),
+		...defaultOptions('DELETE', token),
 		body: JSON.stringify(data),
 	});
 
-export { GET, POST, PUT, PATCH };
+export { GET, POST, PUT, PATCH, HEAD, DELETE };
