@@ -19,6 +19,7 @@ export default class CategoryView extends AbstractContent {
 	}
 
 	private render(histories: History[]) {
+		this.dom.innerHTML = '';
 		this.dom.appendChild(new PieChart(formatChartItem(histories)).getDom());
 		const list = new CategoryList();
 		list.load(histories);
