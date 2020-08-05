@@ -1,9 +1,11 @@
-import { AbstractContent } from '../abstract-content';
+import { AbstractContent } from '../../abstract-content';
 import { History } from '@shared/dto/history-dto';
 import PieChart, { ChartItem } from './pie-chart';
+import CategoryList from './category-list';
 
 export default class CategoryView extends AbstractContent {
 	dom: HTMLElement;
+	list: AbstractContent | null = null;
 
 	constructor() {
 		super();
@@ -18,6 +20,9 @@ export default class CategoryView extends AbstractContent {
 
 	private render(histories: History[]) {
 		this.dom.appendChild(new PieChart(formatChartItem(histories)).getDom());
+		const list = new CategoryList();
+		list.load(histories);
+		this.dom.appendChild(list.getDom());
 	}
 
 	/**
@@ -59,7 +64,6 @@ function formatChartItem(histories: History[]): ChartItem[] {
 	if (restPrice !== 0) {
 		result.push({ name: '나머지', weight: restPrice, color: '#' + getRandomColor() });
 	}
-	console.log(getRandomColor());
 	return result;
 }
 

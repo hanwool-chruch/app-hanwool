@@ -1,7 +1,7 @@
 import { AbstractContent } from '../abstract-content';
 import { History } from '@shared/dto/history-dto';
-import CategoryView from './category-view';
 import DailyView from './daily-view';
+import CategoryView from './category-view';
 
 export default class StatisticsContent extends AbstractContent {
 	data: History[] = [];
