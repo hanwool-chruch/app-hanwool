@@ -1,5 +1,5 @@
 import Component from '../component';
-import ActionManager from '../../utils/action-manager';
+import ActionManager, { CHANGE_TAB_ACTION } from '../../utils/action-manager';
 import { popstateType } from '../../index';
 import TabName from '../../utils/tab-name';
 
@@ -43,7 +43,7 @@ export default class TabSelector extends Component {
 			const tabName = targetDom.dataset.name;
 			if (!tabName) return;
 			const viewName = TabName[tabName];
-			ActionManager.notify({ key: 'changeTab', data: { viewName } });
+			ActionManager.notify({ key: CHANGE_TAB_ACTION, data: { viewName } });
 			this.setHighlight(tabName);
 		});
 	}

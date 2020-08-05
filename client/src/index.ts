@@ -4,7 +4,7 @@ import Header from './components/header';
 import MainPanel from './components/main-panel';
 import HistoryModel from './models/history-model';
 import Router from './router';
-import ActionManager from './utils/action-manager';
+import ActionManager, { POP_STATE_ACTION } from './utils/action-manager';
 
 export interface popstateType {
 	serviceId: number;
@@ -40,7 +40,7 @@ class App {
 			const month = parseInt(yearAndMonth[1]);
 			const viewName = routeArr[2];
 			const popData: popstateType = { serviceId, year, month, viewName };
-			ActionManager.notify({ key: 'popstate', data: popData });
+			ActionManager.notify({ key: POP_STATE_ACTION, data: popData });
 		});
 	}
 }

@@ -1,5 +1,12 @@
 type Subscriber<T> = (data: T) => void;
 
+export const POP_STATE_ACTION = 'popstate' as const;
+export const ADD_HISTORY_ACTION = 'addHistory' as const;
+export const EDIT_HISTORY_ACTION = 'editHistory' as const;
+export const REMOVE_HISTORY_ACTION = 'removeHistory' as const;
+export const CHANGE_DATE_ACTION = 'changeDate' as const;
+export const CHANGE_TAB_ACTION = 'changeTab' as const;
+
 type NotifyType = {
 	key: string;
 	data: any;

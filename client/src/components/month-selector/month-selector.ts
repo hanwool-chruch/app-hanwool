@@ -1,5 +1,5 @@
 import Component from '../component';
-import ActionManager from '../../utils/action-manager';
+import ActionManager, { CHANGE_DATE_ACTION } from '../../utils/action-manager';
 import { popstateType } from '../../index';
 
 export interface MonthSelectorState {
@@ -46,7 +46,7 @@ export default class MonthSelector extends Component {
 				this.state.month = 12;
 			}
 			monthArea.innerHTML = `${this.state.year}년 ${this.state.month} 월`;
-			ActionManager.notify({ key: 'changeDate', data: this.state });
+			ActionManager.notify({ key: CHANGE_DATE_ACTION, data: this.state });
 		});
 
 		nextBtn.addEventListener('click', () => {
@@ -56,7 +56,7 @@ export default class MonthSelector extends Component {
 				this.state.month = 1;
 			}
 			monthArea.innerHTML = `${this.state.year}년 ${this.state.month} 월`;
-			ActionManager.notify({ key: 'changeDate', data: this.state });
+			ActionManager.notify({ key: CHANGE_DATE_ACTION, data: this.state });
 		});
 	}
 
