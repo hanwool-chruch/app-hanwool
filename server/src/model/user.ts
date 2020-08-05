@@ -19,12 +19,12 @@ const findByEmail = async (email: string): Promise<UserDto.RESPONSE[]> => {
 		userData = await Promise.all([
 			mysql.connect((con: any) =>
 				con.query(
-					`SELECT u.user_id, u.name, u.email, u.image, u.create_date, p.provider_name FROM user u INNER JOIN email_user p ON u.user_id = p.user_id where u.email = '${email}'`
+					`SELECT u.user_id, u.name, u.email, u.image, u.create_date, p.provider FROM user u INNER JOIN email_user p ON u.user_id = p.user_id where u.email = '${email}'`
 				)
 			),
 			mysql.connect((con: any) =>
 				con.query(
-					`SELECT u.user_id, u.name, u.email, u.image, u.create_date, p.provider_name FROM user u INNER JOIN social_user p ON u.user_id = p.user_id where u.email = '${email}'`
+					`SELECT u.user_id, u.name, u.email, u.image, u.create_date, p.provider FROM user u INNER JOIN social_user p ON u.user_id = p.user_id where u.email = '${email}'`
 				)
 			),
 		]);
@@ -32,14 +32,16 @@ const findByEmail = async (email: string): Promise<UserDto.RESPONSE[]> => {
 		throw err;
 	}
 
-	return [...userData][0];
+	return [...userData][0][0];
 };
 
 const findEmailUser = async (email: string): Promise<UserDto.EMAIL_RESPONSE | null> => {
 	let userData;
 	try {
 		userData = await mysql.connect((con: any) =>
-			con.query(`SELECT email, password FROM email_user where email = '${email}'`)
+			con.query(
+				`SELECT e.email, e.password, u.user_id, u.service_id FROM email_user e INNER JOIN user u ON e.user_id = u.user_id where e.email = '${email}'`
+			)
 		);
 	} catch (err) {
 		throw err;
