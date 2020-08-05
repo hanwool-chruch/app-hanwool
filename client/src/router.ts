@@ -1,152 +1,189 @@
-import { AbstractContent } from './components/content/abstract-content';
-import NotFoundPage from './pages/not-found';
-import { History } from '@shared/dto/history-dto';
-
-const testHistory: History[] = [
-	{
-		category: '밥',
-		historyDate: new Date('2020-08-01'),
-		content: '순댓국',
-		id: 1,
-		payment: '외상',
-		price: -4000,
-	},
-	{
-		category: '주식',
-		historyDate: new Date('2020-08-01'),
-		content: '상장폐지',
-		id: 2,
-		payment: '주식',
-		price: -5000,
-	},
-	{
-		category: '밥',
-		historyDate: new Date('2020-08-01'),
-		content: '순댓국1',
-		id: 3,
-		payment: '외상',
-		price: -3000,
-	},
-	{
-		category: '일',
-		historyDate: new Date('2020-08-03'),
-		content: '부업',
-		id: 4,
-		payment: '현금',
-		price: 6000,
-	},
-];
-
-interface View {
-	viewName: string;
-	component: AbstractContent;
-}
+import ActionManager, { Observable } from './utils/action-manager';
+import { MonthSelectorState } from './components/month-selector';
+import { popstateType } from './index';
+import { HistoryDataType } from './components/content/history-content/editor';
 
 interface CurrentData {
 	serviceId: number;
 	yearAndMonth: string;
-	page: string;
+	viewName: string;
 }
 
-class Router {
-	private views: Map<String, AbstractContent>;
+export interface YearAndMonth {
+	year: number;
+	month: number;
+}
+
+class Router extends Observable {
 	private root: string;
 	private current: CurrentData;
 
-	constructor(pages: Array<View>) {
-		this.views = new Map<String, AbstractContent>();
+	constructor() {
+		super();
 		this.root = '/';
 		const now = new Date();
 		this.current = {
 			serviceId: 1,
-			yearAndMonth: now.getFullYear() + '-' + now.getMonth() + 1,
-			page: 'history',
+			yearAndMonth: `${now.getFullYear()}-${now.getMonth() + 1}`,
+			viewName: 'history',
 		};
-		this.init(pages);
+
+		this.initEventManager();
 	}
 
-	private async init(pages: Array<View>) {
-		pages.forEach((page) => this.addView(page.viewName, page.component));
-
+	public init() {
 		const routeArr = location.pathname.replace(this.root, '').split('/');
 		if (routeArr.length !== 3) {
-			this.loadView('not-found');
+			this.notify({ key: 'loadView', data: { viewName: 'not-found' } });
 			return;
 		}
 
 		const serviceId = parseInt(routeArr[0], 16) - 3000;
-		const yearAndMonth = routeArr[1];
-		const page = routeArr[2];
+		const yearAndMonth = routeArr[1].split('-');
+		const year = parseInt(yearAndMonth[0]);
+		const month = parseInt(yearAndMonth[1]);
+		const viewName = routeArr[2];
 
-		await this.loadHistoryData(yearAndMonth, serviceId);
-		this.loadView(page);
+		this.setYearAndMonth(year, month);
+		this.setViewName(viewName);
+		this.notify({ key: 'loadHistory', data: { serviceId, year, month } });
+		this.notify({ key: 'loadView', data: { viewName } });
+
 		this.updateCurrentUrl();
 	}
 
-	private addView(viewName: string, component: AbstractContent): void {
-		this.views.set(viewName, component);
-	}
+	private initEventManager() {
+		ActionManager.subscribe({
+			key: 'changeDate',
+			observer: (data: MonthSelectorState) => {
+				if (this.current.yearAndMonth === `${data.year}-${data.month}`) {
+					console.info('already load year and month', this.current.yearAndMonth);
+					return;
+				}
+				this.setYearAndMonth(data.year, data.month);
+				this.updateCurrentUrl();
+				this.notify({ key: 'loadHistory', data: { ...data, serviceId: this.current.serviceId } });
+			},
+		});
 
-	private getView(viewName: string): AbstractContent | null {
-		if (this.views.has(viewName)) {
-			return this.views.get(viewName) as AbstractContent;
-		} else {
-			return null;
-		}
-	}
+		ActionManager.subscribe({
+			key: 'changeTab',
+			observer: (data) => {
+				if (this.current.viewName === data.viewName) {
+					console.info('already load view', this.current.viewName);
+					return;
+				}
+				this.setViewName(data.viewName);
+				this.updateCurrentUrl();
+				this.notify({ key: 'loadView', data: { viewName: data.viewName } });
+			},
+		});
 
-	public loadView(page: string) {
-		const mainPanel = document.querySelector('main') as HTMLElement;
-		const matchedView = this.getView(page);
-		if (matchedView) {
-			while (mainPanel.childElementCount !== 2) {
-				mainPanel.lastElementChild?.remove();
-			}
-			mainPanel.appendChild(matchedView.getDom());
-			this.current.page = page;
-		} else {
-			const app = document.querySelector('#app') as HTMLElement;
-			const url = `${this.root}not-found`;
-			app.innerHTML = NotFoundPage.innerHTML;
-			history.pushState({}, '', url);
-		}
-	}
+		ActionManager.subscribe({
+			key: 'popstate',
+			observer: (data: popstateType) => {
+				this.setYearAndMonth(data.year, data.month);
+				this.setViewName(data.viewName);
+				this.notify({
+					key: 'loadHistory',
+					data: {
+						serviceId: this.current.serviceId,
+						year: data.year,
+						month: data.month,
+					},
+				});
+				this.notify({ key: 'loadView', data: { viewName: data.viewName } });
+			},
+		});
 
-	public async loadHistoryData(
-		yearAndMonth: string = this.current.yearAndMonth,
-		serviceId: number = this.current.serviceId
-	) {
-		//todo 뷰의 데이터 전부 로드
-		this.views.get(this.current.page)!.load(testHistory);
+		ActionManager.subscribe({
+			key: 'addHistory',
+			observer: (data: HistoryDataType) => {
+				this.notify({ key: 'addHistory', data: data });
+			},
+		});
 
-		this.current.serviceId = serviceId;
-		this.current.yearAndMonth = yearAndMonth;
+		ActionManager.subscribe({
+			key: 'editHistory',
+			observer: (data: HistoryDataType) => {
+				this.notify({ key: 'editHistory', data: data });
+			},
+		});
+
+		ActionManager.subscribe({
+			key: 'removeHistory',
+			observer: (data: { history_id: number; historyDate: string }) => {
+				this.notify({ key: 'removeHistory', data: data });
+			},
+		});
 	}
 
 	public updateCurrentUrl() {
-		console.info(
-			'pushstate',
-			`${this.root}${(this.current.serviceId + 3000).toString(16)}/${this.current.yearAndMonth}/${
-				this.current.page
-			}`
-		);
 		history.pushState(
 			null,
 			'',
 			`${this.root}${(this.current.serviceId + 3000).toString(16)}/${this.current.yearAndMonth}/${
-				this.current.page
+				this.current.viewName
 			}`
 		);
 	}
 
-	public setCurrent(current: CurrentData) {
-		this.current = current;
+	private setYearAndMonth(year: number, month: number) {
+		this.current.yearAndMonth = `${year}-${month}`;
 	}
 
-	public getCurrentYearAndMonth() {
-		return this.current.yearAndMonth;
+	private setViewName(viewName: string) {
+		this.current.viewName = viewName;
 	}
 }
 
-export { View };
-export default Router;
+export default new Router();
+
+/**
+ * key : loadHistory
+ * [subscribe]
+ * HistoryModel.load(serviceId, year, month)
+ *
+ * [notify]
+ * Router.ActionManager.subscribe('popstate')
+ * Router.ActionManager.subscribe('changeDate')
+ * Router.init
+ */
+
+/**
+ * key : loadView
+ * [subscribe]
+ * MainPenal.changeView(viewName)
+ *
+ * [notify]
+ * Router.ActionManager.subscribe('popstate')
+ * Router.ActionManager.subscribe('changeTab')
+ * Router.init
+ */
+
+/**
+ * key : addHistory
+ * [subscribe]
+ * HistoryModel.add(data)
+ *
+ * [notify]
+ * Router.ActionManager.subscribe('addHistory')
+ */
+
+/**
+ * key : editHistory
+ * [subscribe]
+ * HistoryModel.edit(data)
+ *
+ * [notify]
+ * Router.ActionManager.subscribe('editHistory')
+ */
+
+/**
+ * key : removeHistory
+ * [subscribe]
+ * HistoryModel.remove(data)
+ *
+ * [notify]
+ * Router.ActionManager.subscribe('removeHistory')
+ */

@@ -1,51 +1,153 @@
-import Observable from './observable';
+import { Observable } from '../utils/action-manager';
 import { History, AddHistoryDto } from '@shared/dto/history-dto';
 import { load } from '../api/apiMocks';
 import { insertAt } from '../utils/insert-item-at';
+import { YearAndMonth } from '../router';
+import Router from '../router';
+import { HistoryDataType } from '../components/content/history-content/editor';
+
+interface EditHistoryType {
+	history_id: number;
+	user_id: number;
+	service_id: number;
+	historyDate: string;
+	category: number;
+	payment: number;
+	price: number;
+	content: string;
+}
 
 const apiMock = (data: any) =>
 	new Promise((resolve) => resolve({ ...data, id: ~~(Math.random() * 1000) }));
 
-export default class HistoryModel extends Observable<History[]> {
-	private data: History[];
+class HistoryModel extends Observable {
+	private data: Map<string, History[]>;
 	private serviceId: number;
+	private year: number;
+	private month: number;
 
-	/**
-	 *
-	 * @param servideId {number} - set service id
-	 */
-	constructor(servideId: number) {
+	constructor() {
 		super();
-		this.data = [];
-		this.serviceId = servideId;
-		this.load();
+		this.data = new Map<string, History[]>();
+		this.serviceId = 0;
+		this.year = 0;
+		this.month = 0;
+		this.initEventManager();
+	}
+
+	private initEventManager() {
+		Router.subscribe({
+			key: 'loadHistory',
+			observer: (data) => {
+				if (this.year === data.year && this.month === data.month) {
+					console.info('already load year and month', `${data.year}-${data.month}`);
+					return;
+				}
+				this.setYearAndMonth({ year: data.year, month: data.month });
+				this.load();
+			},
+		});
+
+		Router.subscribe({
+			key: 'addHistory',
+			observer: (data: HistoryDataType) => {
+				this.add(data);
+			},
+		});
+
+		Router.subscribe({
+			key: 'editHistory',
+			observer: (data: EditHistoryType) => {
+				this.edit(data);
+			},
+		});
+
+		Router.subscribe({
+			key: 'removeHistory',
+			observer: (data: { history_id: number; historyDate: string }) => {
+				this.remove(data);
+			},
+		});
+	}
+
+	public init(serviceId: number) {
+		this.serviceId = serviceId;
 	}
 
 	private async load(): Promise<void> {
 		// TODO: api call
-		const data = await load(this.serviceId);
-		this.data = data;
-		this.notify(this.data);
+		try {
+			const data = await load(this.serviceId);
+			const key = `${this.year}-${this.month}`;
+			this.data.set(key, data);
+			this.notify({ key: 'sendToViews', data: data });
+		} catch (err) {
+			throw new Error(`load data error`);
+		}
 	}
 
-	async add(h: AddHistoryDto): Promise<void> {
-		const response: History = (await apiMock(h)) as any;
-		this.data = insertHistory(this.data, response);
-		this.notify(this.data);
+	async add(h: HistoryDataType): Promise<void> {
+		try {
+			const response: History = (await apiMock(h)) as any;
+			const dateArr = h.historyDate.split('. ');
+			const key = `${dateArr[0]}-${dateArr[1]}`;
+			const data = this.data.get(key);
+			if (!data) {
+				//TODO: Error handling
+				throw new Error(`No data :${h.historyDate}`);
+			}
+			const newData = insertHistory(data, response);
+			this.data.set(key, newData);
+			this.notify({ key: 'sendToViews', data: newData });
+		} catch (err) {
+			throw new Error(`add data error`);
+		}
 	}
 
-	async remove(h: History): Promise<void> {
-		await apiMock(h);
+	async remove(h: { history_id: number; historyDate: string }): Promise<void> {
+		try {
+			await apiMock(h);
 
-		this.data = this.data.filter((history) => history.id !== h.id);
-		this.notify(this.data);
+			const dateArr = h.historyDate.split(' .');
+			const key = `${dateArr[0]}-${dateArr[1]}`;
+			const data = this.data.get(key);
+			if (!data) {
+				//TODO: Error handling
+				throw new Error(`No data :${h.historyDate}`);
+			}
+
+			const newData = data.filter((history) => history.id !== h.history_id);
+			this.data.set(key, newData);
+			this.notify({ key: 'sendToViews', data: newData });
+		} catch (err) {
+			throw new Error(`remove data error`);
+		}
 	}
 
-	async edit(h: History): Promise<void> {
-		await apiMock(h);
-		this.data = this.data.filter((history) => history.id !== h.id);
-		insertHistory(this.data, h);
-		this.notify(this.data);
+	async edit(h: EditHistoryType): Promise<void> {
+		try {
+			const response: History = (await apiMock(h)) as any;
+
+			const dateArr = h.historyDate.split(' .');
+			const key = `${dateArr[0]}-${dateArr[1]}`;
+			const data = this.data.get(key);
+			if (!data) {
+				//TODO: Error handling
+				throw new Error(`No data :${h.historyDate}`);
+			}
+
+			let newData = data.filter((history) => history.id !== h.history_id);
+			newData = insertHistory(newData, response);
+			this.data.set(key, newData);
+			this.notify({ key: 'sendToViews', data: newData });
+		} catch (err) {
+			throw new Error(`edit data error`);
+		}
+	}
+
+	setYearAndMonth(yearAndMonth: YearAndMonth) {
+		this.year = yearAndMonth.year;
+		this.month = yearAndMonth.month;
 	}
 }
 
@@ -57,3 +159,17 @@ function insertHistory(list: History[], item: History) {
 	}
 	return [...list, item];
 }
+
+export default new HistoryModel();
+
+/**
+ * key : sendToViews
+ * [subscribe]
+ * MainPenal.contents.forEach.load(data)
+ *
+ * [notify]
+ * HistoryModel.load
+ * HistoryModel.add
+ * HistoryModel.remove
+ * HistoryModel.edit
+ */

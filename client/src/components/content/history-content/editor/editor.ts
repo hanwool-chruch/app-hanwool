@@ -1,8 +1,19 @@
 import Component from '../../../component';
 import { CategoryApi, PaymentApi } from '../../../../api';
-import { PaymentDto, CategoryDto } from '../../../../../../shared/dto';
+import { PaymentDto, CategoryDto } from '@shared/dto';
+import ActionManager from '../../../../utils/action-manager';
 
-export default class Editor extends Component {
+interface HistoryDataType {
+	user_id: number;
+	service_id: number;
+	historyDate: string;
+	category: number;
+	payment: number;
+	price: number;
+	content: string;
+}
+
+class Editor extends Component {
 	dom: HTMLElement;
 	private paymentSelector: HTMLSelectElement;
 	private incomeCategorySelector: HTMLSelectElement;
@@ -108,7 +119,7 @@ export default class Editor extends Component {
 			for (let i = 0; i < payments.length; i++) {
 				const payment = document.createElement('option');
 				payment.text = payments[i].payment_name;
-				payment.value = payments[i].payment_name;
+				payment.value = payments[i].payment_id;
 				this.paymentSelector.add(payment);
 			}
 
@@ -119,7 +130,7 @@ export default class Editor extends Component {
 			for (let i = 0; i < categories.length; i++) {
 				const category = document.createElement('option');
 				category.text = categories[i].category_name;
-				category.value = categories[i].category_name;
+				category.value = categories[i].category_id;
 				if (categories[i].for_income) {
 					incomeCategories.push(categories[i]);
 					this.incomeCategorySelector.add(category);
@@ -168,25 +179,20 @@ export default class Editor extends Component {
 		const inputPrice = this.dom.querySelector('.input-price') as HTMLInputElement;
 		const inputContent = this.dom.querySelector('.input-content') as HTMLInputElement;
 
-		const data = {
+		const data: HistoryDataType = {
 			user_id: 1,
 			service_id: 1,
 			historyDate: inputDate.value,
-			category: selectCategory.value,
-			payment: selectPayment.value,
-			price: chkClassify.checked ? inputPrice.value : ~inputPrice.value,
+			category: parseInt(selectCategory.value),
+			payment: parseInt(selectPayment.value),
+			price: chkClassify.checked ? parseInt(inputPrice.value) : ~inputPrice.value,
 			content: inputContent.value,
 		};
 
-		this.storeHistory(data);
+		ActionManager.notify({ key: 'addHistory', data: data });
 		this.reload();
 	}
-
-	/**
-	 * TODO
-	 * 아이템 모델에 등록 구현
-	 */
-	private storeHistory(data: any) {
-		alert(JSON.stringify(data));
-	}
 }
+
+export { HistoryDataType };
+export default Editor;

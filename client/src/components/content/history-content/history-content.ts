@@ -4,8 +4,8 @@ import { AbstractContent } from '../abstract-content';
 import { History } from '@shared/dto/history-dto';
 
 export default class HistoryContent extends AbstractContent {
-	data: History[] | null = null;
-	historyList: AbstractContent;
+	historyList: HistoryList;
+	dom: HTMLElement;
 
 	constructor() {
 		super();
@@ -15,15 +15,12 @@ export default class HistoryContent extends AbstractContent {
 	}
 
 	init() {
-		this.dom?.classList.add('history-content');
-		this.dom?.appendChild(new Editor().getDom());
-		this.dom?.appendChild(this.historyList.getDom());
+		this.dom.classList.add('history-content');
+		this.dom.appendChild(new Editor().getDom());
+		this.dom.appendChild(this.historyList.getDom());
 	}
 
 	load(histories: History[]): void {
-		if (this.data === histories) return;
-
-		this.data = histories;
-		this.historyList.load(this.data);
+		this.historyList.load(histories);
 	}
 }

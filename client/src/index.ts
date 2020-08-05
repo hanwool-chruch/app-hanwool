@@ -1,26 +1,48 @@
 import './styles/global.scss';
+
 import Header from './components/header';
 import MainPanel from './components/main-panel';
-import PieChart from './components/content/statistics-content/pie-chart';
+import HistoryModel from './models/history-model';
+import Router from './router';
+import ActionManager from './utils/action-manager';
+
+export interface popstateType {
+	serviceId: number;
+	year: number;
+	month: number;
+	viewName: string;
+}
 class App {
 	private container: HTMLElement;
-	constructor(contianer: HTMLElement) {
-		this.container = contianer;
+
+	constructor() {
+		this.container = document.getElementById('app') as HTMLElement;
 		this.init();
+		this.listener();
 	}
 
 	init() {
-		this.container.appendChild(new Header().getDom());
-		this.container.appendChild(new MainPanel().getDom());
-		this.container.appendChild(
-			new PieChart([
-				{ color: 'yellow', name: '콩밥', weight: 9 },
-				{ color: 'red', name: '설탕', weight: 3 },
-				{ color: 'green', name: 'HTTP', weight: 1 },
-				{ color: 'purple', name: '스케이트', weight: 2 },
-			]).getDom()
-		);
+		const header = new Header();
+		const mainPanel = new MainPanel();
+		HistoryModel.init(1);
+		Router.init();
+
+		this.container.appendChild(header.getDom());
+		this.container.appendChild(mainPanel.getDom());
+	}
+
+	listener() {
+		window.addEventListener('popstate', () => {
+			const routeArr = location.pathname.replace('/', '').split('/');
+			const serviceId = parseInt(routeArr[0]);
+			const yearAndMonth = routeArr[1].split('-');
+			const year = parseInt(yearAndMonth[0]);
+			const month = parseInt(yearAndMonth[1]);
+			const viewName = routeArr[2];
+			const popData: popstateType = { serviceId, year, month, viewName };
+			ActionManager.notify({ key: 'popstate', data: popData });
+		});
 	}
 }
 
-new App(document.getElementById('app') as HTMLElement);
+new App();

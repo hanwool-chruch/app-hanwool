@@ -1,121 +1,74 @@
-import Router, { View } from '../../router';
-import HistoryContent from '../content/history-content';
 import Component from '../component';
 import { AbstractContent } from '../content/abstract-content';
 import MonthSelector from '../month-selector';
 import TabSelector from '../tab-selector';
-import HistoryModel from '../../models/history-model';
+import TabName from '../../utils/tab-name';
+import HistoryContent from '../content/history-content';
 import CalendarContent from '../content/calendar-content';
+import Router from '../../router';
+import HistoryManager from '../../models/history-model';
 
 export default class MainPanel extends Component {
-	dom: HTMLElement;
-	monthSelector: any | null;
-	tabSelector: any | null;
-	contents: Map<String, AbstractContent>;
-	router: any;
-	historyModel?: HistoryModel;
+	protected dom: HTMLElement;
+	private contents: Map<string, AbstractContent>;
 
 	constructor() {
 		super();
 		this.dom = document.createElement('main');
-		this.contents = new Map<String, AbstractContent>();
-		this.dom.classList.add('main-panel');
-		this.monthSelector = null;
-		this.tabSelector = null;
-		this.router = null;
+		this.contents = new Map<string, AbstractContent>();
 		this.init();
-		this.listener();
+		this.initEventManager();
 	}
 
 	init() {
-		const views = this.initViews();
-		this.router = new Router(views);
+		this.dom.classList.add('main-panel');
 
-		let curMonth = parseInt(this.router.getCurrentYearAndMonth().split('-')[1]);
-		this.monthSelector = new MonthSelector(curMonth, (diff: number) => {
-			curMonth += diff;
-			this.router.loadHistoryData(`2020-${curMonth}`);
-			this.router.updateCurrentUrl();
-			return curMonth;
-		});
-
-		this.tabSelector = new TabSelector((tab) => {
-			console.log(tab);
-
-			let page = '';
-			switch (tab) {
-				case '내역':
-					page = 'history';
-					break;
-				case '달력':
-					page = 'calendar';
-					break;
-				case '통계':
-					page = 'graph';
-					break;
-				default:
-					throw new Error('no tab exists');
-			}
-			this.router.loadView(page);
-			this.router.updateCurrentUrl();
-			alert(`Move to ${tab} tab`);
-		});
-
-		this.getDom().appendChild(this.monthSelector.getDom());
-		this.getDom().appendChild(this.tabSelector.getDom());
-	}
-
-	private initViews(): Array<View> {
-		const views = [] as Array<View>;
-		const histroyView = { viewName: 'history', component: new HistoryContent() };
-		const calendarView = { viewName: 'calendar', component: new HistoryContent() };
-		const graphView = { viewName: 'graph', component: new HistoryContent() };
-
-		views.push(histroyView);
-		views.push(calendarView);
-		views.push(graphView);
-
-		return views;
-	}
-
-	private listener() {
-		window.addEventListener('popstate', this.popStateHandler.bind(this));
-	}
-
-	/**
-	 * TODO
-	 * router 내로 옮기고 tabSelector와 monthSelector가 router를 구독하게?
-	 */
-	private async popStateHandler() {
 		const routeArr = location.pathname.replace('/', '').split('/');
-		const serviceId = parseInt(routeArr[0], 16) - 3000;
-		const yearAndMonth = routeArr[1];
-		const page = routeArr[2];
-		this.router.setCurrent({ serviceId, yearAndMonth, page });
-		console.info('popstate', { serviceId, yearAndMonth, page });
+		const locationDate = routeArr[1].split('-');
+		const monthState = { year: parseInt(locationDate[0]), month: parseInt(locationDate[1]) };
+		const monthSelector = new MonthSelector(monthState);
 
-		let tabName;
-		switch (page) {
-			case 'history':
-				tabName = '내역';
-				break;
-			case 'calendar':
-				tabName = '달력';
-				break;
-			case 'graph':
-				tabName = '통계';
-				break;
-			default:
-				throw new Error('no pageName for tab');
+		const tabs = ['내역', '달력', '통계'];
+		const currentTab = TabName[routeArr[2]];
+		const tabState = {
+			tabs: tabs,
+			currentTab: currentTab,
+		};
+		const tabSelector = new TabSelector(tabState);
+
+		this.dom.appendChild(monthSelector.getDom());
+		this.dom.appendChild(tabSelector.getDom());
+
+		this.initViews();
+	}
+
+	initViews() {
+		const historyContent = new HistoryContent();
+		const calendarContent = new CalendarContent();
+		const statisticsContent = new HistoryContent();
+		this.contents.set('history', historyContent);
+		this.contents.set('calendar', calendarContent);
+		this.contents.set('statistics', statisticsContent);
+	}
+
+	private initEventManager() {
+		Router.subscribe({ key: 'loadView', observer: (data) => this.changeView(data.viewName) });
+		HistoryManager.subscribe({
+			key: 'sendToViews',
+			observer: (data) => {
+				console.info('sendToViews');
+				this.contents.forEach((content) => content.load(data));
+			},
+		});
+	}
+
+	changeView(view: string) {
+		if (this.contents.has(view)) {
+			const newView = this.contents.get(view);
+			while (this.dom.childElementCount !== 2) {
+				this.dom.lastElementChild?.remove();
+			}
+			this.dom.appendChild(newView!.getDom());
 		}
-
-		this.monthSelector?.setMonth(yearAndMonth.split('-')[1]);
-		this.tabSelector.setHighlight(tabName);
-		this.router.loadView(page);
-		this.historyModel = new HistoryModel(1);
-// 		this.historyModel.subscribe((data) => {
-// 			this.contents[0].load(data);
-// 			this.contents[1].load(data);
-// 		});
 	}
 }
