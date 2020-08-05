@@ -1,5 +1,5 @@
 import Component from '../component';
-import ActionManager, { CHANGE_TAB_ACTION } from '../../utils/action-manager';
+import ActionManager, { CHANGE_TAB_ACTION, POP_STATE_ACTION } from '../../utils/action-manager';
 import { popstateType } from '../../index';
 import TabName from '../../utils/tab-name';
 
@@ -29,7 +29,7 @@ export default class TabSelector extends Component {
 
 	private initEventManager() {
 		ActionManager.subscribe({
-			key: 'popstate',
+			key: POP_STATE_ACTION,
 			observer: (data: popstateType) => {
 				const tabName = TabName[data.viewName];
 				this.setHighlight(tabName);

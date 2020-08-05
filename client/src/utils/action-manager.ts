@@ -7,15 +7,138 @@ export const REMOVE_HISTORY_ACTION = 'removeHistory' as const;
 export const CHANGE_DATE_ACTION = 'changeDate' as const;
 export const CHANGE_TAB_ACTION = 'changeTab' as const;
 
-type NotifyType = {
-	key: string;
-	data: any;
+type ACTION_KEYS =
+	| typeof POP_STATE_ACTION
+	| typeof ADD_HISTORY_ACTION
+	| typeof EDIT_HISTORY_ACTION
+	| typeof REMOVE_HISTORY_ACTION
+	| typeof CHANGE_DATE_ACTION
+	| typeof CHANGE_TAB_ACTION;
+
+// TODO: find a way to integrate Action/Subscriber types
+
+// PopState
+type PopStateData = {
+	serviceId: number;
+	year: number;
+	month: number;
+	viewName: string;
 };
 
-type SubscriberType = {
-	key: string;
-	observer: Subscriber<any>;
+type PopStateAction = {
+	key: typeof POP_STATE_ACTION;
+	data: PopStateData;
 };
+
+type PopStateSubscriber = {
+	key: typeof POP_STATE_ACTION;
+	observer: Subscriber<PopStateData>;
+};
+
+// AddHistory
+type AddHistoryData = {
+	user_id: number;
+	service_id: number;
+	historyDate: string;
+	category: number;
+	payment: number;
+	price: number;
+	content: string;
+};
+
+type AddHistoryAction = {
+	key: typeof ADD_HISTORY_ACTION;
+	data: AddHistoryData;
+};
+
+type AddHistorySubscriber = {
+	key: typeof ADD_HISTORY_ACTION;
+	observer: Subscriber<AddHistoryData>;
+};
+
+// EDIT_HISTORY_ACTION
+type EditHistoryData = {
+	user_id: number;
+	service_id: number;
+	historyDate: string;
+	category: number;
+	payment: number;
+	price: number;
+	content: string;
+};
+
+type EditHistoryAction = {
+	key: typeof EDIT_HISTORY_ACTION;
+	data: EditHistoryData;
+};
+
+type EditHistorySubscriber = {
+	key: typeof EDIT_HISTORY_ACTION;
+	observer: Subscriber<EditHistoryData>;
+};
+
+// | typeof REMOVE_HISTORY_ACTION
+type RemoveHistoryData = {
+	history_id: number;
+	historyDate: string;
+};
+
+type RemoveHistoryAction = {
+	key: typeof REMOVE_HISTORY_ACTION;
+	data: RemoveHistoryData;
+};
+
+type RemoveHistorySubscriber = {
+	key: typeof REMOVE_HISTORY_ACTION;
+	observer: Subscriber<RemoveHistoryData>;
+};
+
+// CHANGE_DATE_ACTION
+type ChangeDateData = {
+	year: number;
+	month: number;
+};
+
+type ChangeDateAction = {
+	key: typeof CHANGE_DATE_ACTION;
+	data: ChangeDateData;
+};
+
+type ChangeDateSubscriber = {
+	key: typeof CHANGE_DATE_ACTION;
+	observer: Subscriber<ChangeDateData>;
+};
+
+// CHANGE_TAB_ACTION;
+type ChangeTabData = {
+	viewName: string;
+};
+
+type ChangeTabAction = {
+	key: typeof CHANGE_TAB_ACTION;
+	data: ChangeTabData;
+};
+
+type ChangeTabSubscriber = {
+	key: typeof CHANGE_TAB_ACTION;
+	observer: Subscriber<ChangeTabData>;
+};
+
+type NotifyType =
+	| PopStateAction
+	| AddHistoryAction
+	| EditHistoryAction
+	| RemoveHistoryAction
+	| ChangeDateAction
+	| ChangeTabAction;
+
+type SubscriberType =
+	| PopStateSubscriber
+	| AddHistorySubscriber
+	| EditHistorySubscriber
+	| RemoveHistorySubscriber
+	| ChangeDateSubscriber
+	| ChangeTabSubscriber;
 
 class Observable {
 	private observers: Map<string, Array<Subscriber<any>>>;

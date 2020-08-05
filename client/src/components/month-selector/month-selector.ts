@@ -1,5 +1,5 @@
 import Component from '../component';
-import ActionManager, { CHANGE_DATE_ACTION } from '../../utils/action-manager';
+import ActionManager, { CHANGE_DATE_ACTION, POP_STATE_ACTION } from '../../utils/action-manager';
 import { popstateType } from '../../index';
 
 export interface MonthSelectorState {
@@ -27,7 +27,7 @@ export default class MonthSelector extends Component {
 
 	private initEventManager() {
 		ActionManager.subscribe({
-			key: 'popstate',
+			key: POP_STATE_ACTION,
 			observer: (data: popstateType) => {
 				this.setYearAndMonth({ year: data.year, month: data.month });
 			},
