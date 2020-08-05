@@ -71,32 +71,33 @@ class HistoryModel extends Observable {
 
 	private async load(): Promise<void> {
 		// TODO: api call
+		let data: History[];
 		try {
-			const data = await load(this.serviceId);
-			const key = `${this.year}-${this.month}`;
-			this.data.set(key, data);
-			this.notify({ key: 'sendToViews', data: data });
+			data = await load(this.serviceId);
 		} catch (err) {
 			throw new Error(`load data error`);
 		}
+
+		const key = `${this.year}-${this.month}`;
+		this.data.set(key, data);
+		this.notify({ key: 'sendToViews', data: data });
 	}
 
 	async add(h: AddHistoryData): Promise<void> {
+		let response: History;
 		try {
-			const response: History = (await apiMock(h)) as any;
-			const dateArr = h.historyDate.split('. ');
-			const key = `${dateArr[0]}-${dateArr[1]}`;
-			const data = this.data.get(key);
-			if (!data) {
-				//TODO: Error handling
-				throw new Error(`No data :${h.historyDate}`);
-			}
-			const newData = insertHistory(data, response);
-			this.data.set(key, newData);
-			this.notify({ key: 'sendToViews', data: newData });
+			response = (await apiMock(h)) as any;
 		} catch (err) {
 			throw new Error(`add data error`);
 		}
+
+		response.historyDate = new Date(response.historyDate);
+		const key = `${response.historyDate.getFullYear()}-${response.historyDate.getMonth() + 1}`;
+		const data = this.data.get(key) || [];
+		const newData = insertHistory(data, response);
+		this.data.set(key, newData);
+		this.notify({ key: 'sendToViews', data: newData });
+		console.log('newasdfasf', newData);
 	}
 
 	async remove(h: { history_id: number; historyDate: string }): Promise<void> {
