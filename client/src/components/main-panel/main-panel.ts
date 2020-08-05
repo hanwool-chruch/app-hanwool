@@ -2,6 +2,7 @@ import Component from '../component';
 import { AbstractContent } from '../content/abstract-content';
 import MonthSelector from '../month-selector';
 import TabSelector from '../tab-selector';
+import TabName from '../../utils/tab-name';
 import HistoryContent from '../content/history-content';
 import CalendarContent from '../content/calendar-content';
 import Router from '../../router';
