@@ -2,6 +2,7 @@ import Component from '../component';
 import { AbstractContent } from '../content/abstract-content';
 import MonthSelector from '../month-selector';
 import TabSelector from '../tab-selector';
+import TabName from '../../utils/tab-name';
 import HistoryContent from '../content/history-content';
 import CalendarContent from '../content/calendar-content';
 import Router from '../../router';
@@ -22,13 +23,16 @@ export default class MainPanel extends Component {
 	init() {
 		this.dom.classList.add('main-panel');
 
-		const locationDate = location.pathname.replace('/', '').split('/')[1].split('-');
+		const routeArr = location.pathname.replace('/', '').split('/');
+		const locationDate = routeArr[1].split('-');
 		const monthState = { year: parseInt(locationDate[0]), month: parseInt(locationDate[1]) };
 		const monthSelector = new MonthSelector(monthState);
 
 		const tabs = ['내역', '달력', '통계'];
+		const currentTab = TabName[routeArr[2]];
 		const tabState = {
 			tabs: tabs,
+			currentTab: currentTab,
 		};
 		const tabSelector = new TabSelector(tabState);
 
@@ -36,23 +40,25 @@ export default class MainPanel extends Component {
 		this.dom.appendChild(tabSelector.getDom());
 
 		this.initViews();
-		this.changeView('history');
 	}
 
 	initViews() {
 		const historyContent = new HistoryContent();
 		const calendarContent = new CalendarContent();
-		const graphContent = new HistoryContent();
+		const statisticsContent = new HistoryContent();
 		this.contents.set('history', historyContent);
 		this.contents.set('calendar', calendarContent);
-		this.contents.set('graph', graphContent);
+		this.contents.set('statistics', statisticsContent);
 	}
 
 	private initEventManager() {
-		Router.subscribe('loadView', (data) => this.changeView(data.viewName));
-		HistoryManager.subscribe('sendToViews', (data) => {
-			console.info('sendToViews');
-			this.contents.forEach((content) => content.load(data));
+		Router.subscribe({ key: 'loadView', observer: (data) => this.changeView(data.viewName) });
+		HistoryManager.subscribe({
+			key: 'sendToViews',
+			observer: (data) => {
+				console.info('sendToViews');
+				this.contents.forEach((content) => content.load(data));
+			},
 		});
 	}
 
