@@ -176,7 +176,7 @@ class Editor extends Component {
 			historyDate: inputDate.value,
 			category: parseInt(selectCategory.value),
 			payment: parseInt(selectPayment.value),
-			price: chkClassify.checked ? parseInt(inputPrice.value) : ~inputPrice.value,
+			price: chkClassify.checked ? parseInt(inputPrice.value) : -parseInt(inputPrice.value),
 			content: inputContent.value,
 		};
 
