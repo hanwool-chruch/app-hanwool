@@ -1,4 +1,5 @@
 import Component from '../component';
+import Router from '../../router';
 
 export default class Header extends Component {
 	dom: HTMLElement;
@@ -16,10 +17,20 @@ export default class Header extends Component {
 
 	render() {
 		this.dom.innerHTML = `
-            <h1>가계부</h1>
-            <button>결제 수단 관리</button>
+			<h1>가계부</h1>
+			<div>
+				<span class="logout-btn">로그아웃</span>
+				<span class="open-payment-btn">결제 수단 관리</span>
+			</div>
 		`;
 	}
 
-	listener() {}
+	listener() {
+		const logoutBtn = this.dom.querySelector('.logout-btn') as HTMLSpanElement;
+		const openPaymentBtn = this.dom.querySelector('.open-payment-btn') as HTMLSpanElement;
+		logoutBtn.addEventListener('click', (e: Event) => {
+			localStorage.removeItem('token');
+			Router.notify({ key: 'loadPage', data: { pageName: 'login' } });
+		});
+	}
 }
