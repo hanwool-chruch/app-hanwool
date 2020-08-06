@@ -1,14 +1,45 @@
 import { mysql } from '../modules/database/mysql';
 import { HistoryDto } from '@shared/dto';
 
-const create = async (history: HistoryDto.CREATE) => {
+const create = async (history: HistoryDto.AddHistoryDto): Promise<HistoryDto.History> => {
 	let historyData;
+	const addHistoryData = {
+		service_id: history.service_id,
+		price: history.price,
+		content: history.content,
+		history_date: new Date(history.history_date),
+		payment_payment_id: history.payment_id,
+		category_category_id: history.category_id,
+	};
+
+	let payment: string;
+	let category: string;
+	let history_id: number;
 	try {
-		historyData = await mysql.connect((con: any) => {
-			return con.query(`INSERT INTO history SET ?`, history);
+		historyData = await mysql.connect(async (con: any) => {
+			let rows;
+			rows = await con.query(`INSERT INTO history SET ?`, addHistoryData);
+			history_id = rows[0].insertId;
+
+			[rows] = await con.query('SELECT payment_name FROM payment WHERE payment_id=?', [
+				history.payment_id,
+			]);
+			payment = rows[0].payment_name;
+
+			[rows] = await con.query('SELECT category_name FROM category WHERE category_id=?', [
+				history.category_id,
+			]);
+			category = rows[0].category_name;
 		});
-		const history_id = historyData[0].insertId;
-		const result = { ...history, history_id };
+
+		const result = {
+			id: history_id!,
+			price: history.price,
+			content: history.content,
+			category: category!,
+			payment: payment!,
+			historyDate: new Date(history.history_date),
+		};
 		return result;
 	} catch (err) {
 		throw err;

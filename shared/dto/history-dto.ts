@@ -7,8 +7,6 @@ type History = {
 	payment: string;
 };
 
-type AddHistoryDto = Omit<History, 'id'>;
-
 type CREATE = {
 	price: number;
 	content: string;
@@ -16,6 +14,15 @@ type CREATE = {
 	category_id: number;
 	payment_id: number;
 	service_id: number;
+};
+
+type AddHistoryDto = {
+	service_id: number;
+	price: number;
+	content: string;
+	history_date: string;
+	category_id: number;
+	payment_id: number;
 };
 
 type GET_DATA = {

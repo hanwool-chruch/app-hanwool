@@ -2,7 +2,13 @@ import { AddHistoryDto } from '@shared/dto/history-dto';
 import { History } from '@shared/dto/history-dto';
 
 export const create = (data: AddHistoryDto): Promise<History> => {
-	return Promise.resolve({ ...data, id: ~~(Math.random() * 1000) });
+	return Promise.resolve({
+		...data,
+		id: ~~(Math.random() * 1000),
+		historyDate: new Date(data.history_date),
+		category: 'testcat',
+		payment: 'testpay',
+	});
 };
 
 export const load = (serviceId: number): Promise<History[]> => {
