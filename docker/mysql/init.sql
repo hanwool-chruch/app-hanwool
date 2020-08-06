@@ -114,21 +114,21 @@ CREATE TABLE `history` (
   `delete_date` DATETIME NULL DEFAULT NULL,
   `create_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `update_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `payment_payment_id` INT NOT NULL,
-  `category_category_id` INT NOT NULL,
+  `payment_id` INT NOT NULL,
+  `category_id` INT NOT NULL,
   `service_id` INT NOT NULL,
   PRIMARY KEY (`history_id`),
-  INDEX `fk_history_payment1_idx` (`payment_payment_id`),
-  INDEX `fk_history_category1_idx` (`category_category_id`),
+  INDEX `fk_history_payment1_idx` (`payment_id`),
+  INDEX `fk_history_category1_idx` (`category_id`),
   INDEX `fk_history_service1_idx` (`service_id`),
   INDEX `idx_history_date` (`history_date`),
   CONSTRAINT `fk_history_payment1`
-    FOREIGN KEY (`payment_payment_id`)
+    FOREIGN KEY (`payment_id`)
     REFERENCES `payment` (`payment_id`)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT `fk_history_category1`
-    FOREIGN KEY (`category_category_id`)
+    FOREIGN KEY (`category_id`)
     REFERENCES `category` (`category_id`)
     ON DELETE CASCADE
     ON UPDATE CASCADE,

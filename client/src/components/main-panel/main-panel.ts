@@ -23,9 +23,11 @@ export default class MainPanel extends Component {
 	init() {
 		this.dom.classList.add('main-panel');
 
+		let serviceId = 1;
 		try {
 			const route = location.pathname.replace('/', '');
 			const routeArr = route.split('/');
+			serviceId = parseInt(routeArr[0], 16) - 3000;
 			const locationDate = routeArr[1].split('-');
 			const monthState = { year: parseInt(locationDate[0]), month: parseInt(locationDate[1]) };
 			const monthSelector = new MonthSelector(monthState);
@@ -50,13 +52,13 @@ export default class MainPanel extends Component {
 			this.dom.appendChild(monthSelector.getDom());
 			this.dom.appendChild(tabSelector.getDom());
 		} finally {
-			this.initViews();
+			this.initViews(serviceId);
 			this.initEventManager();
 		}
 	}
 
-	initViews() {
-		const historyContent = new HistoryContent();
+	initViews(serviceId: number) {
+		const historyContent = new HistoryContent(serviceId);
 		const calendarContent = new CalendarContent();
 		const statisticsContent = new StatisticsContent();
 		this.contents.set('history', historyContent);

@@ -42,7 +42,23 @@ const findByServiceId = async (serviceId: number): Promise<CategoryDto.RESPONSE_
 	);
 };
 
+const bulkInsert = async (categories: CategoryDto.CREATE[]) => {
+	let categoryData;
+	try {
+		categoryData = await mysql.connect((con: any) => {
+			return con.query(`INSERT INTO category (category_name, service_id, for_income) VALUES ?`, [
+				categories,
+			]);
+		});
+
+		return categoryData[0].affectedRows;
+	} catch (err) {
+		throw err;
+	}
+};
+
 export default {
 	create,
 	findByServiceId,
+	bulkInsert,
 };

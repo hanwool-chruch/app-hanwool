@@ -122,4 +122,16 @@ const remove = async (req: Request, res: Response, next: NextFunction) => {
 	res.status(HttpStatus.OK).json(JsonResponse(`removed history ${historyId}`, history));
 };
 
-export default { create, findByMonth, update, remove };
+const bulkInsert = async (req: Request, res: Response, next: NextFunction) => {
+	const { data } = req.body;
+	try {
+		const histories = await History.bulkInsert(data);
+		res
+			.status(HttpStatus.CREATED)
+			.json(JsonResponse(`histories bulk insert success: ${histories}`, {}));
+	} catch (err) {
+		next(err);
+	}
+};
+
+export default { create, findByMonth, update, remove, bulkInsert };

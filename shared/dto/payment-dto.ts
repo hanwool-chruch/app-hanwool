@@ -1,6 +1,6 @@
 interface CREATE {
+	payment_name: string;
 	service_id: number;
-	payment_name: number;
 }
 
 interface GET_DATA {

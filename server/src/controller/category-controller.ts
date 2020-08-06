@@ -4,6 +4,7 @@ import { Category } from '../model';
 import { JsonResponse } from '../modules/util';
 import logger from '../config/logger';
 import { CategoryDto } from '../../../shared/dto';
+import { CategoryController } from '.';
 
 /**
  * @api {post} /service Request Service create
@@ -65,14 +66,24 @@ const findByServiceId = async (req: Request, res: Response, next: NextFunction) 
 
 	try {
 		const categories = await Category.findByServiceId(serviceId);
-		if (categories) {
-			res.status(200).json(JsonResponse(`Got categories by service ${serviceId}`, categories));
-		} else {
-			res.status(404).json(JsonResponse(`No category in service ${serviceId}`, null));
-		}
+		res
+			.status(HttpStatus.OK)
+			.json(JsonResponse(`Got categories by service ${serviceId}`, categories));
 	} catch (err) {
 		next(err);
 	}
 };
 
-export default { create, findByServiceId };
+const bulkInsert = async (req: Request, res: Response, next: NextFunction) => {
+	const { data } = req.body;
+	try {
+		const categories = await Category.bulkInsert(data);
+		res
+			.status(HttpStatus.CREATED)
+			.json(JsonResponse(`category bulk insert success: ${categories}`, {}));
+	} catch (err) {
+		next(err);
+	}
+};
+
+export default { create, findByServiceId, bulkInsert };

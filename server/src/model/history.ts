@@ -3,7 +3,7 @@ import { HistoryDto } from '@shared/dto';
 import { History } from '@shared/dto/history-dto';
 
 const FIND_BY_MONTH =
-	'SELECT * FROM history h JOIN category c ON h.category_category_id=c.category_id JOIN payment p ON h.payment_payment_id=p.payment_id WHERE h.service_id=? and h.history_date between ? and ? AND h.delete_date IS NULL ORDER BY h.history_date';
+	'SELECT * FROM history h JOIN category c ON h.category_id=c.category_id JOIN payment p ON h.payment_id=p.payment_id WHERE h.service_id=? and h.history_date between ? and ?';
 
 const create = async (history: HistoryDto.AddHistoryDto): Promise<HistoryDto.History> => {
 	let historyData;
@@ -12,8 +12,8 @@ const create = async (history: HistoryDto.AddHistoryDto): Promise<HistoryDto.His
 		price: history.price,
 		content: history.content,
 		history_date: new Date(history.history_date),
-		payment_payment_id: history.payment_id,
-		category_category_id: history.category_id,
+		payment_id: history.payment_id,
+		category_id: history.category_id,
 	};
 
 	let payment: string;
@@ -107,9 +107,26 @@ const remove = async (historyId: number): Promise<void> => {
 	}
 };
 
+const bulkInsert = async (histories: HistoryDto.CREATE[]) => {
+	let historyData;
+	try {
+		historyData = await mysql.connect((con: any) => {
+			return con.query(
+				`INSERT INTO history (price, content, history_date, category_id, payment_id, service_id) VALUES ?`,
+				[histories]
+			);
+		});
+
+		return historyData[0].affectedRows;
+	} catch (err) {
+		throw err;
+	}
+};
+
 export default {
 	create,
 	findByMonth,
 	update,
 	remove,
+	bulkInsert,
 };
