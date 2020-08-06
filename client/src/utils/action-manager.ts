@@ -1,5 +1,7 @@
 // import ACTION_KEYS from './action-keys';
 
+import { History } from '@shared/dto/history-dto';
+
 type Subscriber<T> = (data: T) => void;
 
 export const POP_STATE_ACTION = 'popstate' as const;
@@ -95,8 +97,7 @@ type EditHistorySubscriber = {
 
 // | typeof REMOVE_HISTORY_ACTION
 export type RemoveHistoryData = {
-	history_id: number;
-	historyDate: string;
+	history: History;
 };
 
 type RemoveHistoryAction = {

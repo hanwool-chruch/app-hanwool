@@ -2,9 +2,8 @@ import { Request, Response, NextFunction } from 'express';
 import HttpStatus from 'http-status';
 import { History } from '../model';
 import { JsonResponse } from '../modules/util';
-import logger from '../config/logger';
-import { HistoryDto } from '@shared/dto';
 import { AddHistoryDto } from '@shared/dto/history-dto';
+import CustomError from '../exception/custom-error';
 
 /**
  * @api {post} /api/history
@@ -110,20 +109,17 @@ const update = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 const remove = async (req: Request, res: Response, next: NextFunction) => {
-	const { body } = req;
+	const params = req.params;
+	const historyId = parseInt(params.id);
+	if (isNaN(historyId)) next(new Error('history id is not a number'));
 
+	let history;
 	try {
-		const history = await History.remove(body as any);
-		if (history) {
-			res.status(HttpStatus.OK).json(JsonResponse(`removed history ${body.history_id}`, history));
-		} else {
-			res
-				.status(HttpStatus.BAD_REQUEST)
-				.json(JsonResponse(`removed history ${body.history_id}`, null));
-		}
+		await History.remove(historyId);
 	} catch (err) {
-		next(err);
+		throw new CustomError(HttpStatus.BAD_REQUEST, `Error while removing history`);
 	}
+	res.status(HttpStatus.OK).json(JsonResponse(`removed history ${historyId}`, history));
 };
 
 const bulkInsert = async (req: Request, res: Response, next: NextFunction) => {
