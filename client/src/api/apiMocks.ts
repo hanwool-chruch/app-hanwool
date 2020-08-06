@@ -6,7 +6,6 @@ export const create = (data: AddHistoryDto): Promise<History> => {
 };
 
 export const load = (serviceId: number): Promise<History[]> => {
-	console.info(`${serviceId} 데이터 load`);
 	return Promise.resolve([
 		{
 			category: '밥',

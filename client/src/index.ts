@@ -34,7 +34,6 @@ class App {
 	}
 
 	initPages() {
-		console.info('init app pages');
 		const servicePage = new ServicePage();
 		const loginPage = new LoginPage();
 		const signupPage = new SignupPage();

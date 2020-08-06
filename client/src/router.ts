@@ -48,7 +48,6 @@ class Router extends Observable {
 
 	public async init() {
 		const token = localStorage.getItem('token');
-		console.log('token', token);
 		if (!token) {
 			this.notify({ key: 'loadPage', data: { pageName: 'login' } });
 			return;
