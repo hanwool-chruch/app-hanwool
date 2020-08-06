@@ -15,6 +15,10 @@ class Editor extends Component {
 	private paymentSelector: HTMLSelectElement;
 	private incomeCategorySelector: HTMLSelectElement;
 	private outcomeCategorySelector: HTMLSelectElement;
+	private paymentMap = {};
+	private categoryMap = {};
+
+	// null if not editing, not null if editing
 	private historyId: number | null = null;
 
 	constructor(serviceId: number) {
@@ -58,9 +62,12 @@ class Editor extends Component {
 	}
 
 	startEdit(h: History) {
+		const selectCategory = this.dom.querySelector('.select-category') as HTMLSelectElement;
+		const selectPayment = this.dom.querySelector('.select-payment') as HTMLSelectElement;
+
 		this.historyId = h.id;
 		//카테고리
-		// (this.dom.querySelector('.input-data') as any).value = h.historyDate;
+		selectCategory.value = this.categoryMap[h.category];
 		//결제방식
 		// (this.dom.querySelector('.input-data') as any).value = h.historyDate;
 		//분류
@@ -69,6 +76,14 @@ class Editor extends Component {
 		(this.dom.querySelector('.input-price') as any).value = Math.abs(h.price);
 		//내용
 		(this.dom.querySelector('.input-content') as any).value = h.content;
+
+		//날짜
+		const tt = (a: any) => ('0' + a).slice(0, 2);
+		(this.dom.querySelector('.input-date') as any).value = [
+			h.historyDate.getFullYear() + '',
+			tt(h.historyDate.getMonth() + 1),
+			tt(h.historyDate.getDate()),
+		].join('-');
 	}
 
 	private render() {
@@ -142,6 +157,8 @@ class Editor extends Component {
 			const payment = document.createElement('option');
 			payment.text = payments[i].name;
 			payment.value = payments[i].id + '';
+			this.paymentMap[payments[i].name] = payments[i].id;
+			this.paymentMap[payments[i].id] = payments[i].name;
 			this.paymentSelector.add(payment);
 		}
 
@@ -153,6 +170,8 @@ class Editor extends Component {
 			category.text = cat.name;
 			category.value = cat.id + '';
 			incomeCategories.push(category);
+			this.categoryMap[cat.id] = cat.name;
+			this.categoryMap[cat.name] = cat.id;
 			this.incomeCategorySelector.add(category);
 		});
 
@@ -160,6 +179,9 @@ class Editor extends Component {
 			const category = document.createElement('option');
 			category.text = cat.name;
 			category.value = cat.id + '';
+			this.categoryMap[cat.id] = cat.name;
+			this.categoryMap[cat.name] = cat.id;
+			this.incomeCategorySelector.add(category);
 			outcomeCategories.push(category);
 			this.outcomeCategorySelector.add(category);
 		});
