@@ -7,10 +7,10 @@ import actionManager, {
 	REMOVE_HISTORY_ACTION,
 } from '../utils/action-manager';
 import { History, AddHistoryDto } from '@shared/dto/history-dto';
-import { load } from '../api/apiMocks';
 import { insertAt } from '../utils/insert-item-at';
 import { YearAndMonth } from '../router';
 import Router from '../router';
+import api from '../api/history-api';
 
 const apiMock = (data: any) =>
 	new Promise((resolve) => resolve({ ...data, id: ~~(Math.random() * 1000) }));
@@ -78,15 +78,21 @@ class HistoryModel extends Observable {
 	}
 
 	private async load(): Promise<void> {
-		// TODO: api call
+		let data: History[];
 		try {
-			const data = await load(this.serviceId);
-			const key = `${this.serviceId}/${this.year}-${this.month}`;
-			this.data.set(key, data);
-			this.notify({ key: 'sendToViews', data: data });
+			data = await api.findByMonth({
+				servideId: 1,
+				year: this.year,
+				month: this.month,
+			});
+			console.log(data);
 		} catch (err) {
-			throw new Error(`load data error`);
+			data = [];
+			console.error(err);
 		}
+		const key = `${this.serviceId}/${this.year}-${this.month}`;
+		this.data.set(key, data);
+		this.notify({ key: 'sendToViews', data: data });
 	}
 
 	async add(h: AddHistoryData): Promise<void> {
