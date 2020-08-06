@@ -4,7 +4,7 @@ import { JsonResponse } from '../modules/util';
 import userController from './user-controller';
 import { User, Service } from '../model';
 import jwt from 'jsonwebtoken';
-import { jwtSecret, tokenExpiresIn } from '../config/consts';
+import { jwtSecret, tokenExpiresIn, githubCredentials } from '../config/consts';
 import logger from '../config/logger';
 import CustomError from '../exception/custom-error';
 
@@ -133,9 +133,37 @@ const googleRedirect = async (req: Request, res: Response, next: NextFunction) =
 	res.redirect(`/${(serviceId + 3000).toString(16)}/${yearAndMonth}/history`);
 };
 
+const githubRedirect = async (req: Request, res: Response, next: NextFunction) => {
+	const githubUser: any = req.user;
+	console.log('githubUser', githubUser);
+	const tokenUser = {
+		user_id: githubUser.id,
+		name: githubUser.displayName,
+		email: githubUser.username,
+		provider: githubUser.provider,
+	};
+
+	const { user, serviceId } = await userController.findOrCreate(tokenUser, 'github');
+	const token = jwt.sign(
+		{
+			data: user,
+		},
+		jwtSecret,
+		{ expiresIn: tokenExpiresIn }
+	);
+
+	const now = new Date();
+	const yearAndMonth = `${now.getFullYear()}-${now.getMonth() + 1}`;
+	res.cookie('authorization', token, {
+		// 2 분 뒤 만료
+		expires: new Date(Date.now() + 2 * 60 * 1000),
+	});
+	res.redirect(`/${(serviceId + 3000).toString(16)}/${yearAndMonth}/history`);
+};
+
 const isValidToken = (req: Request, res: Response, next: NextFunction) => {
 	if (req.user) res.sendStatus(HttpStatus.OK);
 	else res.sendStatus(HttpStatus.UNAUTHORIZED);
 };
 
-export default { emailSignUp, emailLogin, googleRedirect, isValidToken };
+export default { emailSignUp, emailLogin, googleRedirect, isValidToken, githubRedirect };
