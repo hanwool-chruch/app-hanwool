@@ -69,7 +69,6 @@ export default class MainPanel extends Component {
 		HistoryModel.subscribe({
 			key: 'sendToViews',
 			observer: (data) => {
-				console.info('sendToViews');
 				this.contents.forEach((content) => content.load(data));
 			},
 		});
