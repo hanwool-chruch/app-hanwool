@@ -11,6 +11,7 @@ import { insertAt } from '../utils/insert-item-at';
 import { YearAndMonth } from '../router';
 import Router from '../router';
 import api from '../api/history-api';
+import historyApi from '../api/history-api';
 
 const apiMock = (data: any) =>
 	new Promise((resolve) => resolve({ ...data, id: ~~(Math.random() * 1000) }));
@@ -96,18 +97,30 @@ class HistoryModel extends Observable {
 
 	async add(h: AddHistoryData): Promise<void> {
 		let response: History;
+		const data: AddHistoryDto = {
+			service_id: 1,
+			price: h.price,
+			content: h.content,
+			history_date: h.historyDate,
+			category_id: h.category,
+			payment_id: h.payment,
+		};
 		try {
-			response = (await apiMock(h)) as any;
+			response = await historyApi.create(data);
 		} catch (err) {
 			throw new Error(`add data error`);
 		}
 
 		response.historyDate = new Date(response.historyDate);
 		const key = `${response.historyDate.getFullYear()}-${response.historyDate.getMonth() + 1}`;
-		const data = this.data.get(key) || [];
-		const newData = insertHistory(data, response);
+		const oldData = this.data.get(key) || [];
+		const newData = insertHistory(oldData, response);
 		this.data.set(key, newData);
-		this.notify({ key: 'sendToViews', data: newData });
+		if (
+			this.year === response.historyDate.getFullYear() &&
+			this.month === response.historyDate.getMonth() + 1
+		)
+			this.notify({ key: 'sendToViews', data: newData });
 	}
 
 	async remove(h: { history_id: number; historyDate: string }): Promise<void> {
