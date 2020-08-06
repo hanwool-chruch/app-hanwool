@@ -5,14 +5,13 @@ import userController from './user-controller';
 import { User, Service } from '../model';
 import jwt from 'jsonwebtoken';
 import { jwtSecret, tokenExpiresIn, githubCredentials } from '../config/consts';
-import logger from '../config/logger';
 import CustomError from '../exception/custom-error';
+import crypto from 'crypto';
 
 const emailLogin = async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		const isValidUser = await userController.checkUserPassword(req.body);
 		if (isValidUser) {
-			delete isValidUser.password;
 			const token = jwt.sign(
 				{
 					data: isValidUser,
@@ -41,7 +40,7 @@ const emailLogin = async (req: Request, res: Response, next: NextFunction) => {
 
 const emailSignUp = async (req: Request, res: Response, next: NextFunction) => {
 	const { body } = req;
-
+	body.password = crypto.createHash('sha256').update(body.password).digest('base64');
 	try {
 		const users = await User.findByEmail(body.email as string);
 		const existsEmailUser = users.filter((user) => user?.provider === 'email');
