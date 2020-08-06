@@ -10,9 +10,9 @@ type History = {
 type CREATE = {
 	price: number;
 	content: string;
-	historyDate: string;
-	category: number;
-	payment: number;
+	history_date: string;
+	category_id: number;
+	payment_id: number;
 };
 
 type AddHistoryDto = {
