@@ -30,7 +30,7 @@ const HEAD = (uri: string, data: Object, token?: string): any =>
 
 const POST = (uri: string, data: Object, token?: string) =>
 	fetch(`${uri}`, {
-		...defaultOptions('PUT', token),
+		...defaultOptions('POST', token),
 		body: JSON.stringify(data),
 	});
 
@@ -39,6 +39,7 @@ const PATCH = (uri: string, data: Object, token?: string): any =>
 		...defaultOptions('PATCH', token),
 		body: JSON.stringify(data),
 	});
+
 const PUT = (uri: string, data: Object, token?: string) =>
 	fetch(`${uri}`, {
 		...defaultOptions('PUT', token),
