@@ -21,12 +21,18 @@ class LoginPage extends Component {
 	listener() {
 		const signinBtn = this.dom.querySelector('.signinBtn') as HTMLButtonElement;
 		const signupBtn = this.dom.querySelector('.signup-page-btn') as HTMLSpanElement;
+		const githubBtn = this.dom.querySelector('.githubBtn') as HTMLSpanElement;
 		const googleBtn = this.dom.querySelector('.googleBtn') as HTMLSpanElement;
 
 		signinBtn.addEventListener('click', this.signinBtnClickHandler.bind(this));
 		signupBtn.addEventListener('click', () =>
 			Router.notify({ key: 'loadPage', data: { pageName: 'signup' } })
 		);
+
+		githubBtn.addEventListener('click', () => {
+			location.href = '/api/auth/github';
+		});
+
 		googleBtn.addEventListener('click', () => {
 			location.href = '/api/auth/google';
 		});
