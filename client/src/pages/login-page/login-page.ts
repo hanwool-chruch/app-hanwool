@@ -56,7 +56,6 @@ class LoginPage extends Component {
 			console.info(data.message);
 			const token = data.result.token;
 			const serviceId = data.result.serviceId;
-			localStorage.setItem('token', token);
 			ActionManager.notify({ key: LOGIN_ACTION, data: { serviceId } });
 		} else {
 			console.error(`not match user`, response.status);
