@@ -8,8 +8,9 @@ import userController from '../../controller/user-controller';
 
 const jwtFromRequest = (req: Request) => {
 	let token = null;
-	if (req && req.cookies) {
-		token = req.cookies['authorization'];
+	if (req && req.headers.authorization) {
+		token = req.headers.authorization;
+		token = token.replace('Basic ', '');
 	}
 	return token;
 };
