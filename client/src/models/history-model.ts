@@ -60,16 +60,17 @@ class HistoryModel extends Observable {
 			},
 		});
 
+		// TODO: remove any
 		actionManager.subscribe({
 			key: EDIT_HISTORY_ACTION,
-			observer: (data) => {
+			observer: (data: any) => {
 				this.edit(data);
 			},
 		});
 
 		actionManager.subscribe({
 			key: REMOVE_HISTORY_ACTION,
-			observer: (data) => {
+			observer: (data: any) => {
 				this.remove(data);
 			},
 		});
