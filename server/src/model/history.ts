@@ -3,7 +3,7 @@ import { HistoryDto } from '@shared/dto';
 import { History } from '@shared/dto/history-dto';
 
 const FIND_BY_MONTH =
-	'SELECT * FROM history h JOIN category c ON h.category_category_id=c.category_id JOIN payment p ON h.payment_payment_id=p.payment_id WHERE h.service_id=? and h.history_date between ? and ? AND h.delete_date IS NULL';
+	'SELECT * FROM history h JOIN category c ON h.category_category_id=c.category_id JOIN payment p ON h.payment_payment_id=p.payment_id WHERE h.service_id=? and h.history_date between ? and ? AND h.delete_date IS NULL ORDER BY h.history_date';
 
 const create = async (history: HistoryDto.AddHistoryDto): Promise<HistoryDto.History> => {
 	let historyData;
