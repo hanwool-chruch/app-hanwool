@@ -3,7 +3,11 @@ import { CategoryApi, PaymentApi } from '../../../../api';
 import ActionManager, {
 	ADD_HISTORY_ACTION,
 	AddHistoryData,
+	EDIT_HISTORY_ACTION,
+	START_EDIT_HISTORY_ACTION,
 } from '../../../../utils/action-manager';
+import { History } from '@shared/dto/history-dto';
+import actionManager from '../../../../utils/action-manager';
 
 class Editor extends Component {
 	dom: HTMLElement;
@@ -11,6 +15,7 @@ class Editor extends Component {
 	private paymentSelector: HTMLSelectElement;
 	private incomeCategorySelector: HTMLSelectElement;
 	private outcomeCategorySelector: HTMLSelectElement;
+	private historyId: number | null = null;
 
 	constructor(serviceId: number) {
 		super();
@@ -29,6 +34,13 @@ class Editor extends Component {
 		this.appendChilds();
 		this.listener();
 		this.fetchSelectorData();
+
+		actionManager.subscribe({
+			key: START_EDIT_HISTORY_ACTION,
+			observer: (data: any) => {
+				this.startEdit(data.history);
+			},
+		});
 	}
 
 	private initClassList() {
@@ -43,6 +55,20 @@ class Editor extends Component {
 		const paymentSection = this.dom.querySelector('.payment-section') as HTMLElement;
 		categorySection.appendChild(this.outcomeCategorySelector);
 		paymentSection.appendChild(this.paymentSelector);
+	}
+
+	startEdit(h: History) {
+		this.historyId = h.id;
+		//카테고리
+		// (this.dom.querySelector('.input-data') as any).value = h.historyDate;
+		//결제방식
+		// (this.dom.querySelector('.input-data') as any).value = h.historyDate;
+		//분류
+		(this.dom.querySelector('.chk-classify') as any).checked = h.price > 0;
+		//금액
+		(this.dom.querySelector('.input-price') as any).value = Math.abs(h.price);
+		//내용
+		(this.dom.querySelector('.input-content') as any).value = h.content;
 	}
 
 	private render() {

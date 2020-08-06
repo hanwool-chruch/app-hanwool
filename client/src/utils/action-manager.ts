@@ -7,6 +7,7 @@ type Subscriber<T> = (data: T) => void;
 export const POP_STATE_ACTION = 'popstate' as const;
 export const ADD_HISTORY_ACTION = 'addHistory' as const;
 export const EDIT_HISTORY_ACTION = 'editHistory' as const;
+export const START_EDIT_HISTORY_ACTION = 'startEditHistory' as const;
 export const REMOVE_HISTORY_ACTION = 'removeHistory' as const;
 export const CHANGE_DATE_ACTION = 'changeDate' as const;
 export const CHANGE_TAB_ACTION = 'changeTab' as const;
@@ -15,6 +16,7 @@ export const LOGIN_ACTION = 'login' as const;
 type ACTION_KEYS =
 	| typeof POP_STATE_ACTION
 	| typeof ADD_HISTORY_ACTION
+	| typeof START_EDIT_HISTORY_ACTION
 	| typeof EDIT_HISTORY_ACTION
 	| typeof REMOVE_HISTORY_ACTION
 	| typeof CHANGE_DATE_ACTION
@@ -77,12 +79,7 @@ type AddHistorySubscriber = {
 
 // EDIT_HISTORY_ACTION
 export type EditHistoryData = {
-	history_id: number;
-	historyDate: string;
-	category: number;
-	payment: number;
-	price: number;
-	content: string;
+	history: History;
 };
 
 type EditHistoryAction = {
@@ -95,6 +92,20 @@ type EditHistorySubscriber = {
 	observer: Subscriber<EditHistoryData>;
 };
 
+// START_EDIT_HISTORY_ACTION
+export type StartEditHistoryData = {
+	history: History;
+};
+
+type StartEditHistoryAction = {
+	key: typeof START_EDIT_HISTORY_ACTION;
+	data: StartEditHistoryData;
+};
+
+type StartEditHistorySubscriber = {
+	key: typeof START_EDIT_HISTORY_ACTION;
+	observer: Subscriber<StartEditHistoryData>;
+};
 // | typeof REMOVE_HISTORY_ACTION
 export type RemoveHistoryData = {
 	history: History;
@@ -145,6 +156,7 @@ type NotifyType =
 	| PopStateAction
 	| AddHistoryAction
 	| EditHistoryAction
+	| StartEditHistoryAction
 	| RemoveHistoryAction
 	| ChangeDateAction
 	| ChangeTabAction
@@ -154,6 +166,7 @@ type SubscriberType =
 	| PopStateSubscriber
 	| AddHistorySubscriber
 	| EditHistorySubscriber
+	| StartEditHistorySubscriber
 	| RemoveHistorySubscriber
 	| ChangeDateSubscriber
 	| ChangeTabSubscriber

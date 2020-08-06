@@ -1,7 +1,11 @@
 import { AbstractContent } from '../../abstract-content';
 import { History } from '@shared/dto/history-dto';
 import { groupByDate, calcTotal } from '../../../../utils';
-import actionManager, { REMOVE_HISTORY_ACTION } from '../../../../utils/action-manager';
+import actionManager, {
+	REMOVE_HISTORY_ACTION,
+	EDIT_HISTORY_ACTION,
+	START_EDIT_HISTORY_ACTION,
+} from '../../../../utils/action-manager';
 
 export default class HistoryList extends AbstractContent {
 	dom: HTMLElement;
@@ -132,7 +136,14 @@ function createHistoryLi(history: History): HTMLLIElement {
 	<div class="hitem-price">${formatPrice(history.price)}</div>
 	<div class="hitem-delete"><button>X</button></div>
 	`;
+	list.addEventListener('click', (evt) => {
+		actionManager.notify({
+			key: START_EDIT_HISTORY_ACTION,
+			data: { history },
+		});
+	});
 	list.querySelector('.hitem-delete')?.addEventListener('click', (evt) => {
+		evt.stopPropagation();
 		confirm('결제내역을 삭제하시겠습니까?')
 			? actionManager.notify({
 					key: REMOVE_HISTORY_ACTION,
