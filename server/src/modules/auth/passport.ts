@@ -30,11 +30,10 @@ const google = new GoogleStrategy(
 	{
 		clientID: googleCredentials.clientId,
 		clientSecret: googleCredentials.clientSecret,
-		callbackURL: '/api/google/redirect',
+		callbackURL: '/api/auth/google/redirect',
 	},
 	(accessToken, refreshToken, profile, done: Function) => {
-		logger.debug(accessToken, refreshToken, profile);
-		logger.info('GOOGLE BASED OAUTH VALIDATION GETTING CALLED');
+		console.info('GOOGLE BASED OAUTH VALIDATION GETTING CALLED');
 		return done(null, profile);
 	}
 );

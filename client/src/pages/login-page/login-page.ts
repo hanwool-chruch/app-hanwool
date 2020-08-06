@@ -27,10 +27,10 @@ class LoginPage extends Component {
 		signupBtn.addEventListener('click', () =>
 			Router.notify({ key: 'loadPage', data: { pageName: 'signup' } })
 		);
-		googleBtn.addEventListener('click', () => this.googleLoginHandler);
+		googleBtn.addEventListener('click', () => {
+			location.href = '/api/auth/google';
+		});
 	}
-
-	async googleLoginHandler() {}
 
 	async signinBtnClickHandler() {
 		const emailInput = this.dom.querySelector('.input-email') as HTMLInputElement;
@@ -44,9 +44,7 @@ class LoginPage extends Component {
 			if (response.status === HttpStatus.OK || response.status === HttpStatus.NOT_MODIFIED) {
 				const data = await response.json();
 				console.info(data.message);
-				const token = data.result.token;
 				const serviceId = data.result.serviceId;
-				localStorage.setItem('token', token);
 				ActionManager.notify({ key: LOGIN_ACTION, data: { serviceId } });
 			} else {
 				console.error(`not match user`, response.status);

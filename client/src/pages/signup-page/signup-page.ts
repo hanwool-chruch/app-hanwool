@@ -29,18 +29,17 @@ class SignupPage extends Component {
 		const nameInput = this.dom.querySelector('.input-username') as HTMLInputElement;
 
 		try {
-			const response = await UserApi.emailSignUp({
+			const body = {
 				email: emailInput.value,
 				password: passwordInput.value,
 				name: nameInput.value,
 				image: null,
-			});
+			};
+			const response = await UserApi.emailSignUp(body);
 			if (response.status === HttpStatus.CREATED) {
 				const data = await response.json();
-				const token = data.result.token;
 				const serviceId = data.result.user.service_id;
 				console.info(data.message);
-				localStorage.setItem('token', token);
 				ActionManager.notify({ key: LOGIN_ACTION, data: { serviceId } });
 			} else {
 				console.error('no status CREATED', response.status);

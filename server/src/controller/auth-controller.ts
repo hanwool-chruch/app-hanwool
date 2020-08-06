@@ -20,12 +20,17 @@ const emailLogin = async (req: Request, res: Response, next: NextFunction) => {
 				jwtSecret,
 				{ expiresIn: tokenExpiresIn }
 			);
-			res.status(HttpStatus.OK).json(
-				JsonResponse(`Log in success ${req.body.email}`, {
-					token,
-					serviceId: isValidUser.service_id,
+			res
+				.cookie('authorization', token, {
+					// 2 분 뒤 만료
+					expires: new Date(Date.now() + 2 * 60 * 1000),
 				})
-			);
+				.status(HttpStatus.OK)
+				.json(
+					JsonResponse(`Log in success ${req.body.email}`, {
+						serviceId: isValidUser.service_id,
+					})
+				);
 		} else {
 			res.status(HttpStatus.BAD_REQUEST).json(JsonResponse('Invalid login credentials', {}));
 		}
@@ -60,8 +65,12 @@ const emailSignUp = async (req: Request, res: Response, next: NextFunction) => {
 					{ expiresIn: tokenExpiresIn }
 				);
 				res
+					.cookie('authorization', token, {
+						// 2 분 뒤 만료
+						expires: new Date(Date.now() + 2 * 60 * 1000),
+					})
 					.status(HttpStatus.CREATED)
-					.json(JsonResponse(`created user success email(${body.email})`, { user, token }));
+					.json(JsonResponse(`created user success email(${body.email})`, { user }));
 			} else {
 				const service = await Service.create({ service_name: body.email });
 				const dataForUser = {
@@ -97,16 +106,16 @@ const emailSignUp = async (req: Request, res: Response, next: NextFunction) => {
 	}
 };
 
-const googleRedirect = (req: Request, res: Response, next: NextFunction) => {
+const googleRedirect = async (req: Request, res: Response, next: NextFunction) => {
 	const googleUser: any = req.user;
-	logger.debug('redirected', googleUser);
-	const user = {
-		name: googleUser.name.displayName,
+	const tokenUser = {
+		user_id: googleUser.id,
+		name: googleUser.displayName,
 		email: googleUser._json.email,
 		provider: googleUser.provider,
 	};
 
-	userController.findOrCreate(user, 'google');
+	const { user, serviceId } = await userController.findOrCreate(tokenUser, 'google');
 	const token = jwt.sign(
 		{
 			data: user,
@@ -114,8 +123,14 @@ const googleRedirect = (req: Request, res: Response, next: NextFunction) => {
 		jwtSecret,
 		{ expiresIn: tokenExpiresIn }
 	);
-	res.cookie('authorization', token);
-	res.redirect('/');
+
+	const now = new Date();
+	const yearAndMonth = `${now.getFullYear()}-${now.getMonth() + 1}`;
+	res.cookie('authorization', token, {
+		// 2 분 뒤 만료
+		expires: new Date(Date.now() + 2 * 60 * 1000),
+	});
+	res.redirect(`/${(serviceId + 3000).toString(16)}/${yearAndMonth}/history`);
 };
 
 const isValidToken = (req: Request, res: Response, next: NextFunction) => {

@@ -1,5 +1,6 @@
 import Component from '../component';
 import Router from '../../router';
+import { deleteCookie } from '../../utils/cookie-manager';
 
 export default class Header extends Component {
 	dom: HTMLElement;
@@ -29,7 +30,7 @@ export default class Header extends Component {
 		const logoutBtn = this.dom.querySelector('.logout-btn') as HTMLSpanElement;
 		const openPaymentBtn = this.dom.querySelector('.open-payment-btn') as HTMLSpanElement;
 		logoutBtn.addEventListener('click', (e: Event) => {
-			localStorage.removeItem('token');
+			deleteCookie('authorization');
 			Router.notify({ key: 'loadPage', data: { pageName: 'login' } });
 		});
 	}

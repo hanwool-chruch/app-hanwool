@@ -14,7 +14,7 @@ const defaultOptions = (method: string, token?: string) => {
 };
 
 const createParams = (data: Object) => {
-	return data
+	return Object.keys(data).length !== 0
 		? '?' +
 				Object.keys(data)
 					.map((k) => encodeURIComponent(k) + '=' + encodeURIComponent(data[k]))

@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import CustomError from '../exception/custom-error';
 import HttpStatus from 'http-status';
-import { User } from '../model';
+import { User, Service } from '../model';
 
 /**
  * @api {get} /user/:id Request User information
@@ -57,19 +57,38 @@ const findOrCreate = async (tokenUser: any, provider: string) => {
 	try {
 		const users = await User.findByEmail(tokenUser.email);
 		if (users.length === 0) {
-			const user = await User.registerUser(tokenUser, 'user');
-			tokenUser.user_id = user.user_id;
-			const socialUser = User.registerUser(tokenUser, 'social_user');
-			return { user, socialUser };
+			const service = await Service.create({ service_name: tokenUser.email });
+			const userBody = {
+				email: tokenUser.email,
+				name: tokenUser.name,
+				image: null,
+				service_id: service.service_id,
+			};
+			const user = await User.registerUser(userBody, 'user');
+
+			const socialBody = {
+				social_email: tokenUser.email,
+				social_id: tokenUser.user_id,
+				user_id: user.user_id,
+				provider: provider,
+			};
+			const socialUser = await User.registerUser(socialBody, 'social_user');
+			return { user: socialUser, serviceId: service.service_id };
 		} else {
-			const filteredUser = users.filter((user) => user?.provider === provider);
-			if (filteredUser) return { filteredUser };
-			else {
+			const socialUsers = await User.findSocialUser(tokenUser.email);
+			const filteredUser = socialUsers.filter((user) => user.provider === provider);
+			if (filteredUser.length) {
+				return { user: filteredUser[0], serviceId: users[0].service_id };
+			} else {
 				const user = users[0];
-				const user_id = user?.user_id;
-				tokenUser.user_id = user_id;
-				const socialUser = User.registerUser(tokenUser, 'social_user');
-				return { user, socialUser };
+				const socialBody = {
+					social_email: tokenUser.email,
+					social_id: tokenUser.user_id,
+					user_id: user.user_id,
+					provider: provider,
+				};
+				const socialUser = await User.registerUser(socialBody, 'social_user');
+				return { user: socialUser, serviceId: user.service_id };
 			}
 		}
 	} catch (err) {
