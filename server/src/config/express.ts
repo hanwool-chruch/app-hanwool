@@ -28,6 +28,7 @@ app.set('view engine', 'html');
 app.use(passport.initialize());
 passport.use(strategies.jwt);
 passport.use(strategies.google);
+passport.use(strategies.github);
 
 app.use('/', router);
 app.use(errorHandler);
