@@ -22,19 +22,13 @@ const createParams = (data: Object) => {
 		: '';
 };
 
-const GET = (uri: string, data: Object, token?: string): any =>
-	fetch(`${uri}${createParams(data)}`, defaultOptions('GET', token));
+const GET = (uri: string, data?: Object) =>
+	fetch(`${uri}${data ? createParams(data) : ''}`, defaultOptions('GET'));
 
 const HEAD = (uri: string, data: Object, token?: string): any =>
 	fetch(`${uri}${createParams(data)}`, defaultOptions('HEAD', token));
 
-const POST = (uri: string, data: Object, token?: string): any =>
-	fetch(`${uri}`, {
-		body: JSON.stringify(data),
-		...defaultOptions('POST', token),
-	});
-
-const PUT = (uri: string, data: Object, token?: string): any =>
+const POST = (uri: string, data: Object, token?: string) =>
 	fetch(`${uri}`, {
 		...defaultOptions('PUT', token),
 		body: JSON.stringify(data),
@@ -43,6 +37,11 @@ const PUT = (uri: string, data: Object, token?: string): any =>
 const PATCH = (uri: string, data: Object, token?: string): any =>
 	fetch(`${uri}`, {
 		...defaultOptions('PATCH', token),
+		body: JSON.stringify(data),
+	});
+const PUT = (uri: string, data: Object, token?: string) =>
+	fetch(`${uri}`, {
+		...defaultOptions('PUT', token),
 		body: JSON.stringify(data),
 	});
 

@@ -27,7 +27,7 @@ class Editor extends Component {
 		this.initHistoryDate();
 		this.appendChilds();
 		this.listener();
-		// await this.fetchSelectorData();
+		await this.fetchSelectorData();
 	}
 
 	private initClassList() {
@@ -103,16 +103,14 @@ class Editor extends Component {
 
 	private async fetchSelectorData() {
 		const service_id = 1;
-		const paymentDto: PaymentDto.GET_DATA = { service_id };
 		const categoryDto: CategoryDto.GET_DATA = { service_id };
 		try {
-			const paymentRes = await PaymentApi.findAll(paymentDto);
-			const payments = (await paymentRes.json()).result;
+			const payments = await PaymentApi.findAll(service_id);
 
 			for (let i = 0; i < payments.length; i++) {
 				const payment = document.createElement('option');
-				payment.text = payments[i].payment_name;
-				payment.value = payments[i].payment_id;
+				payment.text = payments[i].name;
+				payment.value = payments[i].id;
 				this.paymentSelector.add(payment);
 			}
 
