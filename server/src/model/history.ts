@@ -1,32 +1,84 @@
 import { mysql } from '../modules/database/mysql';
 import { HistoryDto } from '@shared/dto';
+import { History } from '@shared/dto/history-dto';
 
-const create = async (history: HistoryDto.CREATE) => {
+const FIND_BY_MONTH =
+	'SELECT * FROM history h JOIN category c ON h.category_category_id=c.category_id JOIN payment p ON h.payment_payment_id=p.payment_id WHERE h.service_id=? and h.history_date between ? and ?';
+
+const create = async (history: HistoryDto.AddHistoryDto): Promise<HistoryDto.History> => {
 	let historyData;
+	const addHistoryData = {
+		service_id: history.service_id,
+		price: history.price,
+		content: history.content,
+		history_date: new Date(history.history_date),
+		payment_payment_id: history.payment_id,
+		category_category_id: history.category_id,
+	};
+
+	let payment: string;
+	let category: string;
+	let history_id: number;
 	try {
-		historyData = await mysql.connect((con: any) => {
-			return con.query(`INSERT INTO history SET ?`, history);
+		historyData = await mysql.connect(async (con: any) => {
+			let rows;
+			rows = await con.query(`INSERT INTO history SET ?`, addHistoryData);
+			history_id = rows[0].insertId;
+
+			[rows] = await con.query('SELECT payment_name FROM payment WHERE payment_id=?', [
+				history.payment_id,
+			]);
+			payment = rows[0].payment_name;
+
+			[rows] = await con.query('SELECT category_name FROM category WHERE category_id=?', [
+				history.category_id,
+			]);
+			category = rows[0].category_name;
 		});
-		const history_id = historyData[0].insertId;
-		const result = { ...history, history_id };
+
+		const result = {
+			id: history_id!,
+			price: history.price,
+			content: history.content,
+			category: category!,
+			payment: payment!,
+			historyDate: new Date(history.history_date),
+		};
 		return result;
 	} catch (err) {
 		throw err;
 	}
 };
 
-const findByMonth = async (history: HistoryDto.GET_DATA) => {
-	let historyData;
+const findByMonth = async ({
+	serviceId,
+	year,
+	month,
+}: {
+	serviceId: number;
+	year: number;
+	month: number;
+}): Promise<History[]> => {
+	const startDate = new Date(year, month - 1, 1, 1, 0, 0, 0);
+	const endDate = new Date(year, month, 1, 0, 0, 0);
+
+	const escapeDate = (date: Date) => [date.getFullYear(), date.getMonth() + 1, 1].join('-');
 	try {
-		historyData = await mysql.connect((con: any) =>
-			con.query(
-				`SELECT history_id, price, content, history_date, create_date, update_date, payment_id, category_id, service_id WHERE service_id = ${history.service_id} AND history_date BETWEEN ${history.startDate} AND ${history.endDate}`
-			)
+		const [histories] = await mysql.connect((con: any) =>
+			con.query(FIND_BY_MONTH, [serviceId, escapeDate(startDate), escapeDate(endDate)])
 		);
+
+		return histories.map((data: any) => ({
+			id: data.history_id,
+			price: data.price,
+			content: data.content,
+			historyDate: data.history_date,
+			category: data.category_name,
+			payment: data.payment_name,
+		}));
 	} catch (err) {
 		throw err;
 	}
-	return [...historyData][0];
 };
 
 const update = async (history: HistoryDto.UPDATE) => {

@@ -8,13 +8,16 @@ interface GET_DATA {
 	service_id: number;
 }
 
-interface RESPONSE_DATA {
-	category_id: number;
-	category_name: string;
-	delete_date: Date;
-	create_date: Date;
+type CategoryDto = {
+	id: number;
+	name: string;
+	create_date: string;
 	service_id: number;
-	for_income: boolean;
+};
+
+interface RESPONSE_DATA {
+	income: CategoryDto[];
+	outcome: CategoryDto[];
 }
 
 export { CREATE, GET_DATA, RESPONSE_DATA };

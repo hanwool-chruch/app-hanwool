@@ -3,7 +3,7 @@ import { HistoryController } from '../controller';
 
 const historyRouter = Router();
 historyRouter.post('/', HistoryController.create);
-historyRouter.get('/', HistoryController.findByMonth);
+historyRouter.get('/:serviceId/:year/:month', HistoryController.findByMonth);
 historyRouter.put('/', HistoryController.update);
 historyRouter.delete('/', HistoryController.remove);
 

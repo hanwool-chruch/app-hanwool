@@ -1,6 +1,5 @@
 import Component from '../../../component';
 import { CategoryApi, PaymentApi } from '../../../../api';
-import { PaymentDto, CategoryDto } from '@shared/dto';
 import ActionManager, {
 	ADD_HISTORY_ACTION,
 	AddHistoryData,
@@ -27,7 +26,7 @@ class Editor extends Component {
 		this.initHistoryDate();
 		this.appendChilds();
 		this.listener();
-		// await this.fetchSelectorData();
+		this.fetchSelectorData();
 	}
 
 	private initClassList() {
@@ -103,38 +102,40 @@ class Editor extends Component {
 
 	private async fetchSelectorData() {
 		const service_id = 1;
-		const paymentDto: PaymentDto.GET_DATA = { service_id };
-		const categoryDto: CategoryDto.GET_DATA = { service_id };
+		let payments = null;
+		let categories = null;
 		try {
-			const paymentRes = await PaymentApi.findAll(paymentDto);
-			const payments = (await paymentRes.json()).result;
-
-			for (let i = 0; i < payments.length; i++) {
-				const payment = document.createElement('option');
-				payment.text = payments[i].payment_name;
-				payment.value = payments[i].payment_id;
-				this.paymentSelector.add(payment);
-			}
-
-			const categoryRes = await CategoryApi.findAll(categoryDto);
-			const categories = (await categoryRes.json()).result;
-			const incomeCategories = [];
-			const outcomeCategories = [];
-			for (let i = 0; i < categories.length; i++) {
-				const category = document.createElement('option');
-				category.text = categories[i].category_name;
-				category.value = categories[i].category_id;
-				if (categories[i].for_income) {
-					incomeCategories.push(categories[i]);
-					this.incomeCategorySelector.add(category);
-				} else {
-					outcomeCategories.push(categories[i]);
-					this.outcomeCategorySelector.add(category);
-				}
-			}
+			payments = await PaymentApi.findByServiceId(service_id);
+			categories = await CategoryApi.findByServiceId(service_id);
 		} catch (err) {
 			throw err;
 		}
+
+		for (let i = 0; i < payments.length; i++) {
+			const payment = document.createElement('option');
+			payment.text = payments[i].name;
+			payment.value = payments[i].id + '';
+			this.paymentSelector.add(payment);
+		}
+
+		const incomeCategories = [];
+		const outcomeCategories = [];
+
+		categories.income.forEach((cat) => {
+			const category = document.createElement('option');
+			category.text = cat.name;
+			category.value = cat.id + '';
+			incomeCategories.push(category);
+			this.incomeCategorySelector.add(category);
+		});
+
+		categories.outcome.forEach((cat) => {
+			const category = document.createElement('option');
+			category.text = cat.name;
+			category.value = cat.id + '';
+			outcomeCategories.push(category);
+			this.outcomeCategorySelector.add(category);
+		});
 	}
 
 	private initHistoryDate() {

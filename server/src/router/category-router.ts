@@ -3,6 +3,6 @@ import { CategoryController } from '../controller';
 
 const categoryRouter = Router();
 categoryRouter.post('/', CategoryController.create);
-categoryRouter.get('/', CategoryController.findByServiceId);
+categoryRouter.get('/:id', CategoryController.findByServiceId);
 
 export default categoryRouter;

@@ -4,17 +4,14 @@ import { History } from '../model';
 import { JsonResponse } from '../modules/util';
 import logger from '../config/logger';
 import { HistoryDto } from '@shared/dto';
+import { AddHistoryDto } from '@shared/dto/history-dto';
 
 /**
- * @api {post} /service Request Service create
- * @apiName create
- * @apiGroup Service
- *
- * @apiParam {Number} user_id User unique ID.
+ * @api {post} /api/history
+ * @apiName Request creating history
+ * @apiGroup History
  *
  * @apiSuccess {Number} service_id service id of the Service.
- * @apiSuccess {String} service_name  service name of the Service.
- * @apiSuccess {Date} create_date create date of the Service.
  *
  * @apiSuccessExample Success-Response:
  *     HTTP/1.1 200 OK
@@ -42,9 +39,18 @@ import { HistoryDto } from '@shared/dto';
  */
 const create = async (req: Request, res: Response, next: NextFunction) => {
 	const { body } = req;
+	//TODO validate body
+	const dto: AddHistoryDto = {
+		service_id: body.service_id,
+		price: body.price,
+		content: body.content,
+		history_date: body.history_date,
+		category_id: body.category_id,
+		payment_id: body.payment_id,
+	};
 
 	try {
-		const history = await History.create(body as any);
+		const history = await History.create(dto);
 		if (history) {
 			res
 				.status(HttpStatus.CREATED)
@@ -60,18 +66,26 @@ const create = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 const findByMonth = async (req: Request, res: Response, next: NextFunction) => {
-	const { query } = req;
+	// params: { serviceId: '1', year: '2020', month: '8' }
 
+	const params = req.params;
+	const findArgs = {
+		serviceId: parseInt(params.serviceId),
+		year: parseInt(params.year),
+		month: parseInt(params.month),
+	};
 	try {
-		const history = await History.findByMonth(query as any);
+		const history = await History.findByMonth(findArgs);
 		if (history.length) {
 			res
 				.status(HttpStatus.OK)
-				.json(JsonResponse(`got histories by month ${query.startDate}`, history));
+				.json(
+					JsonResponse(`got histories by month ${req.params.year}-${req.params.month}`, history)
+				);
 		} else {
 			res
 				.status(HttpStatus.BAD_REQUEST)
-				.json(JsonResponse(`no histories by month ${query.startDate}`, null));
+				.json(JsonResponse(`no histories by month ${req.params.year}-${req.params.month}`, null));
 		}
 	} catch (err) {
 		next(err);

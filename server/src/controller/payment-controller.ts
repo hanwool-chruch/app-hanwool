@@ -60,18 +60,19 @@ const create = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 const findByServiceId = async (req: Request, res: Response, next: NextFunction) => {
-	const { query } = req;
+	const serviceId = parseInt(req.params.id);
+	if (isNaN(serviceId)) next(new Error('Improper servide id'));
 
 	try {
-		const payment = await Payment.findByServiceId(query as any);
+		const payment = await Payment.findByServiceId(serviceId);
 		if (payment) {
 			res
 				.status(HttpStatus.OK)
-				.json(JsonResponse(`got payments by service id ${query.service_id}`, payment));
+				.json(JsonResponse(`got payments by service id ${serviceId}`, payment));
 		} else {
 			res
 				.status(HttpStatus.BAD_REQUEST)
-				.json(JsonResponse(`no payments by service id ${query.service_id}`, null));
+				.json(JsonResponse(`no payments by service id ${serviceId}`, null));
 		}
 	} catch (err) {
 		next(err);

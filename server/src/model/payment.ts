@@ -1,6 +1,9 @@
 import { mysql } from '../modules/database/mysql';
 import { PaymentDto } from '../../../shared/dto';
 
+const FIND_BY_SERVICE_ID =
+	'SELECT payment_id, payment_name, service_id, create_date FROM payment where payment.service_id = ? AND payment.delete_date IS NULL';
+
 const create = async (payment: PaymentDto.CREATE) => {
 	let paymentData;
 	try {
@@ -15,22 +18,19 @@ const create = async (payment: PaymentDto.CREATE) => {
 	}
 };
 
-/**
- * todo
- * delete_date null인것만 조회
- */
-const findByServiceId = async (payment: PaymentDto.GET_DATA) => {
+const findByServiceId = async (servicdId: number): Promise<PaymentDto.RESPONSE_DATA> => {
 	let paymentData;
 	try {
-		paymentData = await mysql.connect((con: any) =>
-			con.query(
-				`SELECT payment_id, payment_name, service_id, create_date FROM payment where payment.service_id = '${payment.service_id}'`
-			)
-		);
+		[paymentData] = await mysql.connect((con: any) => con.query(FIND_BY_SERVICE_ID, [servicdId]));
 	} catch (err) {
 		throw err;
 	}
-	return [...paymentData][0];
+
+	return paymentData.map((data: any) => ({
+		id: data.payment_id,
+		name: data.payment_name,
+		service_id: data.service_id,
+	}));
 };
 
 export default {
