@@ -1,6 +1,7 @@
 import { POST, GET, PATCH, PUT, DELETE } from './utils';
 import { AddHistoryDto, History } from '@shared/dto/history-dto';
 import { ApiSuccessResponse } from '@shared/dto/api-response';
+import { HistoryDto } from '@shared/dto';
 
 const create = (data: AddHistoryDto): Promise<History> =>
 	POST('/api/history', data)
@@ -36,7 +37,19 @@ const findByMonth = (data: FindByMonth): Promise<History[]> =>
 			}) as History[];
 		}) as Promise<History[]>;
 
-const update = (data: JSON) => PUT('/api/history', data);
+const update = (historyId: number, data: HistoryDto.EditHistoryDto): Promise<History> =>
+	PUT(`/api/history/${historyId}`, data)
+		.then((res: any) => {
+			if (res.ok) return res.json();
+			else {
+				//TODO: Error handling
+				throw new Error('Error');
+			}
+		})
+		.then((res: ApiSuccessResponse) => {
+			return { ...res.result, historyDate: new Date(res.result.historyDate) };
+		});
+
 const softDelete = (data: { id: number }) => DELETE(`/api/history/${data.id}`);
 
 export default { create, findByMonth, update, softDelete };

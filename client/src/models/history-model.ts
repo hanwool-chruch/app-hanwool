@@ -10,6 +10,8 @@ import { insertAt } from '../utils/insert-item-at';
 import { YearAndMonth } from '../router';
 import Router from '../router';
 import historyApi from '../api/history-api';
+import { HistoryApi } from '../api';
+import { HistoryDto } from '@shared/dto';
 
 const apiMock = (data: any) =>
 	new Promise((resolve) => resolve({ ...data, id: ~~(Math.random() * 1000) }));
@@ -152,7 +154,9 @@ class HistoryModel extends Observable {
 	async edit(h: History): Promise<void> {
 		let response: History;
 		try {
-			response = (await apiMock(h)) as any;
+			const editArgs = { ...h };
+			delete editArgs.id;
+			response = await historyApi.update(h.id, editArgs);
 
 			const key = createKey(
 				this.serviceId,
