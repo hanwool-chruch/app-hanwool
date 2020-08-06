@@ -12,6 +12,7 @@ import { YearAndMonth } from '../router';
 import Router from '../router';
 import api from '../api/history-api';
 import historyApi from '../api/history-api';
+import { create } from '../api/category-api';
 
 const apiMock = (data: any) =>
 	new Promise((resolve) => resolve({ ...data, id: ~~(Math.random() * 1000) }));
@@ -82,7 +83,7 @@ class HistoryModel extends Observable {
 		let data: History[];
 		try {
 			data = await api.findByMonth({
-				servideId: 1,
+				servideId: this.serviceId,
 				year: this.year,
 				month: this.month,
 			});
@@ -90,7 +91,7 @@ class HistoryModel extends Observable {
 			data = [];
 			console.error(err);
 		}
-		const key = `${this.serviceId}/${this.year}-${this.month}`;
+		const key = createKey(this.serviceId, this.year, this.month);
 		this.data.set(key, data);
 		this.notify({ key: 'sendToViews', data: data });
 	}
@@ -98,7 +99,7 @@ class HistoryModel extends Observable {
 	async add(h: AddHistoryData): Promise<void> {
 		let response: History;
 		const data: AddHistoryDto = {
-			service_id: 1,
+			service_id: this.serviceId,
 			price: h.price,
 			content: h.content,
 			history_date: h.historyDate,
@@ -123,19 +124,22 @@ class HistoryModel extends Observable {
 			this.notify({ key: 'sendToViews', data: newData });
 	}
 
-	async remove(h: { history_id: number; historyDate: string }): Promise<void> {
+	async remove(h: History): Promise<void> {
 		try {
 			await apiMock(h);
 
-			const dateArr = h.historyDate.split(' .');
-			const key = `${dateArr[0]}-${dateArr[1]}`;
+			const key = createKey(
+				this.serviceId,
+				h.historyDate.getFullYear(),
+				h.historyDate.getMonth() + 1
+			);
 			const data = this.data.get(key);
 			if (!data) {
 				//TODO: Error handling
 				throw new Error(`No data :${h.historyDate}`);
 			}
 
-			const newData = data.filter((history) => history.id !== h.history_id);
+			const newData = data.filter((history) => history.id !== h.id);
 			this.data.set(key, newData);
 			this.notify({ key: 'sendToViews', data: newData });
 		} catch (err) {
@@ -143,19 +147,22 @@ class HistoryModel extends Observable {
 		}
 	}
 
-	async edit(h: EditHistoryData): Promise<void> {
+	async edit(h: History): Promise<void> {
 		try {
 			const response: History = (await apiMock(h)) as any;
 
-			const dateArr = h.historyDate.split(' .');
-			const key = `${dateArr[0]}-${dateArr[1]}`;
+			const key = createKey(
+				this.serviceId,
+				h.historyDate.getFullYear(),
+				h.historyDate.getMonth() + 1
+			);
 			const data = this.data.get(key);
 			if (!data) {
 				//TODO: Error handling
 				throw new Error(`No data :${h.historyDate}`);
 			}
 
-			let newData = data.filter((history) => history.id !== h.history_id);
+			let newData = data.filter((history) => history.id !== h.id);
 			newData = insertHistory(newData, response);
 			this.data.set(key, newData);
 			this.notify({ key: 'sendToViews', data: newData });
@@ -181,6 +188,10 @@ function insertHistory(list: History[], item: History) {
 		}
 	}
 	return [...list, item];
+}
+
+function createKey(serviceId: number, year: number, month: number): string {
+	return [serviceId, year, month].join('-');
 }
 
 export default new HistoryModel();
