@@ -2,26 +2,30 @@ import { Request, Response, NextFunction } from 'express';
 import HttpStatus from 'http-status';
 import { JsonResponse } from '../modules/util';
 import userController from './user-controller';
-import { User } from '../model';
+import { User, Service } from '../model';
 import jwt from 'jsonwebtoken';
 import { jwtSecret, tokenExpiresIn } from '../config/consts';
 import logger from '../config/logger';
 import CustomError from '../exception/custom-error';
 
-const emailLogin = (req: Request, res: Response, next: NextFunction) => {
+const emailLogin = async (req: Request, res: Response, next: NextFunction) => {
 	try {
-		const isValidUser = userController.checkUserPassword(req.body);
+		const isValidUser = await userController.checkUserPassword(req.body);
 		if (isValidUser) {
-			delete req.body.password;
-			let token = jwt.sign(
+			delete isValidUser.password;
+			const token = jwt.sign(
 				{
-					data: req.body,
+					data: isValidUser,
 				},
 				jwtSecret,
 				{ expiresIn: tokenExpiresIn }
 			);
-			res.cookie('authorization', token);
-			res.status(HttpStatus.OK).json(JsonResponse(`Log in success ${req.body.email}`, {}));
+			res.status(HttpStatus.OK).json(
+				JsonResponse(`Log in success ${req.body.email}`, {
+					token,
+					serviceId: isValidUser.service_id,
+				})
+			);
 		} else {
 			res.status(HttpStatus.BAD_REQUEST).json(JsonResponse('Invalid login credentials', {}));
 		}
@@ -31,30 +35,61 @@ const emailLogin = (req: Request, res: Response, next: NextFunction) => {
 };
 
 const emailSignUp = async (req: Request, res: Response, next: NextFunction) => {
-	const { query } = req;
-	logger.debug('query: ', query);
+	const { body } = req;
+
 	try {
-		const users = await User.findByEmail(query.email as string);
+		const users = await User.findByEmail(body.email as string);
 		const existsEmailUser = users.filter((user) => user?.provider === 'email');
-		if (existsEmailUser) {
-			throw new CustomError(HttpStatus.BAD_REQUEST, `already exists email ${query.email}`);
+		if (existsEmailUser.length) {
+			throw new CustomError(HttpStatus.BAD_REQUEST, `already exists email ${body.email}`);
 		} else {
-			query.provider = 'email';
 			if (users.length !== 0) {
 				const user = users[0];
-				delete user?.provider;
-				query.user_id = user?.user_id.toString(); //user_id 는 number라서 테스트 필요
-				const emailUser = await User.registerUser(query as any, 'email_user');
+				const dataForEmailUser = {
+					email: body.email,
+					password: body.password,
+					user_id: user?.user_id,
+					provider: 'email',
+				};
+				await User.registerUser(dataForEmailUser as any, 'email_user');
+				const token = jwt.sign(
+					{
+						data: user,
+					},
+					jwtSecret,
+					{ expiresIn: tokenExpiresIn }
+				);
 				res
 					.status(HttpStatus.CREATED)
-					.json(JsonResponse(`created user success email(${query.email})`, { user, emailUser }));
+					.json(JsonResponse(`created user success email(${body.email})`, { user, token }));
 			} else {
-				const user = await User.registerUser(query as any, 'user');
-				query.user_id = user?.user_id.toString(); //user_id 는 number라서 테스트 필요
-				const emailUser = await User.registerUser(query as any, 'email_user');
+				const service = await Service.create({ service_name: body.email });
+				const dataForUser = {
+					email: body.email,
+					name: body.name,
+					image: null,
+					service_id: service.service_id,
+				};
+				const user = await User.registerUser(dataForUser as any, 'user');
+
+				const dataForEmailUser = {
+					email: body.email,
+					password: body.password,
+					user_id: user?.user_id,
+					provider: 'email',
+				};
+				await User.registerUser(dataForEmailUser as any, 'email_user');
+
+				const token = jwt.sign(
+					{
+						data: user,
+					},
+					jwtSecret,
+					{ expiresIn: tokenExpiresIn }
+				);
 				res
 					.status(HttpStatus.CREATED)
-					.json(JsonResponse(`created user success email(${query.email})`, { user, emailUser }));
+					.json(JsonResponse(`created user success email(${body.email})`, { user, token }));
 			}
 		}
 	} catch (err) {
@@ -83,4 +118,9 @@ const googleRedirect = (req: Request, res: Response, next: NextFunction) => {
 	res.redirect('/');
 };
 
-export default { emailSignUp, emailLogin, googleRedirect };
+const isValidToken = (req: Request, res: Response, next: NextFunction) => {
+	if (req.user) res.sendStatus(HttpStatus.OK);
+	else res.sendStatus(HttpStatus.UNAUTHORIZED);
+};
+
+export default { emailSignUp, emailLogin, googleRedirect, isValidToken };

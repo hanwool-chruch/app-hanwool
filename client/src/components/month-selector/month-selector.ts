@@ -16,13 +16,13 @@ export default class MonthSelector extends Component {
 		this.dom = document.createElement('div');
 		this.state = state;
 		this.init();
-		this.initEventManager();
 	}
 
 	init(): void {
 		this.dom.classList.add('month-selector');
 		this.render();
 		this.listener();
+		this.initEventManager();
 	}
 
 	private initEventManager() {
