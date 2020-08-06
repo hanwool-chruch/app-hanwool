@@ -1,6 +1,5 @@
 import Component from '../../../component';
 import { CategoryApi, PaymentApi } from '../../../../api';
-import { PaymentDto, CategoryDto } from '@shared/dto';
 import ActionManager, {
 	ADD_HISTORY_ACTION,
 	AddHistoryData,
@@ -27,7 +26,7 @@ class Editor extends Component {
 		this.initHistoryDate();
 		this.appendChilds();
 		this.listener();
-		await this.fetchSelectorData();
+		this.fetchSelectorData();
 	}
 
 	private initClassList() {
@@ -106,7 +105,7 @@ class Editor extends Component {
 		let payments = null;
 		let categories = null;
 		try {
-			payments = await PaymentApi.findAll(service_id);
+			payments = await PaymentApi.findByServiceId(service_id);
 			categories = await CategoryApi.findByServiceId(service_id);
 		} catch (err) {
 			throw err;

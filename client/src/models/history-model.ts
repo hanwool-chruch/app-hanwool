@@ -1,7 +1,6 @@
 import actionManager, {
 	Observable,
 	AddHistoryData,
-	EditHistoryData,
 	ADD_HISTORY_ACTION,
 	EDIT_HISTORY_ACTION,
 	REMOVE_HISTORY_ACTION,
@@ -10,9 +9,7 @@ import { History, AddHistoryDto } from '@shared/dto/history-dto';
 import { insertAt } from '../utils/insert-item-at';
 import { YearAndMonth } from '../router';
 import Router from '../router';
-import api from '../api/history-api';
 import historyApi from '../api/history-api';
-import { create } from '../api/category-api';
 
 const apiMock = (data: any) =>
 	new Promise((resolve) => resolve({ ...data, id: ~~(Math.random() * 1000) }));
@@ -83,7 +80,7 @@ class HistoryModel extends Observable {
 	private async load(): Promise<void> {
 		let data: History[];
 		try {
-			data = await api.findByMonth({
+			data = await historyApi.findByMonth({
 				servideId: this.serviceId,
 				year: this.year,
 				month: this.month,
@@ -98,7 +95,7 @@ class HistoryModel extends Observable {
 	}
 
 	async add(h: AddHistoryData): Promise<void> {
-		let response: History;
+		let resultHistory: History;
 		const data: AddHistoryDto = {
 			service_id: this.serviceId,
 			price: h.price,
@@ -108,19 +105,21 @@ class HistoryModel extends Observable {
 			payment_id: h.payment,
 		};
 		try {
-			response = await historyApi.create(data);
+			resultHistory = await historyApi.create(data);
 		} catch (err) {
 			throw new Error(`add data error`);
 		}
 
-		response.historyDate = new Date(response.historyDate);
-		const key = `${response.historyDate.getFullYear()}-${response.historyDate.getMonth() + 1}`;
+		resultHistory.historyDate = new Date(resultHistory.historyDate);
+		const key = `${resultHistory.historyDate.getFullYear()}-${
+			resultHistory.historyDate.getMonth() + 1
+		}`;
 		const oldData = this.data.get(key) || [];
-		const newData = insertHistory(oldData, response);
+		const newData = insertHistory(oldData, resultHistory);
 		this.data.set(key, newData);
 		if (
-			this.year === response.historyDate.getFullYear() &&
-			this.month === response.historyDate.getMonth() + 1
+			this.year === resultHistory.historyDate.getFullYear() &&
+			this.month === resultHistory.historyDate.getMonth() + 1
 		)
 			this.notify({ key: 'sendToViews', data: newData });
 	}
