@@ -1,5 +1,22 @@
 import { mysql } from '../modules/database/mysql';
 import { HistoryDto } from '@shared/dto';
+import { History } from '@shared/dto/history-dto';
+import category from './category';
+
+// const FIND_BY_MONTH = `SELECT
+// 	history_id,
+// 	price,
+// 	content,
+// 	history_date,
+// 	create_date,
+// 	update_date,
+// 	payment_id,
+// 	category_id,
+// 	service_id
+// 	WHERE service_id = ? AND history_date BETWEEN ? AND ?`;
+// const FIND_BY_MONTH = 'SELECT * FROM history h ';
+const FIND_BY_MONTH =
+	'SELECT * FROM history h JOIN category c ON h.category_category_id=c.category_id JOIN payment p ON h.payment_payment_id=p.payment_id WHERE h.service_id=? and h.history_date between ? and ?';
 
 const create = async (history: HistoryDto.AddHistoryDto): Promise<HistoryDto.History> => {
 	let historyData;
@@ -46,18 +63,37 @@ const create = async (history: HistoryDto.AddHistoryDto): Promise<HistoryDto.His
 	}
 };
 
-const findByMonth = async (history: HistoryDto.GET_DATA) => {
-	let historyData;
+const findByMonth = async ({
+	serviceId,
+	year,
+	month,
+}: {
+	serviceId: number;
+	year: number;
+	month: number;
+}): Promise<History[]> => {
+	const startDate = new Date(year, month - 1, 1, 1, 0, 0, 0);
+	const endDate = new Date(year, month, 1, 0, 0, 0);
+
+	console.log(startDate, endDate);
+	const escapeDate = (date: Date) => [date.getFullYear(), date.getMonth() + 1, 1].join('-');
 	try {
-		historyData = await mysql.connect((con: any) =>
-			con.query(
-				`SELECT history_id, price, content, history_date, create_date, update_date, payment_id, category_id, service_id WHERE service_id = ${history.service_id} AND history_date BETWEEN ${history.startDate} AND ${history.endDate}`
-			)
+		const [histories] = await mysql.connect((con: any) =>
+			con.query(FIND_BY_MONTH, [serviceId, escapeDate(startDate), escapeDate(endDate)])
 		);
+		console.log(histories);
+
+		return histories.map((data: any) => ({
+			id: data.history_id,
+			price: data.price,
+			content: data.content,
+			historyDate: data.history_date,
+			category: data.category_name,
+			payment: data.payment_name,
+		}));
 	} catch (err) {
 		throw err;
 	}
-	return [...historyData][0];
 };
 
 const update = async (history: HistoryDto.UPDATE) => {

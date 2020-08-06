@@ -66,18 +66,26 @@ const create = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 const findByMonth = async (req: Request, res: Response, next: NextFunction) => {
-	const { query } = req;
+	// params: { serviceId: '1', year: '2020', month: '8' }
 
+	const params = req.params;
+	const findArgs = {
+		serviceId: parseInt(params.serviceId),
+		year: parseInt(params.year),
+		month: parseInt(params.month),
+	};
 	try {
-		const history = await History.findByMonth(query as any);
+		const history = await History.findByMonth(findArgs);
 		if (history.length) {
 			res
 				.status(HttpStatus.OK)
-				.json(JsonResponse(`got histories by month ${query.startDate}`, history));
+				.json(
+					JsonResponse(`got histories by month ${req.params.year}-${req.params.month}`, history)
+				);
 		} else {
 			res
 				.status(HttpStatus.BAD_REQUEST)
-				.json(JsonResponse(`no histories by month ${query.startDate}`, null));
+				.json(JsonResponse(`no histories by month ${req.params.year}-${req.params.month}`, null));
 		}
 	} catch (err) {
 		next(err);
