@@ -60,18 +60,15 @@ const create = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 const findByServiceId = async (req: Request, res: Response, next: NextFunction) => {
-	const { query } = req;
+	const serviceId = parseInt(req.params.id);
+	if (isNaN(serviceId)) next(new Error('Improper servide id'));
 
 	try {
-		const category = await Category.findByServiceId(query as any);
-		if (category) {
-			res
-				.status(HttpStatus.OK)
-				.json(JsonResponse(`got categories by service id ${query.service_id}`, category));
+		const categories = await Category.findByServiceId(serviceId);
+		if (categories) {
+			res.status(200).json(JsonResponse(`Got categories by service ${serviceId}`, categories));
 		} else {
-			res
-				.status(HttpStatus.BAD_REQUEST)
-				.json(JsonResponse(`no categories by service id ${query.service_id}`, null));
+			res.status(404).json(JsonResponse(`No category in service ${serviceId}`, null));
 		}
 	} catch (err) {
 		next(err);

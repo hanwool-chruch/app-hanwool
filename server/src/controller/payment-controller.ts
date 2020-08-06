@@ -60,7 +60,8 @@ const create = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 const findByServiceId = async (req: Request, res: Response, next: NextFunction) => {
-	const { query } = req;
+	const serviceId = parseInt(req.params.id);
+	if (isNaN(serviceId)) next(new Error('Improper servide id'));
 
 	try {
 		const payment = await Payment.findByServiceId(query as any);
