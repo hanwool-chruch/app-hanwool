@@ -111,9 +111,11 @@ class HistoryModel extends Observable {
 		}
 
 		resultHistory.historyDate = new Date(resultHistory.historyDate);
-		const key = `${resultHistory.historyDate.getFullYear()}-${
+		const key = createKey(
+			this.serviceId,
+			resultHistory.historyDate.getFullYear(),
 			resultHistory.historyDate.getMonth() + 1
-		}`;
+		);
 		const oldData = this.data.get(key) || [];
 		const newData = insertHistory(oldData, resultHistory);
 		this.data.set(key, newData);
