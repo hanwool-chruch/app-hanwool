@@ -1,7 +1,7 @@
 import Component from '../../components/component';
 import HttpStatus from 'http-status';
 import { UserApi } from '../../api';
-import ActionManager from '../../utils/action-manager';
+import ActionManager, { LOGIN_ACTION } from '../../utils/action-manager';
 import Router from '../../router';
 
 class LoginPage extends Component {
@@ -21,12 +21,16 @@ class LoginPage extends Component {
 	listener() {
 		const signinBtn = this.dom.querySelector('.signinBtn') as HTMLButtonElement;
 		const signupBtn = this.dom.querySelector('.signup-page-btn') as HTMLSpanElement;
+		const googleBtn = this.dom.querySelector('.googleBtn') as HTMLSpanElement;
 
 		signinBtn.addEventListener('click', this.signinBtnClickHandler.bind(this));
 		signupBtn.addEventListener('click', () =>
 			Router.notify({ key: 'loadPage', data: { pageName: 'signup' } })
 		);
+		googleBtn.addEventListener('click', () => this.googleLoginHandler);
 	}
+
+	async googleLoginHandler() {}
 
 	async signinBtnClickHandler() {
 		const emailInput = this.dom.querySelector('.input-email') as HTMLInputElement;
@@ -43,7 +47,7 @@ class LoginPage extends Component {
 				const token = data.result.token;
 				const serviceId = data.result.serviceId;
 				localStorage.setItem('token', token);
-				ActionManager.notify({ key: 'login', data: { serviceId } });
+				ActionManager.notify({ key: LOGIN_ACTION, data: { serviceId } });
 			} else {
 				console.error(`not match user`, response.status);
 			}

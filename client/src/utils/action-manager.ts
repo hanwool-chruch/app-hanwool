@@ -1,3 +1,5 @@
+// import ACTION_KEYS from './action-keys';
+
 type Subscriber<T> = (data: T) => void;
 
 export const POP_STATE_ACTION = 'popstate' as const;
@@ -6,6 +8,7 @@ export const EDIT_HISTORY_ACTION = 'editHistory' as const;
 export const REMOVE_HISTORY_ACTION = 'removeHistory' as const;
 export const CHANGE_DATE_ACTION = 'changeDate' as const;
 export const CHANGE_TAB_ACTION = 'changeTab' as const;
+export const LOGIN_ACTION = 'login' as const;
 
 type ACTION_KEYS =
 	| typeof POP_STATE_ACTION
@@ -13,9 +16,25 @@ type ACTION_KEYS =
 	| typeof EDIT_HISTORY_ACTION
 	| typeof REMOVE_HISTORY_ACTION
 	| typeof CHANGE_DATE_ACTION
-	| typeof CHANGE_TAB_ACTION;
+	| typeof CHANGE_TAB_ACTION
+	| typeof LOGIN_ACTION;
 
 // TODO: find a way to integrate Action/Subscriber types
+
+//login
+type LoginData = {
+	serviceId: number;
+};
+
+type LoginAction = {
+	key: typeof LOGIN_ACTION;
+	data: LoginData;
+};
+
+type LoginSubscriber = {
+	key: typeof LOGIN_ACTION;
+	observer: Subscriber<LoginData>;
+};
 
 // PopState
 type PopStateData = {
@@ -130,7 +149,8 @@ type NotifyType =
 	| EditHistoryAction
 	| RemoveHistoryAction
 	| ChangeDateAction
-	| ChangeTabAction;
+	| ChangeTabAction
+	| LoginAction;
 
 type SubscriberType =
 	| PopStateSubscriber
@@ -138,7 +158,8 @@ type SubscriberType =
 	| EditHistorySubscriber
 	| RemoveHistorySubscriber
 	| ChangeDateSubscriber
-	| ChangeTabSubscriber;
+	| ChangeTabSubscriber
+	| LoginSubscriber;
 
 class Observable {
 	private observers: Map<string, Array<Subscriber<any>>>;

@@ -6,6 +6,7 @@ import ActionManager, {
 	ADD_HISTORY_ACTION,
 	EDIT_HISTORY_ACTION,
 	REMOVE_HISTORY_ACTION,
+	LOGIN_ACTION,
 } from './utils/action-manager';
 import { MonthSelectorState } from './components/month-selector';
 import { popstateType } from './index';
@@ -155,7 +156,7 @@ class Router extends Observable {
 		});
 
 		ActionManager.subscribe({
-			key: 'login',
+			key: LOGIN_ACTION,
 			observer: (data: { serviceId: number }) => {
 				this.setServiceId(data.serviceId);
 				this.notify({

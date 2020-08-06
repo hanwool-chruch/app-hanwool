@@ -1,7 +1,7 @@
 import Component from '../../components/component';
 import HttpStatus from 'http-status';
 import { UserApi } from '../../api';
-import ActionManager from '../../utils/action-manager';
+import ActionManager, { LOGIN_ACTION } from '../../utils/action-manager';
 import Router from '../../router';
 
 class SignupPage extends Component {
@@ -41,7 +41,7 @@ class SignupPage extends Component {
 				const serviceId = data.result.user.service_id;
 				console.info(data.message);
 				localStorage.setItem('token', token);
-				ActionManager.notify({ key: 'login', data: { serviceId } });
+				ActionManager.notify({ key: LOGIN_ACTION, data: { serviceId } });
 			} else {
 				console.error('no status CREATED', response.status);
 			}
