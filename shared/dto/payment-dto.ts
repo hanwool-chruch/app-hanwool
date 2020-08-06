@@ -7,10 +7,10 @@ interface GET_DATA {
 	service_id: number;
 }
 
-interface RESPONSE_DATA {
+type RESPONSE_DATA = {
 	id: number;
 	name: string;
 	service_id: number;
-}
+}[];
 
 export { CREATE, GET_DATA, RESPONSE_DATA };

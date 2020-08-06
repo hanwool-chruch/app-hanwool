@@ -10,10 +10,9 @@ type History = {
 type CREATE = {
 	price: number;
 	content: string;
-	historyDate: Date;
-	category_id: number;
-	payment_id: number;
-	service_id: number;
+	historyDate: string;
+	category: number;
+	payment: number;
 };
 
 type AddHistoryDto = {
@@ -44,4 +43,4 @@ type REMOVE = {
 	history_id: number;
 };
 
-export { History, AddHistoryDto, CREATE, GET_DATA, UPDATE, REMOVE };
+export { History, AddHistoryDto, GET_DATA, UPDATE, REMOVE };
