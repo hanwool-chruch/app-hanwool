@@ -10,7 +10,6 @@ import ActionManager, {
 } from './utils/action-manager';
 import { MonthSelectorState } from './components/month-selector';
 import { popstateType } from './index';
-import { HistoryDataType } from './components/content/history-content/editor';
 import { UserApi } from './api';
 import HttpStatus from 'http-status';
 
@@ -132,28 +131,7 @@ class Router extends Observable {
 				this.notify({ key: 'loadView', data: { viewName: data.viewName } });
 			},
 		});
-
-		ActionManager.subscribe({
-			key: ADD_HISTORY_ACTION,
-			observer: (data: HistoryDataType) => {
-				this.notify({ key: 'addHistory', data: data });
-			},
-		});
-
-		ActionManager.subscribe({
-			key: EDIT_HISTORY_ACTION,
-			observer: (data: HistoryDataType) => {
-				this.notify({ key: 'editHistory', data: data });
-			},
-		});
-
-		ActionManager.subscribe({
-			key: REMOVE_HISTORY_ACTION,
-			observer: (data: { history_id: number; historyDate: string }) => {
-				this.notify({ key: 'removeHistory', data: data });
-			},
-		});
-
+    
 		ActionManager.subscribe({
 			key: LOGIN_ACTION,
 			observer: (data: { serviceId: number }) => {

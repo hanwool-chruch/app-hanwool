@@ -55,9 +55,7 @@ type PopStateSubscriber = {
 };
 
 // AddHistory
-type AddHistoryData = {
-	user_id: number;
-	service_id: number;
+export type AddHistoryData = {
 	historyDate: string;
 	category: number;
 	payment: number;
@@ -76,9 +74,8 @@ type AddHistorySubscriber = {
 };
 
 // EDIT_HISTORY_ACTION
-type EditHistoryData = {
-	user_id: number;
-	service_id: number;
+export type EditHistoryData = {
+	history_id: number;
 	historyDate: string;
 	category: number;
 	payment: number;
@@ -97,7 +94,7 @@ type EditHistorySubscriber = {
 };
 
 // | typeof REMOVE_HISTORY_ACTION
-type RemoveHistoryData = {
+export type RemoveHistoryData = {
 	history_id: number;
 	historyDate: string;
 };

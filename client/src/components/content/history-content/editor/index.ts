@@ -1,5 +1,4 @@
 import './editor.scss';
-import editor, { HistoryDataType } from './editor';
+import editor from './editor';
 
-export { HistoryDataType };
 export default editor;

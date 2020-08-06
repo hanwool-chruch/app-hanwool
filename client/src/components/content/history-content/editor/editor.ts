@@ -1,17 +1,10 @@
 import Component from '../../../component';
 import { CategoryApi, PaymentApi } from '../../../../api';
 import { PaymentDto, CategoryDto } from '@shared/dto';
-import ActionManager, { ADD_HISTORY_ACTION } from '../../../../utils/action-manager';
-
-interface HistoryDataType {
-	user_id: number;
-	service_id: number;
-	historyDate: string;
-	category: number;
-	payment: number;
-	price: number;
-	content: string;
-}
+import ActionManager, {
+	ADD_HISTORY_ACTION,
+	AddHistoryData,
+} from '../../../../utils/action-manager';
 
 class Editor extends Component {
 	dom: HTMLElement;
@@ -30,11 +23,11 @@ class Editor extends Component {
 
 	async init() {
 		this.initClassList();
-		await this.fetchSelectorData();
 		this.render();
 		this.initHistoryDate();
 		this.appendChilds();
 		this.listener();
+		// await this.fetchSelectorData();
 	}
 
 	private initClassList() {
@@ -53,43 +46,43 @@ class Editor extends Component {
 
 	private render() {
 		this.dom.innerHTML = `
-        <div class="editor-row">
-            <div class="toggle-group">
-                <span class="item-title">분류</span>
-                <input type="checkbox" class="chk-classify">
-                <span class="toggle income">수입</span>
-                <span class="toggle outcome">지출</span>
-            </div>
-            <span class="clear-btn">내용 지우기</span>
-        </div>
-        <div class="editor-row">
-            <div class="child-input">
-                <span class="item-title">날짜</span>
-                <input type="date" class="input-date"> 
-            </div>
-            <div class="child-input category-sector">
-                <span class="item-title">카테고리</span>
-            </div>
-            <div class="child-input payment-section">
-                <span class="item-title">결제수단</span>
-            </div>
-        </div>
-        <div class="editor-row">
-            <div class="child-input">
-                <span class="item-title">금액</span>
-                <input type="number" class="input-price"> 
-            </div>
-            <div class="child-input">
-                <span class="item-title">내용</span>
-                <input type="text" class="input-content"> 
-            </div>
-        </div>
-        <div class="editor-row confirm-area">
-            <div class="confirm">
-                확인
-            </div>
-        </div>
-        `;
+		<div class="editor-row">
+		    <div class="toggle-group">
+		        <span class="item-title">분류</span>
+		        <input type="checkbox" class="chk-classify">
+		        <span class="toggle income">수입</span>
+		        <span class="toggle outcome">지출</span>
+		    </div>
+		    <span class="clear-btn">내용 지우기</span>
+		</div>
+		<div class="editor-row">
+		    <div class="child-input">
+		        <span class="item-title">날짜</span>
+		        <input type="date" class="input-date">
+		    </div>
+		    <div class="child-input category-sector">
+		        <span class="item-title">카테고리</span>
+		    </div>
+		    <div class="child-input payment-section">
+		        <span class="item-title">결제수단</span>
+		    </div>
+		</div>
+		<div class="editor-row">
+		    <div class="child-input">
+		        <span class="item-title">금액</span>
+		        <input type="number" class="input-price">
+		    </div>
+		    <div class="child-input">
+		        <span class="item-title">내용</span>
+		        <input type="text" class="input-content">
+		    </div>
+		</div>
+		<div class="editor-row confirm-area">
+		    <div class="confirm">
+		        확인
+		    </div>
+		</div>
+		`;
 	}
 
 	private listener() {
@@ -179,13 +172,11 @@ class Editor extends Component {
 		const inputPrice = this.dom.querySelector('.input-price') as HTMLInputElement;
 		const inputContent = this.dom.querySelector('.input-content') as HTMLInputElement;
 
-		const data: HistoryDataType = {
-			user_id: 1,
-			service_id: 1,
+		const data: AddHistoryData = {
 			historyDate: inputDate.value,
 			category: parseInt(selectCategory.value),
 			payment: parseInt(selectPayment.value),
-			price: chkClassify.checked ? parseInt(inputPrice.value) : ~inputPrice.value,
+			price: chkClassify.checked ? parseInt(inputPrice.value) : -parseInt(inputPrice.value),
 			content: inputContent.value,
 		};
 
@@ -194,5 +185,4 @@ class Editor extends Component {
 	}
 }
 
-export { HistoryDataType };
 export default Editor;

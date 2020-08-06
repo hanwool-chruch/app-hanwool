@@ -1,21 +1,16 @@
-import { Observable } from '../utils/action-manager';
+import actionManager, {
+	Observable,
+	AddHistoryData,
+	EditHistoryData,
+	ADD_HISTORY_ACTION,
+	EDIT_HISTORY_ACTION,
+	REMOVE_HISTORY_ACTION,
+} from '../utils/action-manager';
 import { History, AddHistoryDto } from '@shared/dto/history-dto';
 import { load } from '../api/apiMocks';
 import { insertAt } from '../utils/insert-item-at';
 import { YearAndMonth } from '../router';
 import Router from '../router';
-import { HistoryDataType } from '../components/content/history-content/editor';
-
-interface EditHistoryType {
-	history_id: number;
-	user_id: number;
-	service_id: number;
-	historyDate: string;
-	category: number;
-	payment: number;
-	price: number;
-	content: string;
-}
 
 const apiMock = (data: any) =>
 	new Promise((resolve) => resolve({ ...data, id: ~~(Math.random() * 1000) }));
@@ -56,23 +51,23 @@ class HistoryModel extends Observable {
 			},
 		});
 
-		Router.subscribe({
-			key: 'addHistory',
-			observer: (data: HistoryDataType) => {
+		actionManager.subscribe({
+			key: ADD_HISTORY_ACTION,
+			observer: (data) => {
 				this.add(data);
 			},
 		});
 
-		Router.subscribe({
-			key: 'editHistory',
-			observer: (data: EditHistoryType) => {
+		actionManager.subscribe({
+			key: EDIT_HISTORY_ACTION,
+			observer: (data) => {
 				this.edit(data);
 			},
 		});
 
-		Router.subscribe({
-			key: 'removeHistory',
-			observer: (data: { history_id: number; historyDate: string }) => {
+		actionManager.subscribe({
+			key: REMOVE_HISTORY_ACTION,
+			observer: (data) => {
 				this.remove(data);
 			},
 		});
@@ -94,22 +89,21 @@ class HistoryModel extends Observable {
 		}
 	}
 
-	async add(h: HistoryDataType): Promise<void> {
+	async add(h: AddHistoryData): Promise<void> {
+		let response: History;
 		try {
-			const response: History = (await apiMock(h)) as any;
-			const dateArr = h.historyDate.split('. ');
-			const key = `${dateArr[0]}-${dateArr[1]}`;
-			const data = this.data.get(key);
-			if (!data) {
-				//TODO: Error handling
-				throw new Error(`No data :${h.historyDate}`);
-			}
-			const newData = insertHistory(data, response);
-			this.data.set(key, newData);
-			this.notify({ key: 'sendToViews', data: newData });
+			response = (await apiMock(h)) as any;
 		} catch (err) {
 			throw new Error(`add data error`);
 		}
+
+		response.historyDate = new Date(response.historyDate);
+		const key = `${response.historyDate.getFullYear()}-${response.historyDate.getMonth() + 1}`;
+		const data = this.data.get(key) || [];
+		const newData = insertHistory(data, response);
+		this.data.set(key, newData);
+		this.notify({ key: 'sendToViews', data: newData });
+		console.log('newasdfasf', newData);
 	}
 
 	async remove(h: { history_id: number; historyDate: string }): Promise<void> {
@@ -132,7 +126,7 @@ class HistoryModel extends Observable {
 		}
 	}
 
-	async edit(h: EditHistoryType): Promise<void> {
+	async edit(h: EditHistoryData): Promise<void> {
 		try {
 			const response: History = (await apiMock(h)) as any;
 
