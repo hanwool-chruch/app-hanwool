@@ -11,7 +11,8 @@ $earned-color: #29b6ae;
 	}
 
 	.history-item {
-		display: flex;
+		display: grid;
+		grid-template-columns: 130px 1fr 80px 120px 50px;
 		border-top: 1px solid #555555;
 		padding: 1rem 0;
 
@@ -35,6 +36,26 @@ $earned-color: #29b6ae;
 
 		.hitem-price {
 			min-width: 5rem;
+		}
+
+		.hitem-delete {
+			display: none;
+		}
+
+		&:hover {
+			background-color: #555555;
+		}
+
+		&:hover .hitem-delete {
+			display: block;
+
+			button {
+				margin: 0;
+				padding: 0;
+				border: none;
+				background: none;
+				cursor: pointer;
+			}
 		}
 
 		& * {

@@ -68,7 +68,7 @@ class HistoryModel extends Observable {
 		actionManager.subscribe({
 			key: REMOVE_HISTORY_ACTION,
 			observer: (data: any) => {
-				this.remove(data);
+				this.remove(data.history);
 			},
 		});
 	}
@@ -126,25 +126,25 @@ class HistoryModel extends Observable {
 
 	async remove(h: History): Promise<void> {
 		try {
-			await apiMock(h);
-
-			const key = createKey(
-				this.serviceId,
-				h.historyDate.getFullYear(),
-				h.historyDate.getMonth() + 1
-			);
-			const data = this.data.get(key);
-			if (!data) {
-				//TODO: Error handling
-				throw new Error(`No data :${h.historyDate}`);
-			}
-
-			const newData = data.filter((history) => history.id !== h.id);
-			this.data.set(key, newData);
-			this.notify({ key: 'sendToViews', data: newData });
+			// await apiMock(h);
 		} catch (err) {
 			throw new Error(`remove data error`);
 		}
+		console.log(h);
+		const key = createKey(
+			this.serviceId,
+			h.historyDate.getFullYear(),
+			h.historyDate.getMonth() + 1
+		);
+		const data = this.data.get(key);
+		if (!data) {
+			//TODO: Error handling
+			throw new Error(`No data :${h.historyDate}`);
+		}
+
+		const newData = data!.filter((history) => history.id !== h.id);
+		this.data.set(key, newData);
+		this.notify({ key: 'sendToViews', data: newData });
 	}
 
 	async edit(h: History): Promise<void> {
