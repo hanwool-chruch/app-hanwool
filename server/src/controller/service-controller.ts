@@ -60,18 +60,18 @@ const create = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 const findById = async (req: Request, res: Response, next: NextFunction) => {
-	const { query } = req;
+	const { params } = req;
 
 	try {
-		const service = await Service.findById(query as any);
+		const service = await Service.findById(params as any);
 		if (service) {
 			res
 				.status(HttpStatus.OK)
-				.json(JsonResponse(`got service of id ${query.service_id}`, service));
+				.json(JsonResponse(`got service of id ${params.service_id}`, service));
 		} else {
 			res
 				.status(HttpStatus.BAD_REQUEST)
-				.json(JsonResponse(`no service of id ${query.service_id}`, null));
+				.json(JsonResponse(`no service of id ${params.service_id}`, null));
 		}
 	} catch (err) {
 		next(err);

@@ -79,4 +79,16 @@ const findByServiceId = async (req: Request, res: Response, next: NextFunction) 
 	}
 };
 
-export default { create, findByServiceId };
+const bulkInsert = async (req: Request, res: Response, next: NextFunction) => {
+	const { data } = req.body;
+	try {
+		const payments = await Payment.bulkInsert(data);
+		res
+			.status(HttpStatus.CREATED)
+			.json(JsonResponse(`payment bulk insert success: ${payments}`, {}));
+	} catch (err) {
+		next(err);
+	}
+};
+
+export default { create, findByServiceId, bulkInsert };

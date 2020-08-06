@@ -21,8 +21,8 @@ const emailLogin = async (req: Request, res: Response, next: NextFunction) => {
 			);
 			res
 				.cookie('authorization', token, {
-					// 2 분 뒤 만료
-					expires: new Date(Date.now() + 2 * 60 * 1000),
+					// 30 분 뒤 만료
+					expires: new Date(Date.now() + 30 * 60 * 1000),
 				})
 				.status(HttpStatus.OK)
 				.json(
@@ -65,8 +65,8 @@ const emailSignUp = async (req: Request, res: Response, next: NextFunction) => {
 				);
 				res
 					.cookie('authorization', token, {
-						// 2 분 뒤 만료
-						expires: new Date(Date.now() + 2 * 60 * 1000),
+						// 30 분 뒤 만료
+						expires: new Date(Date.now() + 30 * 60 * 1000),
 					})
 					.status(HttpStatus.CREATED)
 					.json(JsonResponse(`created user success email(${body.email})`, { user }));
@@ -126,8 +126,8 @@ const googleRedirect = async (req: Request, res: Response, next: NextFunction) =
 	const now = new Date();
 	const yearAndMonth = `${now.getFullYear()}-${now.getMonth() + 1}`;
 	res.cookie('authorization', token, {
-		// 2 분 뒤 만료
-		expires: new Date(Date.now() + 2 * 60 * 1000),
+		// 30 분 뒤 만료
+		expires: new Date(Date.now() + 30 * 60 * 1000),
 	});
 	res.redirect(`/${(serviceId + 3000).toString(16)}/${yearAndMonth}/history`);
 };
@@ -154,8 +154,8 @@ const githubRedirect = async (req: Request, res: Response, next: NextFunction) =
 	const now = new Date();
 	const yearAndMonth = `${now.getFullYear()}-${now.getMonth() + 1}`;
 	res.cookie('authorization', token, {
-		// 2 분 뒤 만료
-		expires: new Date(Date.now() + 2 * 60 * 1000),
+		// 30 분 뒤 만료
+		expires: new Date(Date.now() + 30 * 60 * 1000),
 	});
 	res.redirect(`/${(serviceId + 3000).toString(16)}/${yearAndMonth}/history`);
 };

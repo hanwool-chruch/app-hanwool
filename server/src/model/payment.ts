@@ -33,7 +33,21 @@ const findByServiceId = async (servicdId: number): Promise<PaymentDto.RESPONSE_D
 	}));
 };
 
+const bulkInsert = async (payments: PaymentDto.CREATE[]) => {
+	let paymentData;
+	try {
+		paymentData = await mysql.connect((con: any) => {
+			return con.query(`INSERT INTO payment (payment_name, service_id) VALUES ?`, [payments]);
+		});
+
+		return paymentData[0].affectedRows;
+	} catch (err) {
+		throw err;
+	}
+};
+
 export default {
 	create,
 	findByServiceId,
+	bulkInsert,
 };
