@@ -8,10 +8,8 @@ interface GET_DATA {
 }
 
 interface RESPONSE_DATA {
-	payment_id: number;
-	payment_name: string;
-	delete_date: Date | null;
-	create_date: Date;
+	id: number;
+	name: string;
 	service_id: number;
 }
 

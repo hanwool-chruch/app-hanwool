@@ -15,11 +15,7 @@ const create = async (payment: PaymentDto.CREATE) => {
 	}
 };
 
-/**
- * todo
- * delete_date null인것만 조회
- */
-const findByServiceId = async (payment: PaymentDto.GET_DATA) => {
+const findByServiceId = async (servicdId: number): Promise<PaymentDto.RESPONSE_DATA[]> => {
 	let paymentData;
 	try {
 		paymentData = await mysql.connect((con: any) =>
