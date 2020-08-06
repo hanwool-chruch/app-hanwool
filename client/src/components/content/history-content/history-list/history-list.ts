@@ -106,7 +106,7 @@ function createTodayHeader(date: Date, sum: { earned?: number; spent?: number })
 	header.classList.add('history-today-header');
 	header.innerHTML = `
 	<div class="hheader-date">${date.getMonth() + 1} 월 ${date.getDate()} 일</div>
-	<div class="hheader-day">${days[date.getDate()]}</div>
+	<div class="hheader-day">${days[date.getDay()]}</div>
 	${
 		typeof sum.earned === 'number'
 			? `<div class="hheader-price earned">${formatPrice(sum.earned, true)}</div>`
