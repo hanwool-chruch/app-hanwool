@@ -12,6 +12,10 @@ const googleCredentials = {
 	clientId: process.env.GOOGLE_CLIENT_ID || '',
 	clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
 };
+const githubCredentials = {
+	clientId: process.env.GITHUB_CLIENT_ID || '',
+	clientSecret: process.env.GITHUB_CLIENT_SECRET || '',
+};
 const tokenExpiresIn = '6h';
 
 const databaseConfig = {
@@ -21,4 +25,14 @@ const databaseConfig = {
 	host: process.env.DB_HOST,
 };
 
-export { env, logs, port, url, jwtSecret, googleCredentials, tokenExpiresIn, databaseConfig };
+export {
+	env,
+	logs,
+	port,
+	url,
+	jwtSecret,
+	googleCredentials,
+	tokenExpiresIn,
+	databaseConfig,
+	githubCredentials,
+};

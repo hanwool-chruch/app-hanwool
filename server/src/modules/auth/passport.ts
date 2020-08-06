@@ -1,9 +1,10 @@
 import passport from 'passport';
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
+import { Strategy as GithubStrategy } from 'passport-github';
 import logger from '../../config/logger';
 import { Request } from 'express';
-import { jwtSecret, googleCredentials } from '../../config/consts';
+import { jwtSecret, googleCredentials, githubCredentials } from '../../config/consts';
 import userController from '../../controller/user-controller';
 
 const jwtFromRequest = (req: Request) => {
@@ -30,12 +31,23 @@ const google = new GoogleStrategy(
 	{
 		clientID: googleCredentials.clientId,
 		clientSecret: googleCredentials.clientSecret,
-		callbackURL: '/api/google/redirect',
+		callbackURL: '/api/auth/google/redirect',
 	},
 	(accessToken, refreshToken, profile, done: Function) => {
-		logger.debug(accessToken, refreshToken, profile);
-		logger.info('GOOGLE BASED OAUTH VALIDATION GETTING CALLED');
+		console.info('GOOGLE BASED OAUTH VALIDATION GETTING CALLED');
 		return done(null, profile);
+	}
+);
+
+const github = new GithubStrategy(
+	{
+		clientID: githubCredentials.clientId,
+		clientSecret: githubCredentials.clientSecret,
+		callbackURL: '/api/auth/github/redirect',
+	},
+	function (accessToken, refreshToken, profile, done: Function) {
+		console.info('GITHUB BASED OAUTH VALIDATION GETTING CALLED');
+		done(null, profile);
 	}
 );
 
@@ -48,4 +60,4 @@ passport.deserializeUser((obj, done) => {
 	done(null, obj);
 });
 
-export default { jwt, google };
+export default { jwt, google, github };

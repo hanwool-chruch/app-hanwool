@@ -12,6 +12,7 @@ import { MonthSelectorState } from './components/month-selector';
 import { popstateType } from './index';
 import { UserApi } from './api';
 import HttpStatus from 'http-status';
+import { getCookie } from './utils/cookie-manager';
 
 interface CurrentData {
 	serviceId: number;
@@ -46,14 +47,8 @@ class Router extends Observable {
 	}
 
 	public async init() {
-		const token = localStorage.getItem('token');
+		const token = getCookie('authorization');
 		if (!token) {
-			this.notify({ key: 'loadPage', data: { pageName: 'login' } });
-			return;
-		}
-
-		const response = await UserApi.isValidToken({ token });
-		if (response.status === HttpStatus.UNAUTHORIZED) {
 			this.notify({ key: 'loadPage', data: { pageName: 'login' } });
 			return;
 		}
@@ -68,6 +63,7 @@ class Router extends Observable {
 			const viewName = routeArr[2];
 			const pageName = 'service';
 
+			this.setServiceId(serviceId);
 			this.setYearAndMonth(year, month);
 			this.setViewName(viewName);
 			this.setPageName(pageName);
