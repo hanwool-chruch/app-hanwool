@@ -3,6 +3,6 @@ import { PaymentController } from '../controller';
 
 const paymentRouter = Router();
 paymentRouter.post('/', PaymentController.create);
-paymentRouter.get('/', PaymentController.findByServiceId);
+paymentRouter.get('/:id', PaymentController.findByServiceId);
 
 export default paymentRouter;
