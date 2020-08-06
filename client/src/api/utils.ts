@@ -46,7 +46,7 @@ const PUT = (uri: string, data: Object, token?: string) =>
 		body: JSON.stringify(data),
 	});
 
-const DELETE = (uri: string, data: Object, token?: string): any =>
+const DELETE = (uri: string, data?: Object, token?: string): any =>
 	fetch(`${uri}`, {
 		...defaultOptions('DELETE', token),
 		body: JSON.stringify(data),

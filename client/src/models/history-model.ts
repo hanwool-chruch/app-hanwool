@@ -126,7 +126,7 @@ class HistoryModel extends Observable {
 
 	async remove(h: History): Promise<void> {
 		try {
-			// await apiMock(h);
+			await historyApi.softDelete({ id: h.id });
 		} catch (err) {
 			throw new Error(`remove data error`);
 		}

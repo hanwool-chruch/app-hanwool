@@ -110,20 +110,17 @@ const update = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 const remove = async (req: Request, res: Response, next: NextFunction) => {
-	const { body } = req;
+	const params = req.params;
+	const historyId = parseInt(params.id);
+	if (isNaN(historyId)) next(new Error('history id is not a number'));
 
+	let history;
 	try {
-		const history = await History.remove(body as any);
-		if (history) {
-			res.status(HttpStatus.OK).json(JsonResponse(`removed history ${body.history_id}`, history));
-		} else {
-			res
-				.status(HttpStatus.BAD_REQUEST)
-				.json(JsonResponse(`removed history ${body.history_id}`, null));
-		}
+		await History.remove(historyId);
 	} catch (err) {
-		next(err);
+		res.status(HttpStatus.BAD_REQUEST).json(JsonResponse(`removed history ${historyId}`, null));
 	}
+	res.status(HttpStatus.OK).json(JsonResponse(`removed history ${historyId}`, history));
 };
 
 export default { create, findByMonth, update, remove };
