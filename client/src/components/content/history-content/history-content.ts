@@ -7,16 +7,16 @@ export default class HistoryContent extends AbstractContent {
 	historyList: HistoryList;
 	dom: HTMLElement;
 
-	constructor() {
+	constructor(serviceId: number) {
 		super();
 		this.dom = document.createElement('div');
 		this.historyList = new HistoryList();
-		this.init();
+		this.init(serviceId);
 	}
 
-	init() {
+	init(serviceId: number) {
 		this.dom.classList.add('history-content');
-		this.dom.appendChild(new Editor().getDom());
+		this.dom.appendChild(new Editor(serviceId).getDom());
 		this.dom.appendChild(this.historyList.getDom());
 	}
 

@@ -7,13 +7,15 @@ import ActionManager, {
 
 class Editor extends Component {
 	dom: HTMLElement;
+	private serviceId: number;
 	private paymentSelector: HTMLSelectElement;
 	private incomeCategorySelector: HTMLSelectElement;
 	private outcomeCategorySelector: HTMLSelectElement;
 
-	constructor() {
+	constructor(serviceId: number) {
 		super();
 		this.dom = document.createElement('div');
+		this.serviceId = serviceId;
 		this.paymentSelector = document.createElement('select');
 		this.incomeCategorySelector = document.createElement('select');
 		this.outcomeCategorySelector = document.createElement('select');
@@ -101,12 +103,11 @@ class Editor extends Component {
 	}
 
 	private async fetchSelectorData() {
-		const service_id = 1;
 		let payments = null;
 		let categories = null;
 		try {
-			payments = await PaymentApi.findByServiceId(service_id);
-			categories = await CategoryApi.findByServiceId(service_id);
+			payments = await PaymentApi.findByServiceId(this.serviceId);
+			categories = await CategoryApi.findByServiceId(this.serviceId);
 		} catch (err) {
 			throw err;
 		}
