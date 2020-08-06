@@ -48,14 +48,6 @@ class LoginPage extends Component {
 				email: emailInput.value,
 				password: passwordInput.value,
 			});
-			if (response.status === HttpStatus.OK || response.status === HttpStatus.NOT_MODIFIED) {
-				const data = await response.json();
-				console.info(data.message);
-				const serviceId = data.result.serviceId;
-				ActionManager.notify({ key: LOGIN_ACTION, data: { serviceId } });
-			} else {
-				console.error(`not match user`, response.status);
-			}
 		} catch (err) {
 			throw new Error(`fail to login email user (${emailInput.value}): ${err.stack}`);
 		}
