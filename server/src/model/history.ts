@@ -75,13 +75,11 @@ const findByMonth = async ({
 	const startDate = new Date(year, month - 1, 1, 1, 0, 0, 0);
 	const endDate = new Date(year, month, 1, 0, 0, 0);
 
-	console.log(startDate, endDate);
 	const escapeDate = (date: Date) => [date.getFullYear(), date.getMonth() + 1, 1].join('-');
 	try {
 		const [histories] = await mysql.connect((con: any) =>
 			con.query(FIND_BY_MONTH, [serviceId, escapeDate(startDate), escapeDate(endDate)])
 		);
-		console.log(histories);
 
 		return histories.map((data: any) => ({
 			id: data.history_id,

@@ -85,7 +85,6 @@ class HistoryModel extends Observable {
 				year: this.year,
 				month: this.month,
 			});
-			console.log(data);
 		} catch (err) {
 			data = [];
 			console.error(err);
@@ -109,7 +108,6 @@ class HistoryModel extends Observable {
 		const newData = insertHistory(data, response);
 		this.data.set(key, newData);
 		this.notify({ key: 'sendToViews', data: newData });
-		console.log('newasdfasf', newData);
 	}
 
 	async remove(h: { history_id: number; historyDate: string }): Promise<void> {
