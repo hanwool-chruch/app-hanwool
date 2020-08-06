@@ -150,27 +150,50 @@ class HistoryModel extends Observable {
 	}
 
 	async edit(h: History): Promise<void> {
+		let response: History;
 		try {
-			const response: History = (await apiMock(h)) as any;
+			response = (await apiMock(h)) as any;
 
 			const key = createKey(
 				this.serviceId,
 				h.historyDate.getFullYear(),
 				h.historyDate.getMonth() + 1
 			);
-			const data = this.data.get(key);
+			let data = this.data.get(key);
 			if (!data) {
 				//TODO: Error handling
 				throw new Error(`No data :${h.historyDate}`);
 			}
 
 			let newData = data.filter((history) => history.id !== h.id);
-			newData = insertHistory(newData, response);
 			this.data.set(key, newData);
+
+			newData = insertHistory(newData, response);
 			this.notify({ key: 'sendToViews', data: newData });
 		} catch (err) {
 			throw new Error(`edit data error`);
 		}
+
+		const key = createKey(
+			this.serviceId,
+			response!.historyDate.getFullYear(),
+			response!.historyDate.getMonth() + 1
+		);
+
+		let data = this.data.get(key);
+		if (!data) {
+			//TODO: Error handling
+			throw new Error(`No data :${h.historyDate}`);
+		}
+
+		const newData = insertHistory(data, response!);
+		this.data.set(key, newData);
+
+		if (
+			this.year === response!.historyDate.getFullYear() &&
+			this.month === response!.historyDate.getMonth() + 1
+		)
+			this.notify({ key: 'sendToViews', data: newData });
 	}
 
 	setYearAndMonth(yearAndMonth: YearAndMonth) {

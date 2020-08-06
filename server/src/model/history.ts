@@ -3,7 +3,9 @@ import { HistoryDto } from '@shared/dto';
 import { History } from '@shared/dto/history-dto';
 
 const FIND_BY_MONTH =
-	'SELECT * FROM history h JOIN category c ON h.category_id=c.category_id JOIN payment p ON h.payment_id=p.payment_id WHERE h.service_id=? and h.history_date between ? and ?';
+	'SELECT * FROM history h JOIN category c ON h.category_id=c.category_id JOIN payment p ON h.payment_id=p.payment_id WHERE h.service_id=? and h.history_date between ? and ? AND h.delete_date IS NULL ORDER BY h.history_date';
+const FIND_BY_ID =
+	'SELECT * FROM history h JOIN category c ON h.category_id=c.category_id JOIN payment p ON h.payment_id=p.payment_id WHERE h.history_id=?';
 
 const create = async (history: HistoryDto.AddHistoryDto): Promise<HistoryDto.History> => {
 	let historyData;
@@ -81,16 +83,26 @@ const findByMonth = async ({
 	}
 };
 
-const update = async (history: HistoryDto.UPDATE) => {
-	const history_id = history.history_id;
-	delete history.history_id;
-	let historyData;
+const update = async (historyId: number, history: HistoryDto.EditHistoryDto) => {
+	let resultHistory: History;
+	console.log(historyId, history);
 	try {
-		historyData = await mysql.connect((con: any) =>
-			con.query(`UPDATE history SET ? WHERE history_id = ${history_id}`, history)
-		);
-		const result = { ...history, history_id };
-		return result;
+		resultHistory = await mysql.connect(async (con: any) => {
+			if (Object.keys(history).length !== 0)
+				await con.query(`UPDATE history SET ? WHERE history_id=?`, [history, historyId]);
+
+			const [rows] = await con.query(FIND_BY_ID, [historyId]);
+			return rows.map((data: any) => ({
+				id: data.history_id,
+				price: data.price,
+				content: data.content,
+				historyDate: data.history_date,
+				category: data.category_name,
+				payment: data.payment_name,
+			}))[0];
+		});
+
+		return resultHistory;
 	} catch (err) {
 		throw err;
 	}

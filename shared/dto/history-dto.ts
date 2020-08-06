@@ -25,6 +25,13 @@ type AddHistoryDto = {
 	payment_id: number;
 };
 
+type EditHistoryDto = {
+	price?: number;
+	content?: string;
+	history_date?: string;
+	category_id?: number;
+	payment_id?: number;
+};
 type GET_DATA = {
 	service_id: number;
 	startDate: Date;
@@ -45,4 +52,4 @@ type REMOVE = {
 	history_id: number;
 };
 
-export { History, AddHistoryDto, GET_DATA, UPDATE, REMOVE, CREATE };
+export { History, AddHistoryDto, EditHistoryDto, GET_DATA, UPDATE, REMOVE, CREATE };
