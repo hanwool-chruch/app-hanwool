@@ -36,8 +36,9 @@ class LoginPage extends Component {
 		const emailInput = this.dom.querySelector('.input-email') as HTMLInputElement;
 		const passwordInput = this.dom.querySelector('.input-password') as HTMLInputElement;
 
+		let response;
 		try {
-			const response = await UserApi.emailLogin({
+			response = await UserApi.emailLogin({
 				email: emailInput.value,
 				password: passwordInput.value,
 			});
@@ -51,6 +52,16 @@ class LoginPage extends Component {
 			}
 		} catch (err) {
 			throw new Error(`fail to login email user (${emailInput.value}): ${err.stack}`);
+		}
+		if (response.status === HttpStatus.OK || response.status === HttpStatus.NOT_MODIFIED) {
+			const data = await response.json();
+			console.info(data.message);
+			const token = data.result.token;
+			const serviceId = data.result.serviceId;
+			localStorage.setItem('token', token);
+			ActionManager.notify({ key: LOGIN_ACTION, data: { serviceId } });
+		} else {
+			console.error(`not match user`, response.status);
 		}
 	}
 
