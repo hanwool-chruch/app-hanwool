@@ -1,6 +1,7 @@
 import { AbstractContent } from '../../abstract-content';
 import { History } from '@shared/dto/history-dto';
 import { groupByDate, calcTotal } from '../../../../utils';
+import actionManager, { REMOVE_HISTORY_ACTION } from '../../../../utils/action-manager';
 
 export default class HistoryList extends AbstractContent {
 	dom: HTMLElement;
@@ -105,7 +106,7 @@ function createTodayHeader(date: Date, sum: { earned?: number; spent?: number })
 	header.classList.add('history-today-header');
 	header.innerHTML = `
 	<div class="hheader-date">${date.getMonth() + 1} 월 ${date.getDate()} 일</div>
-	<div class="hheader-day">${days[date.getDate()]}</div>
+	<div class="hheader-day">${days[date.getDay()]}</div>
 	${
 		typeof sum.earned === 'number'
 			? `<div class="hheader-price earned">${formatPrice(sum.earned, true)}</div>`
@@ -129,7 +130,16 @@ function createHistoryLi(history: History): HTMLLIElement {
 	<div class="hitem-content">${history.content}</div>
 	<div class="hitem-payment">${history.payment}</div>
 	<div class="hitem-price">${formatPrice(history.price)}</div>
+	<div class="hitem-delete"><button>X</button></div>
 	`;
+	list.querySelector('.hitem-delete')?.addEventListener('click', (evt) => {
+		confirm('결제내역을 삭제하시겠습니까?')
+			? actionManager.notify({
+					key: REMOVE_HISTORY_ACTION,
+					data: { history },
+			  })
+			: 0;
+	});
 	return list;
 }
 

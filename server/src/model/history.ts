@@ -3,7 +3,7 @@ import { HistoryDto } from '@shared/dto';
 import { History } from '@shared/dto/history-dto';
 
 const FIND_BY_MONTH =
-	'SELECT * FROM history h JOIN category c ON h.category_category_id=c.category_id JOIN payment p ON h.payment_payment_id=p.payment_id WHERE h.service_id=? and h.history_date between ? and ?';
+	'SELECT * FROM history h JOIN category c ON h.category_category_id=c.category_id JOIN payment p ON h.payment_payment_id=p.payment_id WHERE h.service_id=? and h.history_date between ? and ? AND h.delete_date IS NULL ORDER BY h.history_date';
 
 const create = async (history: HistoryDto.AddHistoryDto): Promise<HistoryDto.History> => {
 	let historyData;
@@ -96,17 +96,12 @@ const update = async (history: HistoryDto.UPDATE) => {
 	}
 };
 
-const remove = async (history: HistoryDto.REMOVE) => {
+const remove = async (historyId: number): Promise<void> => {
 	let historyData;
 	try {
-		historyData = await mysql.connect((con: any) =>
-			con.query(
-				`UPDATE history SET delete_date = ${new Date()} WHERE history_id = ${history.history_id}`
-			)
+		[historyData] = await mysql.connect((con: any) =>
+			con.query(`UPDATE history SET delete_date = NOW() WHERE history_id = ?`, [historyId])
 		);
-		const history_id = historyData[0].insertId;
-		const result = { ...history, history_id };
-		return result;
 	} catch (err) {
 		throw err;
 	}

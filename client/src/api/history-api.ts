@@ -1,4 +1,4 @@
-import { POST, GET, PATCH, PUT } from './utils';
+import { POST, GET, PATCH, PUT, DELETE } from './utils';
 import { AddHistoryDto, History } from '@shared/dto/history-dto';
 import { ApiSuccessResponse } from '@shared/dto/api-response';
 
@@ -37,6 +37,6 @@ const findByMonth = (data: FindByMonth): Promise<History[]> =>
 		}) as Promise<History[]>;
 
 const update = (data: JSON) => PUT('/api/history', data);
-const softDelete = (data: JSON) => PATCH(`/api/history/remove`, data);
+const softDelete = (data: { id: number }) => DELETE(`/api/history/${data.id}`);
 
 export default { create, findByMonth, update, softDelete };
