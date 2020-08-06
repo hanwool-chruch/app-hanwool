@@ -2,9 +2,8 @@ import { Request, Response, NextFunction } from 'express';
 import HttpStatus from 'http-status';
 import { History } from '../model';
 import { JsonResponse } from '../modules/util';
-import logger from '../config/logger';
-import { HistoryDto } from '@shared/dto';
 import { AddHistoryDto } from '@shared/dto/history-dto';
+import CustomError from '../exception/custom-error';
 
 /**
  * @api {post} /api/history
@@ -118,7 +117,7 @@ const remove = async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		await History.remove(historyId);
 	} catch (err) {
-		res.status(HttpStatus.BAD_REQUEST).json(JsonResponse(`removed history ${historyId}`, null));
+		throw new CustomError(HttpStatus.BAD_REQUEST, `Error while removing history`);
 	}
 	res.status(HttpStatus.OK).json(JsonResponse(`removed history ${historyId}`, history));
 };
