@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import CustomError from '../exception/custom-error';
 import HttpStatus from 'http-status';
 import { User, Service } from '../model';
+import crypto from 'crypto';
 
 /**
  * @api {get} /user/:id Request User information
@@ -44,9 +45,13 @@ const checkUserPassword = async (data: any) => {
 		if (!data.email || !data.password)
 			new CustomError(HttpStatus.BAD_REQUEST, 'no email or password');
 		const user = await User.findEmailUser(data.email);
+		const hashedPassword = crypto.createHash('sha256').update(data.password).digest('base64');
 		if (!user) new CustomError(HttpStatus.BAD_REQUEST, `no user email(${data.email})`);
-		else if (user.password !== data.password)
+		else if (user.password !== hashedPassword)
 			new CustomError(HttpStatus.BAD_REQUEST, `no password match`);
+
+		delete user?.password;
+
 		return user;
 	} catch (err) {
 		throw err;
