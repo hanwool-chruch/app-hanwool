@@ -22,8 +22,8 @@ const createParams = (data: Object) => {
 		: '';
 };
 
-const GET = (uri: string, data?: Object) =>
-	fetch(`${uri}${data ? createParams(data) : ''}`, defaultOptions('GET'));
+const GET = (uri: string, data?: Object, token?: string) =>
+	fetch(`${uri}${data ? createParams(data) : ''}`, defaultOptions('GET', token));
 
 const HEAD = (uri: string, data: Object, token?: string): any =>
 	fetch(`${uri}${createParams(data)}`, defaultOptions('HEAD', token));
