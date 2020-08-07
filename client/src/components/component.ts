@@ -4,6 +4,4 @@ export default abstract class Component {
 		if (this.dom === null) throw new Error('Initialize dom');
 		return this.dom;
 	}
-
-	abstract init(): void;
 }
