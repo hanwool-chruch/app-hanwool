@@ -12,10 +12,10 @@ class Editor extends Component {
 	private incomeCategorySelector: HTMLSelectElement;
 	private outcomeCategorySelector: HTMLSelectElement;
 
-	constructor(serviceId: number) {
+	constructor() {
 		super();
 		this.dom = document.createElement('div');
-		this.serviceId = serviceId;
+		this.serviceId = 0;
 		this.paymentSelector = document.createElement('select');
 		this.incomeCategorySelector = document.createElement('select');
 		this.outcomeCategorySelector = document.createElement('select');
@@ -144,11 +144,12 @@ class Editor extends Component {
 		inputDate.valueAsDate = new Date();
 	}
 
-	private reload() {
+	public reload() {
 		this.render();
 		this.initHistoryDate();
 		this.appendChilds();
 		this.listener();
+		this.fetchSelectorData();
 	}
 
 	private toggleClickHandler(e: Event, chkClassify: HTMLInputElement) {
@@ -184,6 +185,10 @@ class Editor extends Component {
 
 		ActionManager.notify({ key: ADD_HISTORY_ACTION, data: data });
 		this.reload();
+	}
+
+	public setServiceId(serviceId: number) {
+		this.serviceId = serviceId;
 	}
 }
 
