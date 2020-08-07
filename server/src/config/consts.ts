@@ -6,7 +6,6 @@ dotenv.config({ path: path.join(__dirname, '../../../shared/config.env') });
 const env = process.env.NODE_ENV || 'development';
 const logs = env === 'production' ? 'combined' : 'dev';
 const port = process.env.PORT || '3000';
-const url = `${process.env.URL || 'http://localhost'}:${port}`;
 const jwtSecret = process.env.JWT_SECRET || 'secret';
 const googleCredentials = {
 	clientId: process.env.GOOGLE_CLIENT_ID || '',
@@ -16,7 +15,7 @@ const githubCredentials = {
 	clientId: process.env.GITHUB_CLIENT_ID || '',
 	clientSecret: process.env.GITHUB_CLIENT_SECRET || '',
 };
-const tokenExpiresIn = '6h';
+const tokenExpiresIn = '30m';
 
 const databaseConfig = {
 	database: env === 'production' ? process.env.PORD_DB : process.env.DEV_DB,
@@ -29,7 +28,6 @@ export {
 	env,
 	logs,
 	port,
-	url,
 	jwtSecret,
 	googleCredentials,
 	tokenExpiresIn,
