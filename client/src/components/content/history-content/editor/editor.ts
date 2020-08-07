@@ -173,6 +173,16 @@ class Editor extends Component {
 			throw err;
 		}
 
+		while (this.paymentSelector.childElementCount !== 0) {
+			this.paymentSelector.firstChild?.remove();
+		}
+		while (this.incomeCategorySelector.childElementCount !== 0) {
+			this.incomeCategorySelector.firstChild?.remove();
+		}
+		while (this.outcomeCategorySelector.childElementCount !== 0) {
+			this.outcomeCategorySelector.firstChild?.remove();
+		}
+
 		for (let i = 0; i < payments.length; i++) {
 			const payment = document.createElement('option');
 			payment.text = payments[i].name;
