@@ -30,8 +30,8 @@ export default class Header extends Component {
 	render() {
 		this.dom.innerHTML = `
 			<div class="bulk-sector">
-				<span class='bulk-insert payment-bulk disabled'>결제방식 자동 추가</span>
-				<span class='bulk-insert category-bulk disabled'>카테고리 자동 추가</span>
+				<span class='bulk-insert payment-bulk'>결제방식 자동 추가</span>
+				<span class='bulk-insert category-bulk'>카테고리 자동 추가</span>
 				<span class='bulk-insert history-bulk disabled'>내역 자동 추가</span>
 			</div>
 			<h1 class="title-sector">
