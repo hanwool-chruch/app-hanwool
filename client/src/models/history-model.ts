@@ -176,7 +176,7 @@ class HistoryModel extends Observable {
 			response!.historyDate.getMonth() + 1
 		);
 
-		let data = this.data.get(key);
+		let data = this.data.get(key) || [];
 		if (!data) {
 			//TODO: Error handling
 			throw new Error(`No data :${h.historyDate}`);
@@ -203,7 +203,7 @@ class HistoryModel extends Observable {
 
 function insertHistory(list: History[], item: History) {
 	for (let i = 0; i < list.length - 1; ++i) {
-		if (list[i + 1].historyDate > item.historyDate) {
+		if (list[i + 1].historyDate > new Date(item.historyDate)) {
 			return insertAt(list, item, i);
 		}
 	}
