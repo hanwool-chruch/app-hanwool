@@ -63,21 +63,23 @@ function createLabel(angle: number, name: string, persentage: number) {
 			y1="${labelCoord[1]}" 
 			x2="${labelCoord[0] * 1.1}" 
 			y2="${labelCoord[1] * 1.1}" 
-			style="stroke:rgb(255,0,0);stroke-width:0.01">
+			style="stroke:rgb(255,255,255);stroke-width:0.01">
 		</line>
 		<line 
 			x1="${labelCoord[0] * 1.1}" 
 			y1="${labelCoord[1] * 1.1}" 
 			x2="${labelCoord[0] * 1.1 + (angle > Math.PI ? -0.3 : 0.3)}" 
 			y2="${labelCoord[1] * 1.1}" 
-			style="stroke:rgb(255,0,0);stroke-width:0.01">
+			style="stroke:rgb(255,255,255);stroke-width:0.01">
 		</line>
 		<text
 			x="${labelCoord[0] * 1.1}"
 			y="${labelCoord[1] * 1.1}"
 			${angle > Math.PI ? 'dx=-0.3' : ''}
 			dy="-0.03"
-			font-size="0.1">
+			font-size="0.1"
+			style="fill: white"
+			>
 			${name} ${persentage}%
 		</text>
 	</g>
