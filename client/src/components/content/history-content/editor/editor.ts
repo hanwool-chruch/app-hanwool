@@ -186,26 +186,32 @@ class Editor extends Component {
 		const incomeCategories = [];
 		const outcomeCategories = [];
 
-		categories.income.forEach((cat) => {
-			const category = document.createElement('option');
-			category.text = cat.name;
-			category.value = cat.id + '';
-			incomeCategories.push(category);
-			this.categoryMap[cat.id] = cat.name;
-			this.categoryMap[cat.name] = cat.id;
-			this.incomeCategorySelector.add(category);
-		});
+		if (!categories) return;
 
-		categories.outcome.forEach((cat) => {
-			const category = document.createElement('option');
-			category.text = cat.name;
-			category.value = cat.id + '';
-			this.categoryMap[cat.id] = cat.name;
-			this.categoryMap[cat.name] = cat.id;
-			this.incomeCategorySelector.add(category);
-			outcomeCategories.push(category);
-			this.outcomeCategorySelector.add(category);
-		});
+		if (categories.income) {
+			categories.income.forEach((cat) => {
+				const category = document.createElement('option');
+				category.text = cat.name;
+				category.value = cat.id + '';
+				incomeCategories.push(category);
+				this.categoryMap[cat.id] = cat.name;
+				this.categoryMap[cat.name] = cat.id;
+				this.incomeCategorySelector.add(category);
+			});
+		}
+
+		if (categories.outcome) {
+			categories.outcome.forEach((cat) => {
+				const category = document.createElement('option');
+				category.text = cat.name;
+				category.value = cat.id + '';
+				this.categoryMap[cat.id] = cat.name;
+				this.categoryMap[cat.name] = cat.id;
+				this.incomeCategorySelector.add(category);
+				outcomeCategories.push(category);
+				this.outcomeCategorySelector.add(category);
+			});
+		}
 	}
 
 	private initHistoryDate() {

@@ -2,6 +2,7 @@ import { POST, GET, PATCH, PUT, DELETE } from './utils';
 import { AddHistoryDto, History } from '@shared/dto/history-dto';
 import { ApiSuccessResponse } from '@shared/dto/api-response';
 import { HistoryDto } from '@shared/dto';
+import httpStatus from 'http-status';
 
 const create = (data: AddHistoryDto): Promise<History> =>
 	POST('/api/history', data)
@@ -25,10 +26,10 @@ type FindByMonth = {
 const findByMonth = (data: FindByMonth): Promise<History[]> =>
 	GET(`/api/history/${data.servideId}/${data.year}/${data.month}`)
 		.then((res: any) => {
-			if (res.ok) return res.json();
-			else {
-				//TODO: Error handling
-				throw new Error('Error');
+			if (res.status === httpStatus.OK || res.status === httpStatus.NOT_MODIFIED) {
+				return res.json();
+			} else {
+				throw new Error('unexpected error occured at history get api');
 			}
 		})
 		.then((res: ApiSuccessResponse) => {
@@ -40,10 +41,9 @@ const findByMonth = (data: FindByMonth): Promise<History[]> =>
 const update = (historyId: number, data: HistoryDto.EditHistoryDto): Promise<History> =>
 	PUT(`/api/history/${historyId}`, data)
 		.then((res: any) => {
-			if (res.ok) return res.json();
+			if (res.status === httpStatus.OK || res.status === httpStatus.NOT_MODIFIED) return res.json();
 			else {
-				//TODO: Error handling
-				throw new Error('Error');
+				throw new Error('unexpected error occured at history update api');
 			}
 		})
 		.then((res: ApiSuccessResponse) => {
@@ -52,4 +52,4 @@ const update = (historyId: number, data: HistoryDto.EditHistoryDto): Promise<His
 
 const softDelete = (data: { id: number }) => DELETE(`/api/history/${data.id}`);
 
-export default { create, findByMonth, update, softDelete };
+export { create, findByMonth, update, softDelete };

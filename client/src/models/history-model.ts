@@ -9,12 +9,8 @@ import { History, AddHistoryDto } from '@shared/dto/history-dto';
 import { insertAt } from '../utils/insert-item-at';
 import { YearAndMonth } from '../router';
 import Router from '../router';
-import historyApi from '../api/history-api';
 import { HistoryApi } from '../api';
-import { HistoryDto } from '@shared/dto';
-
-const apiMock = (data: any) =>
-	new Promise((resolve) => resolve({ ...data, id: ~~(Math.random() * 1000) }));
+import httpStatus from 'http-status';
 
 class HistoryModel extends Observable {
 	private data: Map<string, History[]>;
@@ -78,14 +74,18 @@ class HistoryModel extends Observable {
 	private async load(): Promise<void> {
 		let data: History[];
 		try {
-			data = await historyApi.findByMonth({
+			data = await HistoryApi.findByMonth({
 				servideId: this.serviceId,
 				year: this.year,
 				month: this.month,
 			});
 		} catch (err) {
 			data = [];
-			console.error(err);
+			if (err) {
+				if (err.status !== httpStatus.BAD_REQUEST) {
+					console.error(err.stack);
+				}
+			}
 		}
 		const key = createKey(this.serviceId, this.year, this.month);
 		this.data.set(key, data);
@@ -103,7 +103,7 @@ class HistoryModel extends Observable {
 			payment_id: h.payment,
 		};
 		try {
-			resultHistory = await historyApi.create(data);
+			resultHistory = await HistoryApi.create(data);
 		} catch (err) {
 			throw new Error(`add data error`);
 		}
@@ -126,7 +126,7 @@ class HistoryModel extends Observable {
 
 	async remove(h: History): Promise<void> {
 		try {
-			await historyApi.softDelete({ id: h.id });
+			await HistoryApi.softDelete({ id: h.id });
 		} catch (err) {
 			throw new Error(`remove data error`);
 		}
@@ -152,7 +152,7 @@ class HistoryModel extends Observable {
 		try {
 			const editArgs = { ...h };
 			delete editArgs.id;
-			response = await historyApi.update(h.id, editArgs);
+			response = await HistoryApi.update(h.id, editArgs);
 		} catch (err) {
 			throw new Error(`edit data error`);
 		}
