@@ -5,6 +5,7 @@ import ActionManager, {
 	AddHistoryData,
 	EDIT_HISTORY_ACTION,
 	START_EDIT_HISTORY_ACTION,
+	EditHistoryData,
 } from '../../../../utils/action-manager';
 import { History } from '@shared/dto/history-dto';
 import actionManager from '../../../../utils/action-manager';
@@ -231,7 +232,7 @@ class Editor extends Component {
 		}
 	}
 
-	private confirmBtnClickHandler(chkClassify: HTMLInputElement) {
+	private addHistory(chkClassify: HTMLInputElement) {
 		const inputDate = this.dom.querySelector('.input-date') as HTMLInputElement;
 		const selectCategory = this.dom.querySelector('.select-category') as HTMLSelectElement;
 		const selectPayment = this.dom.querySelector('.select-payment') as HTMLSelectElement;
@@ -248,6 +249,32 @@ class Editor extends Component {
 
 		ActionManager.notify({ key: ADD_HISTORY_ACTION, data: data });
 		this.reload();
+	}
+
+	private editHistory(chkClassify: HTMLInputElement) {
+		const inputDate = this.dom.querySelector('.input-date') as HTMLInputElement;
+		const selectCategory = this.dom.querySelector('.select-category') as HTMLSelectElement;
+		const selectPayment = this.dom.querySelector('.select-payment') as HTMLSelectElement;
+		const inputPrice = this.dom.querySelector('.input-price') as HTMLInputElement;
+		const inputContent = this.dom.querySelector('.input-content') as HTMLInputElement;
+
+		const data: EditHistoryData = {
+			id: this.historyId!,
+			historyDate: inputDate.value,
+			category: parseInt(selectCategory.value),
+			payment: parseInt(selectPayment.value),
+			price: chkClassify.checked ? parseInt(inputPrice.value) : -parseInt(inputPrice.value),
+			content: inputContent.value,
+		};
+
+		ActionManager.notify({ key: EDIT_HISTORY_ACTION, data });
+		this.reload();
+	}
+
+	private confirmBtnClickHandler(chkClassify: HTMLInputElement) {
+		if (this.historyId === null) this.addHistory(chkClassify);
+		else this.editHistory(chkClassify);
+		this.historyId = null;
 	}
 }
 

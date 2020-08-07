@@ -79,7 +79,12 @@ type AddHistorySubscriber = {
 
 // EDIT_HISTORY_ACTION
 export type EditHistoryData = {
-	history: History;
+	id: number;
+	historyDate: string;
+	category: number;
+	payment: number;
+	price: number;
+	content: string;
 };
 
 type EditHistoryAction = {
