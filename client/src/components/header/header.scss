@@ -1,12 +1,14 @@
 @import '../../styles/mixins';
 
 .global-header {
-	background-color: lightblue;
-	display: flex;
-	justify-content: space-between;
+	background-color: grey;
+	display: grid;
+	grid-template-columns: 33% 33% 33%;
+	align-items: center;
+	justify-items: center;
+
 	padding: 1rem;
 	div {
-		display: flex;
 		span {
 			font-size: 1rem;
 			padding: 10px;
@@ -16,5 +18,11 @@
 				pointer-events: none;
 			}
 		}
+	}
+	.bulk-sector {
+		justify-self: start;
+	}
+	.button-sector {
+		justify-self: end;
 	}
 }
