@@ -20,6 +20,7 @@ export default class CategoryList extends AbstractContent {
 
 	private render(histories: History[]) {
 		const listHTTML = sumByCategory(histories)
+			.sort((a, b) => b.price - a.price)
 			.map(({ name, price, ratio }) => {
 				const fraction = Math.round(ratio * 100);
 				return `
