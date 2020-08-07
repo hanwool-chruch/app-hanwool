@@ -1,0 +1,83 @@
+@import '../../../../styles/mixins';
+
+.editor {
+	display: flex;
+	flex-direction: column;
+	flex-wrap: nowrap;
+	align-items: center;
+	align-self: cneter;
+
+	width: 100%;
+	font-size: 16px;
+	margin: 30px 0;
+	border: 1.5px solid rgba(0, 0, 0, 0.25);
+	.editor-row {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: nowrap;
+		justify-content: space-between;
+		align-items: center;
+
+		width: 100%;
+		min-height: 70px;
+		padding: 10px 15px;
+		border-top: 1px solid rgba(0, 0, 0, 0.25);
+
+		.child-input {
+			display: flex;
+			flex-grow: 1;
+			input,
+			select {
+				flex-grow: 1;
+				margin: 0 10px;
+			}
+		}
+		.item-title {
+			margin: 12px 0 0px 10px;
+		}
+		.toggle-group {
+			width: 200px;
+			.toggle {
+				background-color: rgba(0, 0, 0, 0.25);
+				border-radius: 4px;
+				border: 1px solid rgba(0, 0, 0, 0.5);
+				padding: 4px 15px 4px 15px;
+				margin-left: 10px;
+				&.outcome {
+					background-color: yellowgreen;
+				}
+
+				@include clickable();
+			}
+			input {
+				display: none;
+			}
+			input:checked ~ .income {
+				background-color: yellowgreen;
+			}
+			input:checked ~ .outcome {
+				background-color: rgba(0, 0, 0, 0.25);
+			}
+		}
+		.clear-btn {
+			align-self: start;
+			font-size: 12px;
+			@include clickable();
+		}
+		&.confirm-area {
+			width: 100%;
+			margin-top: 3px;
+		}
+		.confirm {
+			width: 100%;
+			height: 35px;
+			padding: 10px 12px 10px 12px;
+			margin: 0px 10px 0px 12px;
+			border: 1px solid rgba(0, 0, 0, 0.5);
+			background: rgba(0, 0, 0, 0.25);
+
+			text-align: center;
+			@include clickable();
+		}
+	}
+}

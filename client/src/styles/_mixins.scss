@@ -1,0 +1,8 @@
+@mixin clickable {
+	cursor: pointer;
+	transition: all 0.2s;
+	&:hover {
+		color: #3fa9ff;
+		border-color: #3fa9ff;
+	}
+}

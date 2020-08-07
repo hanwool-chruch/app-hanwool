@@ -1,0 +1,28 @@
+@import '../../styles/mixins';
+
+.global-header {
+	background-color: grey;
+	display: grid;
+	grid-template-columns: 33% 33% 33%;
+	align-items: center;
+	justify-items: center;
+
+	padding: 1rem;
+	div {
+		span {
+			font-size: 1rem;
+			padding: 10px;
+			@include clickable();
+			&.disabled {
+				color: #ccc;
+				pointer-events: none;
+			}
+		}
+	}
+	.bulk-sector {
+		justify-self: start;
+	}
+	.button-sector {
+		justify-self: end;
+	}
+}

@@ -1,0 +1,35 @@
+.tab-selector {
+	display: block;
+	position: relative;
+	ul {
+		display: flex;
+		justify-content: space-evenly;
+		background-color: #979696;
+		border-radius: 1.75rem;
+		height: 3.5rem;
+		padding: 20px;
+		list-style: none;
+
+		& li {
+			cursor: pointer;
+			z-index: 2;
+			width: 4rem;
+			text-align: center;
+		}
+		& li + li {
+			margin-left: 1rem;
+		}
+	}
+
+	.tab-highlight {
+		position: absolute;
+		z-index: 1;
+		background-color: #4f4f4f;
+		width: 5rem;
+		height: 2rem;
+		border-radius: 1rem;
+		transition: transform 0.5s;
+		top: 0.7rem;
+		left: 0.7rem;
+	}
+}
