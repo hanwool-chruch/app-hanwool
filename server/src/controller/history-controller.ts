@@ -76,17 +76,9 @@ const findByMonth = async (req: Request, res: Response, next: NextFunction) => {
 	};
 	try {
 		const history = await History.findByMonth(findArgs);
-		if (history.length) {
-			res
-				.status(HttpStatus.OK)
-				.json(
-					JsonResponse(`got histories by month ${req.params.year}-${req.params.month}`, history)
-				);
-		} else {
-			res
-				.status(HttpStatus.BAD_REQUEST)
-				.json(JsonResponse(`no histories by month ${req.params.year}-${req.params.month}`, null));
-		}
+		res
+			.status(HttpStatus.OK)
+			.json(JsonResponse(`got histories by month ${req.params.year}-${req.params.month}`, history));
 	} catch (err) {
 		next(err);
 	}

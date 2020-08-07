@@ -2,8 +2,6 @@ import { Request, Response, NextFunction } from 'express';
 import HttpStatus from 'http-status';
 import { Payment } from '../model';
 import { JsonResponse } from '../modules/util';
-import logger from '../config/logger';
-import { PaymentDto } from '../../../shared/dto';
 
 /**
  * @api {post} /service Request Service create
@@ -45,15 +43,9 @@ const create = async (req: Request, res: Response, next: NextFunction) => {
 
 	try {
 		const payment = await Payment.create(body as any);
-		if (payment) {
-			res
-				.status(HttpStatus.CREATED)
-				.json(JsonResponse(`payment created(${payment.payment_name})`, payment));
-		} else {
-			res
-				.status(HttpStatus.INTERNAL_SERVER_ERROR)
-				.json(JsonResponse('internal server error', null));
-		}
+		res
+			.status(HttpStatus.CREATED)
+			.json(JsonResponse(`payment created(${payment.payment_name})`, payment));
 	} catch (err) {
 		next(err);
 	}
@@ -65,15 +57,9 @@ const findByServiceId = async (req: Request, res: Response, next: NextFunction) 
 
 	try {
 		const payment = await Payment.findByServiceId(serviceId);
-		if (payment) {
-			res
-				.status(HttpStatus.OK)
-				.json(JsonResponse(`got payments by service id ${serviceId}`, payment));
-		} else {
-			res
-				.status(HttpStatus.BAD_REQUEST)
-				.json(JsonResponse(`no payments by service id ${serviceId}`, null));
-		}
+		res
+			.status(HttpStatus.OK)
+			.json(JsonResponse(`got payments by service id ${serviceId}`, payment));
 	} catch (err) {
 		next(err);
 	}

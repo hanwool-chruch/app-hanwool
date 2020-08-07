@@ -2,9 +2,6 @@ import { Request, Response, NextFunction } from 'express';
 import HttpStatus from 'http-status';
 import { Category } from '../model';
 import { JsonResponse } from '../modules/util';
-import logger from '../config/logger';
-import { CategoryDto } from '../../../shared/dto';
-import { CategoryController } from '.';
 
 /**
  * @api {post} /service Request Service create
@@ -46,15 +43,9 @@ const create = async (req: Request, res: Response, next: NextFunction) => {
 
 	try {
 		const category = await Category.create(body as any);
-		if (category) {
-			res
-				.status(HttpStatus.CREATED)
-				.json(JsonResponse(`category created(${category.category_name})`, category));
-		} else {
-			res
-				.status(HttpStatus.INTERNAL_SERVER_ERROR)
-				.json(JsonResponse('internal server error', null));
-		}
+		res
+			.status(HttpStatus.CREATED)
+			.json(JsonResponse(`category created(${category.category_name})`, category));
 	} catch (err) {
 		next(err);
 	}
