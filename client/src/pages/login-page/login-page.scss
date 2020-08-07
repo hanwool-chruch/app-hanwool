@@ -31,10 +31,17 @@
 	.social-sector {
 		font-size: x-large;
 		text-align: center;
-		span {
+		vertical-align: middle;
+		.socialBtn {
+			display: flex;
+			align-items: center;
+			justify-content: center;
 			cursor: pointer;
 			width: 100%;
 			padding: 10px 15px;
+			span {
+				margin-left: 10px;
+			}
 		}
 		img {
 			width: 30px;
