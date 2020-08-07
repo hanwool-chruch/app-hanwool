@@ -158,8 +158,8 @@ class HistoryModel extends Observable {
 		}
 
 		const date: Date = new Date(h.historyDate);
-		const key1 = createKey(this.serviceId, date.getFullYear(), date.getMonth() + 1);
-		let data1 = this.data.get(key1);
+		const key1 = createKey(this.serviceId, this.year, this.month);
+		let data1 = this.data.get(key1) || [];
 		if (!data1) {
 			//TODO: Error handling
 			throw new Error(`No data :${h.historyDate}`);
@@ -169,7 +169,6 @@ class HistoryModel extends Observable {
 		this.data.set(key1, newData1);
 
 		newData1 = insertHistory(newData1, response);
-		this.notify({ key: 'sendToViews', data: newData1 });
 
 		const key = createKey(
 			this.serviceId,
@@ -186,11 +185,10 @@ class HistoryModel extends Observable {
 		const newData = insertHistory(data, response!);
 		this.data.set(key, newData);
 
-		if (
-			this.year === response!.historyDate.getFullYear() &&
-			this.month === response!.historyDate.getMonth() + 1
-		)
-			this.notify({ key: 'sendToViews', data: newData });
+		this.notify({
+			key: 'sendToViews',
+			data: this.data.get(createKey(this.serviceId, this.year, this.month)),
+		});
 	}
 
 	setYearAndMonth(yearAndMonth: YearAndMonth) {
