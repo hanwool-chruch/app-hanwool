@@ -20,7 +20,7 @@ const opts = { jwtFromRequest, secretOrKey };
 
 const jwt = new JwtStrategy(opts, (jwt_payload: any, done) => {
 	logger.info('JWT BASED AUTH GETTING CALLED');
-	if (userController.checkUserPassword(jwt_payload.data)) {
+	if (userController.isExistsUser(jwt_payload.data)) {
 		return done(null, jwt_payload.data);
 	} else {
 		return done(null, false);

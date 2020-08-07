@@ -75,10 +75,6 @@ class HistoryModel extends Observable {
 		});
 	}
 
-	public init(serviceId: number) {
-		this.serviceId = serviceId;
-	}
-
 	private async load(): Promise<void> {
 		let data: History[];
 		try {

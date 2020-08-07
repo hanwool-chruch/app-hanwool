@@ -1,6 +1,5 @@
 import './styles/global.scss';
 
-import HistoryModel from './models/history-model';
 import Router from './router';
 import Component from './components/component';
 import ServicePage from './pages/service-page';
@@ -28,7 +27,6 @@ class App {
 	init() {
 		this.initEventManager();
 		this.initPages();
-		HistoryModel.init(1);
 		Router.init();
 		this.listener();
 	}
@@ -52,6 +50,12 @@ class App {
 	changePage(page: string) {
 		if (this.pages.has(page)) {
 			const newPage = this.pages.get(page);
+			while (this.container.childElementCount !== 0) {
+				this.container.lastElementChild?.remove();
+			}
+			this.container.appendChild(newPage!.getDom());
+		} else {
+			const newPage = this.pages.get('not-found');
 			while (this.container.childElementCount !== 0) {
 				this.container.lastElementChild?.remove();
 			}
