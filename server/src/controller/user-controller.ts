@@ -3,6 +3,8 @@ import CustomError from '../exception/custom-error';
 import HttpStatus from 'http-status';
 import { User, Service } from '../model';
 import crypto from 'crypto';
+import { UserDto } from '@shared/dto';
+import { TOKEN_USER } from '@shared/dto/user-dto';
 
 /**
  * @api {get} /user/:id Request User information
@@ -40,18 +42,29 @@ import crypto from 'crypto';
 const findById = async (req: Request, res: Response, next: NextFunction) => {};
 const findAll = async (req: Request, res: Response, next: NextFunction) => {};
 
-const checkUserPassword = async (data: any) => {
+const isExistsUser = async (data: any): Promise<TOKEN_USER | null> => {
 	try {
-		if (!data.email || !data.password)
+		if (!data.email || !data.user_id) {
 			new CustomError(HttpStatus.BAD_REQUEST, 'no email or password');
-		const user = await User.findEmailUser(data.email);
-		const hashedPassword = crypto.createHash('sha256').update(data.password).digest('base64');
+		}
+		const user = await User.findById(data.user_id);
 		if (!user) new CustomError(HttpStatus.BAD_REQUEST, `no user email(${data.email})`);
-		else if (user.password !== hashedPassword)
-			new CustomError(HttpStatus.BAD_REQUEST, `no password match`);
 
-		delete user?.password;
+		return data;
+	} catch (err) {
+		throw err;
+	}
+};
 
+const checkUserPassword = async (data: any): Promise<UserDto.CHECK_PASSWORD_RESPONSE | null> => {
+	try {
+		if (!data.email || !data.password) {
+			new CustomError(HttpStatus.BAD_REQUEST, 'no email or password');
+		}
+		const user = await User.findEmailUser(data.email);
+		if (!user) new CustomError(HttpStatus.BAD_REQUEST, `no user email(${data.email})`);
+		const hashedPassword = crypto.createHash('sha256').update(data.password).digest('base64');
+		if (user?.password !== hashedPassword) throw new Error('not matched password');
 		return user;
 	} catch (err) {
 		throw err;
@@ -77,13 +90,13 @@ const findOrCreate = async (tokenUser: any, provider: string) => {
 				user_id: user.user_id,
 				provider: provider,
 			};
-			const socialUser = await User.registerUser(socialBody, 'social_user');
-			return { user: socialUser, serviceId: service.service_id };
+			await User.registerUser(socialBody, 'social_user');
+			return { user: user, serviceId: service.service_id };
 		} else {
 			const socialUsers = await User.findSocialUser(tokenUser.email);
 			const filteredUser = socialUsers.filter((user) => user.provider === provider);
 			if (filteredUser.length) {
-				return { user: filteredUser[0], serviceId: users[0].service_id };
+				return { user: users[0], serviceId: users[0].service_id };
 			} else {
 				const user = users[0];
 				const socialBody = {
@@ -92,8 +105,8 @@ const findOrCreate = async (tokenUser: any, provider: string) => {
 					user_id: user.user_id,
 					provider: provider,
 				};
-				const socialUser = await User.registerUser(socialBody, 'social_user');
-				return { user: socialUser, serviceId: user.service_id };
+				await User.registerUser(socialBody, 'social_user');
+				return { user: user, serviceId: user.service_id };
 			}
 		}
 	} catch (err) {
@@ -101,4 +114,4 @@ const findOrCreate = async (tokenUser: any, provider: string) => {
 	}
 };
 
-export default { findById, findAll, checkUserPassword, findOrCreate };
+export default { findById, findAll, checkUserPassword, findOrCreate, isExistsUser };

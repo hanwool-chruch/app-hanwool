@@ -1,11 +1,13 @@
 import { mysql } from '../modules/database/mysql';
 import { UserDto } from '@shared/dto';
 
-const findById = async (id: string) => {
+const findById = async (id: number) => {
 	let userData;
 	try {
 		userData = await mysql.connect((con: any) =>
-			con.query(`SELECT user_id, name, email, create_date FROM user where user.user_id = '${id}'`)
+			con.query(
+				`SELECT user_id, name, email, service_id, create_date FROM user where user.user_id = '${id}'`
+			)
 		);
 	} catch (err) {
 		throw err;

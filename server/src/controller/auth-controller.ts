@@ -7,14 +7,17 @@ import jwt from 'jsonwebtoken';
 import { jwtSecret, tokenExpiresIn, githubCredentials } from '../config/consts';
 import CustomError from '../exception/custom-error';
 import crypto from 'crypto';
+import { UserDto } from '@shared/dto';
+import { TOKEN_USER } from '@shared/dto/user-dto';
 
 const emailLogin = async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		const isValidUser = await userController.checkUserPassword(req.body);
 		if (isValidUser) {
+			const user = await User.findById(isValidUser.user_id);
 			const token = jwt.sign(
 				{
-					data: isValidUser,
+					data: user,
 				},
 				jwtSecret,
 				{ expiresIn: tokenExpiresIn }
@@ -96,8 +99,12 @@ const emailSignUp = async (req: Request, res: Response, next: NextFunction) => {
 					{ expiresIn: tokenExpiresIn }
 				);
 				res
+					.cookie('authorization', token, {
+						// 30 분 뒤 만료
+						expires: new Date(Date.now() + 30 * 60 * 1000),
+					})
 					.status(HttpStatus.CREATED)
-					.json(JsonResponse(`created user success email(${body.email})`, { user, token }));
+					.json(JsonResponse(`created user success email(${body.email})`, { user }));
 			}
 		}
 	} catch (err) {
@@ -123,18 +130,19 @@ const googleRedirect = async (req: Request, res: Response, next: NextFunction) =
 		{ expiresIn: tokenExpiresIn }
 	);
 
+	const hashedServiceId = (serviceId + 3000).toString(16);
 	const now = new Date();
 	const yearAndMonth = `${now.getFullYear()}-${now.getMonth() + 1}`;
 	res.cookie('authorization', token, {
 		// 30 분 뒤 만료
 		expires: new Date(Date.now() + 30 * 60 * 1000),
 	});
-	res.redirect(`/${(serviceId + 3000).toString(16)}/${yearAndMonth}/history`);
+	res.redirect(`/${hashedServiceId}/${yearAndMonth}/history`);
 };
 
 const githubRedirect = async (req: Request, res: Response, next: NextFunction) => {
 	const githubUser: any = req.user;
-	console.log('githubUser', githubUser);
+
 	const tokenUser = {
 		user_id: githubUser.id,
 		name: githubUser.displayName,
@@ -160,9 +168,14 @@ const githubRedirect = async (req: Request, res: Response, next: NextFunction) =
 	res.redirect(`/${(serviceId + 3000).toString(16)}/${yearAndMonth}/history`);
 };
 
-const isValidToken = (req: Request, res: Response, next: NextFunction) => {
-	if (req.user) res.sendStatus(HttpStatus.OK);
-	else res.sendStatus(HttpStatus.UNAUTHORIZED);
+const isValidToken = async (req: Request, res: Response, next: NextFunction) => {
+	if (req.user) {
+		const tokenUser = req.user as TOKEN_USER;
+
+		res
+			.status(HttpStatus.OK)
+			.json(JsonResponse('valid token user', { serviceId: tokenUser.service_id }));
+	} else res.status(HttpStatus.UNAUTHORIZED).json(JsonResponse('expired token', {}));
 };
 
 export default { emailSignUp, emailLogin, googleRedirect, isValidToken, githubRedirect };
