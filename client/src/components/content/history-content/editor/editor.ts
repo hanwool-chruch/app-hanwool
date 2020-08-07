@@ -66,12 +66,25 @@ class Editor extends Component {
 		const selectPayment = this.dom.querySelector('.select-payment') as HTMLSelectElement;
 
 		this.historyId = h.id;
-		//카테고리
-		selectCategory.value = this.categoryMap[h.category];
 		//결제방식
 		// (this.dom.querySelector('.input-data') as any).value = h.historyDate;
 		//분류
-		(this.dom.querySelector('.chk-classify') as any).checked = h.price > 0;
+		//TODO refactor
+		const chkClassify = this.dom.querySelector('.chk-classify') as HTMLInputElement;
+		chkClassify.checked = h.price > 0;
+		const selector = this.dom.querySelector('.select-category') as HTMLSelectElement;
+		const selectorParent = selector.parentElement as HTMLElement;
+		if (chkClassify.checked) {
+			chkClassify.checked = true;
+			selector.remove();
+			selectorParent.appendChild(this.incomeCategorySelector);
+		} else if (!chkClassify.checked) {
+			chkClassify.checked = false;
+			selector.remove();
+			selectorParent.appendChild(this.outcomeCategorySelector);
+		}
+		//카테고리
+		selectCategory.value = this.categoryMap[h.category];
 		//금액
 		(this.dom.querySelector('.input-price') as any).value = Math.abs(h.price);
 		//내용
