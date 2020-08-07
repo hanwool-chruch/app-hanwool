@@ -27,6 +27,14 @@ interface CREATE {
 	service_id: number;
 }
 
+interface TOKEN_USER {
+	user_id: number;
+	email: string;
+	name: string;
+	image: string | null;
+	service_id: number;
+}
+
 interface LOGIN {
 	email: string;
 	password: string;
@@ -59,6 +67,12 @@ interface EMAIL_RESPONSE {
 	service_id: number;
 }
 
+interface CHECK_PASSWORD_RESPONSE {
+	email: string;
+	user_id: number;
+	service_id: number;
+}
+
 export {
 	CREATE,
 	RESPONSE,
@@ -69,4 +83,6 @@ export {
 	REGISTER_USER,
 	SIGNUP_EMAIL,
 	SOCIAL_RESPONSE,
+	TOKEN_USER,
+	CHECK_PASSWORD_RESPONSE,
 };

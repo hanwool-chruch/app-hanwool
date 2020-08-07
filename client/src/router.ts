@@ -3,9 +3,6 @@ import ActionManager, {
 	CHANGE_DATE_ACTION,
 	CHANGE_TAB_ACTION,
 	POP_STATE_ACTION,
-	ADD_HISTORY_ACTION,
-	EDIT_HISTORY_ACTION,
-	REMOVE_HISTORY_ACTION,
 	LOGIN_ACTION,
 } from './utils/action-manager';
 import { MonthSelectorState } from './components/month-selector';
@@ -54,22 +51,29 @@ class Router extends Observable {
 		}
 
 		try {
+			const response = await UserApi.isValidToken({ token });
+			if (response.status !== HttpStatus.OK && response.status !== HttpStatus.NOT_MODIFIED) {
+				this.notify({ key: 'loadPage', data: { pageName: 'login' } });
+				return;
+			}
+			const serviceId = (await response.json()).result.serviceId;
+			this.setServiceId(serviceId);
+
+			//(temp) send serviceId to Header for bulk insert
+			this.notify({ key: 'publishServiceId', data: { serviceId } });
+
 			const route = location.pathname.replace(this.root, '');
 			const routeArr = route.split('/');
-			const serviceId = parseInt(routeArr[0], 16) - 3000;
 			const yearAndMonth = routeArr[1].split('-');
 			const year = parseInt(yearAndMonth[0]);
 			const month = parseInt(yearAndMonth[1]);
 			const viewName = routeArr[2];
-			const pageName = 'service';
 
-			this.setServiceId(serviceId);
 			this.setYearAndMonth(year, month);
 			this.setViewName(viewName);
-			this.setPageName(pageName);
 			this.notify({ key: 'loadHistory', data: { serviceId, year, month } });
-			this.notify({ key: 'loadView', data: { viewName } });
-			this.notify({ key: 'loadPage', data: { pageName } });
+			this.notify({ key: 'loadView', data: { viewName, serviceId } });
+			this.notify({ key: 'loadPage', data: { pageName: this.current.pageName } });
 		} catch (err) {
 			this.notify({
 				key: 'loadHistory',
@@ -79,7 +83,10 @@ class Router extends Observable {
 					month: this.current.month,
 				},
 			});
-			this.notify({ key: 'loadView', data: { viewName: 'history' } });
+			this.notify({
+				key: 'loadView',
+				data: { viewName: 'history', serviceId: this.current.serviceId },
+			});
 			this.notify({ key: 'loadPage', data: { pageName: 'service' } });
 		}
 	}
@@ -107,7 +114,10 @@ class Router extends Observable {
 				}
 				this.setViewName(data.viewName);
 				this.updateCurrentUrl();
-				this.notify({ key: 'loadView', data: { viewName: data.viewName } });
+				this.notify({
+					key: 'loadView',
+					data: { viewName: data.viewName, serviceId: this.current.serviceId },
+				});
 			},
 		});
 
@@ -124,10 +134,13 @@ class Router extends Observable {
 						month: data.month,
 					},
 				});
-				this.notify({ key: 'loadView', data: { viewName: data.viewName } });
+				this.notify({
+					key: 'loadView',
+					data: { viewName: data.viewName, serviceId: this.current.serviceId },
+				});
 			},
 		});
-    
+
 		ActionManager.subscribe({
 			key: LOGIN_ACTION,
 			observer: (data: { serviceId: number }) => {
@@ -140,9 +153,13 @@ class Router extends Observable {
 						month: this.current.month,
 					},
 				});
-				this.notify({ key: 'loadView', data: { viewName: this.current.viewName } });
-				this.notify({ key: 'loadPage', data: { pageName: 'service' } });
-				this.updateCurrentUrl();
+				this.notify({
+					key: 'loadView',
+					data: { viewName: this.current.viewName, serviceId: this.current.serviceId },
+				});
+				location.href = `${(this.current.serviceId + 3000).toString()}/${this.current.year}-${
+					this.current.month
+				}/history`;
 			},
 		});
 

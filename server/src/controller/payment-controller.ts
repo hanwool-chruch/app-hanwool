@@ -82,10 +82,12 @@ const findByServiceId = async (req: Request, res: Response, next: NextFunction) 
 const bulkInsert = async (req: Request, res: Response, next: NextFunction) => {
 	const { data } = req.body;
 	try {
-		const payments = await Payment.bulkInsert(data);
+		const { insertedId, affectedRows } = await Payment.bulkInsert(data);
 		res
 			.status(HttpStatus.CREATED)
-			.json(JsonResponse(`payment bulk insert success: ${payments}`, {}));
+			.json(
+				JsonResponse(`payment bulk insert success: ${affectedRows}`, { insertedId, affectedRows })
+			);
 	} catch (err) {
 		next(err);
 	}

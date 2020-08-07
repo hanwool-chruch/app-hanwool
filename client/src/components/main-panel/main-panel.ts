@@ -23,11 +23,9 @@ export default class MainPanel extends Component {
 	init() {
 		this.dom.classList.add('main-panel');
 
-		let serviceId = 1;
 		try {
 			const route = location.pathname.replace('/', '');
 			const routeArr = route.split('/');
-			serviceId = parseInt(routeArr[0], 16) - 3000;
 			const locationDate = routeArr[1].split('-');
 			const monthState = { year: parseInt(locationDate[0]), month: parseInt(locationDate[1]) };
 			const monthSelector = new MonthSelector(monthState);
@@ -52,13 +50,13 @@ export default class MainPanel extends Component {
 			this.dom.appendChild(monthSelector.getDom());
 			this.dom.appendChild(tabSelector.getDom());
 		} finally {
-			this.initViews(serviceId);
+			this.initViews();
 			this.initEventManager();
 		}
 	}
 
-	initViews(serviceId: number) {
-		const historyContent = new HistoryContent(serviceId);
+	initViews() {
+		const historyContent = new HistoryContent();
 		const calendarContent = new CalendarContent();
 		const statisticsContent = new StatisticsContent();
 		this.contents.set('history', historyContent);
@@ -67,7 +65,10 @@ export default class MainPanel extends Component {
 	}
 
 	private initEventManager() {
-		Router.subscribe({ key: 'loadView', observer: (data) => this.changeView(data.viewName) });
+		Router.subscribe({
+			key: 'loadView',
+			observer: (data) => this.changeView(data.viewName, data.serviceId),
+		});
 		HistoryModel.subscribe({
 			key: 'sendToViews',
 			observer: (data) => {
@@ -76,9 +77,12 @@ export default class MainPanel extends Component {
 		});
 	}
 
-	changeView(view: string) {
-		if (this.contents.has(view)) {
-			const newView = this.contents.get(view);
+	changeView(viewName: string, serviceId: number) {
+		if (this.contents.has(viewName)) {
+			const newView = this.contents.get(viewName);
+			if (viewName === 'history') {
+				(newView as HistoryContent).reload(serviceId);
+			}
 			while (this.dom.childElementCount !== 2) {
 				this.dom.lastElementChild?.remove();
 			}

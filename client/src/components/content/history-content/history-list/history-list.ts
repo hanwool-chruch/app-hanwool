@@ -37,7 +37,6 @@ export default class HistoryList extends AbstractContent {
 		this.listener();
 	}
 
-	// add event listeners
 	private listener() {
 		const earnedCheckbox = this.dom.querySelector(
 			'#history-list-earned-checkbox'
@@ -56,7 +55,7 @@ export default class HistoryList extends AbstractContent {
 		});
 	}
 
-	private updateList() {
+	public updateList() {
 		const list = this.dom.querySelector('#history-list') as HTMLOListElement;
 		while (list.hasChildNodes()) list.removeChild(list.firstChild!);
 
@@ -91,9 +90,6 @@ export default class HistoryList extends AbstractContent {
 	}
 
 	load(histories: History[]): void {
-		/**
-		 * 테이블 태그 정리
-		 */
 		this.histories = histories;
 		this.updateList();
 	}
