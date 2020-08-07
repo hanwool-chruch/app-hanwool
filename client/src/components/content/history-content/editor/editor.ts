@@ -3,7 +3,12 @@ import { CategoryApi, PaymentApi } from '../../../../api';
 import ActionManager, {
 	ADD_HISTORY_ACTION,
 	AddHistoryData,
+	EDIT_HISTORY_ACTION,
+	START_EDIT_HISTORY_ACTION,
+	EditHistoryData,
 } from '../../../../utils/action-manager';
+import { History } from '@shared/dto/history-dto';
+import actionManager from '../../../../utils/action-manager';
 
 class Editor extends Component {
 	dom: HTMLElement;
@@ -11,6 +16,11 @@ class Editor extends Component {
 	private paymentSelector: HTMLSelectElement;
 	private incomeCategorySelector: HTMLSelectElement;
 	private outcomeCategorySelector: HTMLSelectElement;
+	private paymentMap = {};
+	private categoryMap = {};
+
+	// null if not editing, not null if editing
+	private historyId: number | null = null;
 
 	constructor() {
 		super();
@@ -29,6 +39,13 @@ class Editor extends Component {
 		this.appendChilds();
 		this.listener();
 		this.fetchSelectorData();
+
+		actionManager.subscribe({
+			key: START_EDIT_HISTORY_ACTION,
+			observer: (data: any) => {
+				this.startEdit(data.history);
+			},
+		});
 	}
 
 	private initClassList() {
@@ -43,6 +60,51 @@ class Editor extends Component {
 		const paymentSection = this.dom.querySelector('.payment-section') as HTMLElement;
 		categorySection.appendChild(this.outcomeCategorySelector);
 		paymentSection.appendChild(this.paymentSelector);
+	}
+
+	startEdit(h: History) {
+		const selectCategory = this.dom.querySelector('.select-category') as HTMLSelectElement;
+		const selectPayment = this.dom.querySelector('.select-payment') as HTMLSelectElement;
+
+		this.historyId = h.id;
+		//결제방식
+		selectPayment.value = this.paymentMap[h.payment];
+		//분류
+		//TODO refactor
+		const chkClassify = this.dom.querySelector('.chk-classify') as HTMLInputElement;
+		chkClassify.checked = h.price > 0;
+		const selector = this.dom.querySelector('.select-category') as HTMLSelectElement;
+		const selectorParent = selector.parentElement as HTMLElement;
+		if (chkClassify.checked) {
+			chkClassify.checked = true;
+			selector.remove();
+			selectorParent.appendChild(this.incomeCategorySelector);
+		} else if (!chkClassify.checked) {
+			chkClassify.checked = false;
+			selector.remove();
+			selectorParent.appendChild(this.outcomeCategorySelector);
+		}
+		//카테고리
+		selectCategory.value = this.categoryMap[h.category];
+		//금액
+		(this.dom.querySelector('.input-price') as any).value = Math.abs(h.price);
+		//내용
+		(this.dom.querySelector('.input-content') as any).value = h.content;
+
+		//날짜
+		const tt = (a: any) => {
+			const str = '0' + a;
+			return str.slice(str.length - 2, str.length);
+		};
+		(this.dom.querySelector('.input-date') as any).value = [
+			h.historyDate.getFullYear() + '',
+			tt(h.historyDate.getMonth() + 1),
+			tt(h.historyDate.getDate()),
+		].join('-');
+		console.log(tt(h.historyDate.getMonth() + 1), tt(h.historyDate.getDate()));
+
+		//버튼
+		this.dom.querySelector('.confirm')!.innerHTML = '수정';
 	}
 
 	private render() {
@@ -116,6 +178,8 @@ class Editor extends Component {
 			const payment = document.createElement('option');
 			payment.text = payments[i].name;
 			payment.value = payments[i].id + '';
+			this.paymentMap[payments[i].name] = payments[i].id;
+			this.paymentMap[payments[i].id] = payments[i].name;
 			this.paymentSelector.add(payment);
 		}
 
@@ -127,6 +191,8 @@ class Editor extends Component {
 			category.text = cat.name;
 			category.value = cat.id + '';
 			incomeCategories.push(category);
+			this.categoryMap[cat.id] = cat.name;
+			this.categoryMap[cat.name] = cat.id;
 			this.incomeCategorySelector.add(category);
 		});
 
@@ -134,6 +200,9 @@ class Editor extends Component {
 			const category = document.createElement('option');
 			category.text = cat.name;
 			category.value = cat.id + '';
+			this.categoryMap[cat.id] = cat.name;
+			this.categoryMap[cat.name] = cat.id;
+			this.incomeCategorySelector.add(category);
 			outcomeCategories.push(category);
 			this.outcomeCategorySelector.add(category);
 		});
@@ -168,7 +237,7 @@ class Editor extends Component {
 		}
 	}
 
-	private confirmBtnClickHandler(chkClassify: HTMLInputElement) {
+	private addHistory(chkClassify: HTMLInputElement) {
 		const inputDate = this.dom.querySelector('.input-date') as HTMLInputElement;
 		const selectCategory = this.dom.querySelector('.select-category') as HTMLSelectElement;
 		const selectPayment = this.dom.querySelector('.select-payment') as HTMLSelectElement;
@@ -189,6 +258,32 @@ class Editor extends Component {
 
 	public setServiceId(serviceId: number) {
 		this.serviceId = serviceId;
+	}
+
+	private editHistory(chkClassify: HTMLInputElement) {
+		const inputDate = this.dom.querySelector('.input-date') as HTMLInputElement;
+		const selectCategory = this.dom.querySelector('.select-category') as HTMLSelectElement;
+		const selectPayment = this.dom.querySelector('.select-payment') as HTMLSelectElement;
+		const inputPrice = this.dom.querySelector('.input-price') as HTMLInputElement;
+		const inputContent = this.dom.querySelector('.input-content') as HTMLInputElement;
+
+		const data: EditHistoryData = {
+			id: this.historyId!,
+			historyDate: inputDate.value,
+			category: parseInt(selectCategory.value),
+			payment: parseInt(selectPayment.value),
+			price: chkClassify.checked ? parseInt(inputPrice.value) : -parseInt(inputPrice.value),
+			content: inputContent.value,
+		};
+
+		ActionManager.notify({ key: EDIT_HISTORY_ACTION, data });
+		this.reload();
+	}
+
+	private confirmBtnClickHandler(chkClassify: HTMLInputElement) {
+		if (this.historyId === null) this.addHistory(chkClassify);
+		else this.editHistory(chkClassify);
+		this.historyId = null;
 	}
 }
 

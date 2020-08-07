@@ -10,6 +10,8 @@ import { insertAt } from '../utils/insert-item-at';
 import { YearAndMonth } from '../router';
 import Router from '../router';
 import historyApi from '../api/history-api';
+import { HistoryApi } from '../api';
+import { HistoryDto } from '@shared/dto';
 
 const apiMock = (data: any) =>
 	new Promise((resolve) => resolve({ ...data, id: ~~(Math.random() * 1000) }));
@@ -146,27 +148,49 @@ class HistoryModel extends Observable {
 	}
 
 	async edit(h: History): Promise<void> {
+		let response: History;
 		try {
-			const response: History = (await apiMock(h)) as any;
-
-			const key = createKey(
-				this.serviceId,
-				h.historyDate.getFullYear(),
-				h.historyDate.getMonth() + 1
-			);
-			const data = this.data.get(key);
-			if (!data) {
-				//TODO: Error handling
-				throw new Error(`No data :${h.historyDate}`);
-			}
-
-			let newData = data.filter((history) => history.id !== h.id);
-			newData = insertHistory(newData, response);
-			this.data.set(key, newData);
-			this.notify({ key: 'sendToViews', data: newData });
+			const editArgs = { ...h };
+			delete editArgs.id;
+			response = await historyApi.update(h.id, editArgs);
 		} catch (err) {
 			throw new Error(`edit data error`);
 		}
+
+		const date: Date = new Date(h.historyDate);
+		const key1 = createKey(this.serviceId, date.getFullYear(), date.getMonth() + 1);
+		let data1 = this.data.get(key1);
+		if (!data1) {
+			//TODO: Error handling
+			throw new Error(`No data :${h.historyDate}`);
+		}
+
+		let newData1 = data1.filter((history) => history.id !== h.id);
+		this.data.set(key1, newData1);
+
+		newData1 = insertHistory(newData1, response);
+		this.notify({ key: 'sendToViews', data: newData1 });
+
+		const key = createKey(
+			this.serviceId,
+			response!.historyDate.getFullYear(),
+			response!.historyDate.getMonth() + 1
+		);
+
+		let data = this.data.get(key);
+		if (!data) {
+			//TODO: Error handling
+			throw new Error(`No data :${h.historyDate}`);
+		}
+
+		const newData = insertHistory(data, response!);
+		this.data.set(key, newData);
+
+		if (
+			this.year === response!.historyDate.getFullYear() &&
+			this.month === response!.historyDate.getMonth() + 1
+		)
+			this.notify({ key: 'sendToViews', data: newData });
 	}
 
 	setYearAndMonth(yearAndMonth: YearAndMonth) {

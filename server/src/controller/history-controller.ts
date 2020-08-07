@@ -4,6 +4,7 @@ import { History } from '../model';
 import { JsonResponse } from '../modules/util';
 import { AddHistoryDto } from '@shared/dto/history-dto';
 import CustomError from '../exception/custom-error';
+import { HistoryDto } from '@shared/dto';
 
 /**
  * @api {post} /api/history
@@ -92,20 +93,30 @@ const findByMonth = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 const update = async (req: Request, res: Response, next: NextFunction) => {
+	const params = req.params;
 	const { body } = req;
+	const historyId = parseInt(params.id);
+	if (isNaN(historyId)) next(new Error('history id is not a number'));
 
+	const editArgs: HistoryDto.EditHistoryDto = {
+		content: body.content,
+		payment_id: body.payment_id,
+		category_id: body.category_id,
+		price: body.price,
+		history_date: body.history_date,
+	};
+
+	for (const key in editArgs) {
+		if (editArgs[key] === undefined) delete editArgs[key];
+	}
+
+	let history;
 	try {
-		const history = await History.update(body as any);
-		if (history) {
-			res.status(HttpStatus.OK).json(JsonResponse(`updated history ${body.history_id}`, history));
-		} else {
-			res
-				.status(HttpStatus.BAD_REQUEST)
-				.json(JsonResponse(`updated history ${body.history_id}`, null));
-		}
+		history = await History.update(historyId, editArgs);
 	} catch (err) {
 		next(err);
 	}
+	res.status(HttpStatus.OK).json(JsonResponse(`updated history ${body.history_id}`, history));
 };
 
 const remove = async (req: Request, res: Response, next: NextFunction) => {
