@@ -29,15 +29,15 @@ export default class Header extends Component {
 
 	render() {
 		this.dom.innerHTML = `
-			<div>
-				<span class='bulk-insert payment-bulk'>결제방식 자동 추가</span>
-				<span class='bulk-insert category-bulk'>카테고리 자동 추가</span>
+			<div class="bulk-sector">
+				<span class='bulk-insert payment-bulk disabled'>결제방식 자동 추가</span>
+				<span class='bulk-insert category-bulk disabled'>카테고리 자동 추가</span>
 				<span class='bulk-insert history-bulk disabled'>내역 자동 추가</span>
 			</div>
-			<h1>
+			<h1 class="title-sector">
 				가계부
 			</h1>
-			<div>
+			<div class="button-sector">
 				<span class="logout-btn">로그아웃</span>
 				<span class="open-payment-btn">결제 수단 관리</span>
 			</div>

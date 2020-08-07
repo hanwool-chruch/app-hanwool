@@ -300,6 +300,28 @@ class Editor extends Component {
 		else this.editHistory(chkClassify);
 		this.historyId = null;
 	}
+
+	public managerBulkEnable() {
+		const paymentBulk = document.querySelector('.payment-bulk') as HTMLSpanElement;
+		const categoryBulk = document.querySelector('.category-bulk') as HTMLSpanElement;
+		if (this.isEmptyCategory()) {
+			paymentBulk.classList.remove('disabled');
+		}
+
+		if (this.isEmptyPayment()) {
+			categoryBulk.classList.remove('disabled');
+		}
+	}
+
+	isEmptyPayment() {
+		if (this.paymentSelector.childElementCount === 0) return true;
+		else return false;
+	}
+
+	isEmptyCategory() {
+		if (this.outcomeCategorySelector.childElementCount === 0) return true;
+		else return false;
+	}
 }
 
 export default Editor;
