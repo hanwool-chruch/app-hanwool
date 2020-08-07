@@ -68,13 +68,13 @@ class LoginPage extends Component {
 		</span>
 		
 		<div class="social-sector login-row">
-			<span class="githubBtn">
-			<img src="/images/icon-github.png" alt="GITHUB">
-				Github
+			<span class="githubBtn socialBtn">
+				<img src="/images/icon-github.png" alt="GITHUB">
+				<span>Github</span>
 			</span>
-			<span class="googleBtn">
+			<span class="googleBtn socialBtn">
 				<img src="/images/icon-google.png" alt="GOOGLE">
-				Google
+				<span>Google</span>
 			</span>
 		</div>
 
