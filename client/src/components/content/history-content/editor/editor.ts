@@ -67,7 +67,7 @@ class Editor extends Component {
 
 		this.historyId = h.id;
 		//결제방식
-		// (this.dom.querySelector('.input-data') as any).value = h.historyDate;
+		selectPayment.value = this.paymentMap[h.payment];
 		//분류
 		//TODO refactor
 		const chkClassify = this.dom.querySelector('.chk-classify') as HTMLInputElement;
@@ -97,6 +97,9 @@ class Editor extends Component {
 			tt(h.historyDate.getMonth() + 1),
 			tt(h.historyDate.getDate()),
 		].join('-');
+
+		//버튼
+		this.dom.querySelector('.confirm')!.innerHTML = '수정';
 	}
 
 	private render() {
