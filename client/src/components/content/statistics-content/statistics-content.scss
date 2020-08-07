@@ -7,6 +7,19 @@ $earned-color: #29b6ae;
 	flex-wrap: nowrap;
 	align-items: center;
 
+	.stat-view-header {
+		display: flex;
+		margin: 1rem;
+		input {
+			margin: 0;
+		}
+		#statistics-content-monthly-spent {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+	}
+
 	#stat-view {
 		width: 80%;
 	}
