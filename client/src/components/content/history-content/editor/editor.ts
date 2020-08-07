@@ -101,7 +101,6 @@ class Editor extends Component {
 			tt(h.historyDate.getMonth() + 1),
 			tt(h.historyDate.getDate()),
 		].join('-');
-		console.log(tt(h.historyDate.getMonth() + 1), tt(h.historyDate.getDate()));
 
 		//버튼
 		this.dom.querySelector('.confirm')!.innerHTML = '수정';

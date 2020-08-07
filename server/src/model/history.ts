@@ -85,7 +85,7 @@ const findByMonth = async ({
 
 const update = async (historyId: number, history: HistoryDto.EditHistoryDto) => {
 	let resultHistory: History;
-	console.log(historyId, history);
+
 	try {
 		resultHistory = await mysql.connect(async (con: any) => {
 			if (Object.keys(history).length !== 0)

@@ -130,7 +130,7 @@ class HistoryModel extends Observable {
 		} catch (err) {
 			throw new Error(`remove data error`);
 		}
-		console.log(h);
+
 		const key = createKey(
 			this.serviceId,
 			h.historyDate.getFullYear(),
