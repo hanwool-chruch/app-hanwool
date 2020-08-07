@@ -92,12 +92,16 @@ class Editor extends Component {
 		(this.dom.querySelector('.input-content') as any).value = h.content;
 
 		//날짜
-		const tt = (a: any) => ('0' + a).slice(0, 2);
+		const tt = (a: any) => {
+			const str = '0' + a;
+			return str.slice(str.length - 2, str.length);
+		};
 		(this.dom.querySelector('.input-date') as any).value = [
 			h.historyDate.getFullYear() + '',
 			tt(h.historyDate.getMonth() + 1),
 			tt(h.historyDate.getDate()),
 		].join('-');
+		console.log(tt(h.historyDate.getMonth() + 1), tt(h.historyDate.getDate()));
 
 		//버튼
 		this.dom.querySelector('.confirm')!.innerHTML = '수정';
