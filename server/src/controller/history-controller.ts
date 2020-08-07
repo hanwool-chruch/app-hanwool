@@ -92,10 +92,10 @@ const update = async (req: Request, res: Response, next: NextFunction) => {
 
 	const editArgs: HistoryDto.EditHistoryDto = {
 		content: body.content,
-		payment_id: body.payment_id,
-		category_id: body.category_id,
+		payment_id: body.payment,
+		category_id: body.category,
 		price: body.price,
-		history_date: body.history_date,
+		history_date: body.historyDate,
 	};
 
 	for (const key in editArgs) {
