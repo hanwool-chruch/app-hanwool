@@ -3,7 +3,7 @@ import path from 'path';
 
 dotenv.config({ path: path.join(__dirname, '../../../shared/.env') });
 
-const env = process.env.NODE_ENV || 'development';
+let env = process.env.NODE_ENV || 'development';
 const logs = env === 'production' ? 'combined' : 'dev';
 const port = process.env.PORT || '3000';
 const jwtSecret = process.env.JWT_SECRET || 'secret';
@@ -18,7 +18,7 @@ const githubCredentials = {
 const tokenExpiresIn = '30m';
 
 const databaseConfig = {
-	database: env === 'production' ? process.env.PORD_DB : process.env.DEV_DB,
+	database: env === 'production' ? process.env.PROD_DB : process.env.DEV_DB,
 	user: process.env.DB_USER,
 	password: process.env.DB_PW,
 	host: process.env.DB_HOST,
