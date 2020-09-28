@@ -5,7 +5,7 @@
 	"main": "main.ts",
 	"scripts": {
 		"test": "jest",
-		"dev": "set NODE_ENV=development && nodemon --exec ts-node ./src/main.ts --config nodemon.json",
+		"dev": "NODE_ENV=development nodemon --exec ts-node ./src/main.ts --config nodemon.json",
 		"start:ops": "NODE_ENV=production ts-node ./src/main.ts",
 		"apidoc": "apidoc -i src -o apidoc",
 		"pm2:start": "NODE_ENV=production pm2 startOrRestart ecosystem.config.js",
