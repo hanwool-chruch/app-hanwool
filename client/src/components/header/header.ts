@@ -11,6 +11,8 @@ interface BULK_RESPONSE {
 	insertedId: number;
 	affectedRows: number;
 }
+
+const [PAYMENT_INDEX, CATEGORY_INDEX] = [0, 1];
 export default class Header extends Component {
 	dom: HTMLElement;
 	private serviceId: number;
@@ -37,10 +39,10 @@ export default class Header extends Component {
 		this.dom.innerHTML = `
 			<div class="bulk-sector">
 				<span class='bulk-insert payment-bulk ${
-					this.disalbedButtons[0] ? 'disabled' : ''
+					this.disalbedButtons[PAYMENT_INDEX] ? 'disabled' : ''
 				}'>결제방식 자동 추가</span>
 				<span class='bulk-insert category-bulk ${
-					this.disalbedButtons[1] ? 'disabled' : ''
+					this.disalbedButtons[CATEGORY_INDEX] ? 'disabled' : ''
 				}'>카테고리 자동 추가</span>
 				<span class='bulk-insert history-bulk disabled'>내역 자동 추가</span>
 			</div>
@@ -107,14 +109,14 @@ export default class Header extends Component {
 		actionManager.subscribe({
 			key: DISABLE_BULK_CATEGORY,
 			observer: () => {
-				this.setDisalbedButtons(0, true);
+				this.setDisalbedButtons(CATEGORY_INDEX, true);
 				this.init();
 			},
 		});
 		actionManager.subscribe({
 			key: DISABLE_BULK_PAYMENT,
 			observer: () => {
-				this.setDisalbedButtons(1, true);
+				this.setDisalbedButtons(PAYMENT_INDEX, true);
 				this.init();
 			},
 		});
