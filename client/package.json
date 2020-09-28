@@ -5,9 +5,9 @@
 	"main": "index.ts",
 	"scripts": {
 		"test": "jest --watch",
-		"build": "webpack --config webpack.config.production.js",
-		"dev": "webpack-dev-server --open --config webpack.config.dev.js",
-		"watch-build": "webpack --watch --config webpack.config.dev.js"
+		"build": "NODE_ENV=production webpack --config webpack.config.production.js",
+		"dev": "NODE_ENV=development webpack-dev-server --open --config webpack.config.dev.js",
+		"watch-build": "set NODE_ENV=development && webpack --watch --config webpack.config.dev.js"
 	},
 	"author": "",
 	"license": "ISC",
@@ -38,5 +38,7 @@
 		"webpack-cli": "^3.3.12",
 		"webpack-dev-server": "^3.11.0"
 	},
-	"dependencies": {}
+	"dependencies": {
+		"babel-plugin-transform-remove-console": "^6.9.4"
+	}
 }
