@@ -1,5 +1,3 @@
-// import ACTION_KEYS from './action-keys';
-
 import { History } from '@shared/dto/history-dto';
 
 type Subscriber<T> = (data: T) => void;
@@ -12,6 +10,8 @@ export const REMOVE_HISTORY_ACTION = 'removeHistory' as const;
 export const CHANGE_DATE_ACTION = 'changeDate' as const;
 export const CHANGE_TAB_ACTION = 'changeTab' as const;
 export const LOGIN_ACTION = 'login' as const;
+export const DISABLE_BULK_CATEGORY = 'disableBulkCategory' as const;
+export const DISABLE_BULK_PAYMENT = 'disableBulkPayment' as const;
 
 type ACTION_KEYS =
 	| typeof POP_STATE_ACTION
@@ -21,7 +21,9 @@ type ACTION_KEYS =
 	| typeof REMOVE_HISTORY_ACTION
 	| typeof CHANGE_DATE_ACTION
 	| typeof CHANGE_TAB_ACTION
-	| typeof LOGIN_ACTION;
+	| typeof LOGIN_ACTION
+	| typeof DISABLE_BULK_CATEGORY
+	| typeof DISABLE_BULK_PAYMENT;
 
 // TODO: find a way to integrate Action/Subscriber types
 
@@ -157,6 +159,30 @@ type ChangeTabSubscriber = {
 	observer: Subscriber<ChangeTabData>;
 };
 
+// DISABLE_BULK_PAYMENT
+type DisableBulkData = {};
+
+type DisableBulkPaymentAction = {
+	key: typeof DISABLE_BULK_PAYMENT;
+	data: DisableBulkData;
+};
+
+type DisableBulkPaymentSubscriber = {
+	key: typeof DISABLE_BULK_PAYMENT;
+	observer: Subscriber<DisableBulkData>;
+};
+
+// DISABLE_BULK_CATEGORY
+type DisableBulkCategoryAction = {
+	key: typeof DISABLE_BULK_CATEGORY;
+	data: DisableBulkData;
+};
+
+type DisableBulkCategorySubscriber = {
+	key: typeof DISABLE_BULK_CATEGORY;
+	observer: Subscriber<DisableBulkData>;
+};
+
 type NotifyType =
 	| PopStateAction
 	| AddHistoryAction
@@ -165,7 +191,9 @@ type NotifyType =
 	| RemoveHistoryAction
 	| ChangeDateAction
 	| ChangeTabAction
-	| LoginAction;
+	| LoginAction
+	| DisableBulkPaymentAction
+	| DisableBulkCategoryAction;
 
 type SubscriberType =
 	| PopStateSubscriber
@@ -175,7 +203,9 @@ type SubscriberType =
 	| RemoveHistorySubscriber
 	| ChangeDateSubscriber
 	| ChangeTabSubscriber
-	| LoginSubscriber;
+	| LoginSubscriber
+	| DisableBulkCategorySubscriber
+	| DisableBulkPaymentSubscriber;
 
 class Observable {
 	private observers: Map<string, Array<Subscriber<any>>>;

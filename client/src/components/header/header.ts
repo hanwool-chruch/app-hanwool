@@ -1,5 +1,9 @@
 import Component from '../component';
 import Router from '../../router';
+import actionManager, {
+	DISABLE_BULK_CATEGORY,
+	DISABLE_BULK_PAYMENT,
+} from '../../utils/action-manager';
 import { deleteCookie } from '../../utils/cookie-manager';
 import { BulkApi } from '../../api';
 
@@ -10,12 +14,14 @@ interface BULK_RESPONSE {
 export default class Header extends Component {
 	dom: HTMLElement;
 	private serviceId: number;
+	private disalbedButtons: Array<Boolean>;
 	private categories?: BULK_RESPONSE;
 	private payments?: BULK_RESPONSE;
 
 	constructor() {
 		super();
 		this.serviceId = 0;
+		this.disalbedButtons = new Array(3).fill(false);
 		this.dom = document.createElement('header');
 		this.dom.classList.add('global-header');
 		this.init();
@@ -30,8 +36,12 @@ export default class Header extends Component {
 	render() {
 		this.dom.innerHTML = `
 			<div class="bulk-sector">
-				<span class='bulk-insert payment-bulk'>결제방식 자동 추가</span>
-				<span class='bulk-insert category-bulk'>카테고리 자동 추가</span>
+				<span class='bulk-insert payment-bulk ${
+					this.disalbedButtons[0] ? 'disabled' : ''
+				}'>결제방식 자동 추가</span>
+				<span class='bulk-insert category-bulk ${
+					this.disalbedButtons[1] ? 'disabled' : ''
+				}'>카테고리 자동 추가</span>
 				<span class='bulk-insert history-bulk disabled'>내역 자동 추가</span>
 			</div>
 			<h1 class="title-sector">
@@ -82,6 +92,7 @@ export default class Header extends Component {
 			let data = this.initHistoryData();
 			BulkApi.bulkInsertHistory(data);
 			historyBulk.classList.add('disabled');
+			alert('내역 자동 추가 준비중입니다.');
 		});
 	}
 
@@ -90,8 +101,21 @@ export default class Header extends Component {
 			key: 'publishServiceId',
 			observer: (data) => {
 				this.setServiceId(data.serviceId);
-				this.render();
-				this.listener();
+				this.init();
+			},
+		});
+		actionManager.subscribe({
+			key: DISABLE_BULK_CATEGORY,
+			observer: () => {
+				this.setDisalbedButtons(0, true);
+				this.init();
+			},
+		});
+		actionManager.subscribe({
+			key: DISABLE_BULK_PAYMENT,
+			observer: () => {
+				this.setDisalbedButtons(1, true);
+				this.init();
 			},
 		});
 	}
@@ -146,5 +170,8 @@ export default class Header extends Component {
 
 	setServiceId(serviceId: number) {
 		this.serviceId = serviceId;
+	}
+	setDisalbedButtons(index: number, value: Boolean) {
+		this.disalbedButtons[index] = value;
 	}
 }
