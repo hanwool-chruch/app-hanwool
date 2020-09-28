@@ -16,8 +16,24 @@ module.exports = {
 			},
 			{
 				test: /\.js$/,
-				use: 'babel-loader',
 				exclude: /node_modules/,
+				use: {
+					loader: 'babel-loader',
+					options: {
+						presets: [
+							[
+								'@babel/preset-env',
+								{
+									targets: '> 1%, not dead',
+									useBuiltIns: 'usage',
+									corejs: '3',
+									modules: false,
+								},
+							],
+						],
+						plugins: ['transform-remove-console'],
+					},
+				},
 			},
 			{
 				test: /\.css$/,

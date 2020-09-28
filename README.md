@@ -6,27 +6,27 @@
 
 <img src="./assets/erd.png" alt="데이터베이스 ERD">
 
-## 개발환경
+## Installation
 
-### Client
+### 환경 구축
 
-In `/client`, run
-
-```shell
-npm run dev
+```
+Ubuntu Server v18.04 LTS (HVM)
+node v14.8.0
+mysql v8.0.21
+yarn v1.22.4
+pm2 v4.4.1
 ```
 
-## Test
+### 코드 빌드
 
-### Client
-
-In `/client`, run
-
-```shell
-npm test
 ```
-
-## Config
+git clone https://github.com/woowa-techcamp-2020/hkb-5.git
+cd hkb-5
+cd client
+npm install
+npm build
+```
 
 ### DB setup
 
@@ -42,16 +42,49 @@ docker-compose up -d
 
 을 실행하면 db가 초기화되어 실행됩니다.
 
-## 실행
+### env 설정
 
-`shared/config.env.sample`을 `shared/config.env`로 바꾸고 필요한 정보를 설정합니다.
+**[shared/.env.sample](https://github.com/woowa-techcamp-2020/hkb-5/blob/master/shared/.env.sample) 파일을 참고하여 shared/.env 파일을 생성해주시기 바랍니다.**
 
-- PORT: 서버 실행 포트
-- DEV_DB, PROD_DB: Database name
-- DB_USER, DB_PW, DB_HOST: DB 접속 정보
+- 각 옵션에 대한 가이드입니다.
 
-```shell
-./build.sh
+```
+PORT : server를 실행 시킬 포트
+DEV_DB : development 환경에서 연결할 데이터베이스 이름
+PROD_DB : production 환경에서 연결할 데이터베이스 이름
+DB_USER : 두 데이터베이스에 대해 권한을 가지고 있는 mysql user
+DB_PW : mysql user의 패스워드
+DB_HOST : 데이터베이스 서버 HOST
+GOOGLE_CLIENT_ID : Google Console Api에서 발급받은 client id
+GOOGLE_CLIENT_SECRET : Google Console Api에서 발급받은 client secret 키
+GITHUB_CLIENT_ID: Github Oauth 에서 발급받은 client id
+GITHUB_CLIENT_SECRET: Github Oauth 에서 발급받은 client secret 키
 ```
 
-를 실행하면 필요한 npm package들을 설치하고 서버를 실행하고 클라이언트 코드를 빌드합니다.
+> [Google Console Api](https://console.developers.google.com/)
+
+### 실행 스크립트
+
+- pm2, development
+
+```
+cd server
+npm install
+npm run pm2:start-dev
+```
+
+- pm2, production
+
+```
+cd server
+npm install
+npm run pm2:start
+```
+
+- pm2 없이 실행시키기
+
+```
+cd server
+npm install
+npm start
+```

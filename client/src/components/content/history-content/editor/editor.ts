@@ -6,6 +6,8 @@ import ActionManager, {
 	EDIT_HISTORY_ACTION,
 	START_EDIT_HISTORY_ACTION,
 	EditHistoryData,
+	DISABLE_BULK_CATEGORY,
+	DISABLE_BULK_PAYMENT,
 } from '../../../../utils/action-manager';
 import { History } from '@shared/dto/history-dto';
 import actionManager from '../../../../utils/action-manager';
@@ -171,6 +173,16 @@ class Editor extends Component {
 			categories = await CategoryApi.findByServiceId(this.serviceId);
 		} catch (err) {
 			throw err;
+		}
+
+		if (payments) {
+			ActionManager.notify({ key: DISABLE_BULK_PAYMENT, data: {} });
+		}
+
+		if (categories) {
+			if (categories.income.length) {
+				ActionManager.notify({ key: DISABLE_BULK_CATEGORY, data: {} });
+			}
 		}
 
 		while (this.paymentSelector.childElementCount !== 0) {
