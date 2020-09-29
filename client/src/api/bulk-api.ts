@@ -12,7 +12,7 @@ interface bulkCategory {
 
 //price, content, historyDate, category_id, payment_id, service_id
 interface bulkHistory {
-	data: Array<[number, string, Date, number, number, number]>;
+	data: Array<[number, string, string, number, number, number]>;
 }
 
 const bulkInsertPayment = (data: bulkPayment) => POST('/api/payment/bulk', data);
