@@ -12,6 +12,7 @@ export const CHANGE_TAB_ACTION = 'changeTab' as const;
 export const LOGIN_ACTION = 'login' as const;
 export const DISABLE_BULK_CATEGORY = 'disableBulkCategory' as const;
 export const DISABLE_BULK_PAYMENT = 'disableBulkPayment' as const;
+export const RELOAD_HISTORY_ACTION = 'reloadHistory' as const;
 
 type ACTION_KEYS =
 	| typeof POP_STATE_ACTION
@@ -23,7 +24,8 @@ type ACTION_KEYS =
 	| typeof CHANGE_TAB_ACTION
 	| typeof LOGIN_ACTION
 	| typeof DISABLE_BULK_CATEGORY
-	| typeof DISABLE_BULK_PAYMENT;
+	| typeof DISABLE_BULK_PAYMENT
+	| typeof RELOAD_HISTORY_ACTION;
 
 // TODO: find a way to integrate Action/Subscriber types
 
@@ -183,6 +185,17 @@ type DisableBulkCategorySubscriber = {
 	observer: Subscriber<DisableBulkData>;
 };
 
+//RELOAD_HISTORY_ACTION
+type ReloadHistoryAction = {
+	key: typeof RELOAD_HISTORY_ACTION;
+	data: DisableBulkData;
+};
+
+type ReloadHistorySubscriber = {
+	key: typeof RELOAD_HISTORY_ACTION;
+	observer: Subscriber<DisableBulkData>;
+};
+
 type NotifyType =
 	| PopStateAction
 	| AddHistoryAction
@@ -193,7 +206,8 @@ type NotifyType =
 	| ChangeTabAction
 	| LoginAction
 	| DisableBulkPaymentAction
-	| DisableBulkCategoryAction;
+	| DisableBulkCategoryAction
+	| ReloadHistoryAction;
 
 type SubscriberType =
 	| PopStateSubscriber
@@ -205,7 +219,8 @@ type SubscriberType =
 	| ChangeTabSubscriber
 	| LoginSubscriber
 	| DisableBulkCategorySubscriber
-	| DisableBulkPaymentSubscriber;
+	| DisableBulkPaymentSubscriber
+	| ReloadHistorySubscriber;
 
 class Observable {
 	private observers: Map<string, Array<Subscriber<any>>>;

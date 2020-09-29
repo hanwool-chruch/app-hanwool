@@ -4,6 +4,7 @@ import actionManager, {
 	ADD_HISTORY_ACTION,
 	EDIT_HISTORY_ACTION,
 	REMOVE_HISTORY_ACTION,
+	RELOAD_HISTORY_ACTION,
 } from '../utils/action-manager';
 import { History, AddHistoryDto } from '@shared/dto/history-dto';
 import { insertAt } from '../utils/insert-item-at';
@@ -67,6 +68,13 @@ class HistoryModel extends Observable {
 			key: REMOVE_HISTORY_ACTION,
 			observer: (data: any) => {
 				this.remove(data.history);
+			},
+		});
+
+		actionManager.subscribe({
+			key: RELOAD_HISTORY_ACTION,
+			observer: (data: any) => {
+				this.load();
 			},
 		});
 	}
