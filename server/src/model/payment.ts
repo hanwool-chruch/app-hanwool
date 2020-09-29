@@ -39,8 +39,7 @@ const bulkInsert = async (payments: PaymentDto.CREATE[]) => {
 		paymentData = await mysql.connect((con: any) => {
 			return con.query(`INSERT INTO payment (payment_name, service_id) VALUES ?`, [payments]);
 		});
-
-		return { affectedRows: paymentData[0].affectedRows, insertedId: paymentData[0].insertedId };
+		return { affectedRows: paymentData[0].affectedRows, insertId: paymentData[0].insertId };
 	} catch (err) {
 		throw err;
 	}

@@ -50,8 +50,7 @@ const bulkInsert = async (categories: CategoryDto.CREATE[]) => {
 				categories,
 			]);
 		});
-
-		return { affectedRows: categoryData[0].affectedRows, insertedId: categoryData[0].insertedId };
+		return { affectedRows: categoryData[0].affectedRows, insertId: categoryData[0].insertId };
 	} catch (err) {
 		throw err;
 	}

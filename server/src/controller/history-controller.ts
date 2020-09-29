@@ -128,11 +128,11 @@ const remove = async (req: Request, res: Response, next: NextFunction) => {
 const bulkInsert = async (req: Request, res: Response, next: NextFunction) => {
 	const { data } = req.body;
 	try {
-		const { insertedId, affectedRows } = await History.bulkInsert(data);
+		const { insertId, affectedRows } = await History.bulkInsert(data);
 		res
 			.status(HttpStatus.CREATED)
 			.json(
-				JsonResponse(`histories bulk insert success: ${affectedRows}`, { insertedId, affectedRows })
+				JsonResponse(`histories bulk insert success: ${affectedRows}`, { insertId, affectedRows })
 			);
 	} catch (err) {
 		next(err);

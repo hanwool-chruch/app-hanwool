@@ -129,7 +129,7 @@ const bulkInsert = async (histories: HistoryDto.CREATE[]) => {
 			);
 		});
 
-		return { affectedRows: historyData[0].affectedRows, insertedId: historyData[0].insertedId };
+		return { affectedRows: historyData[0].affectedRows, insertId: historyData[0].insertId };
 	} catch (err) {
 		throw err;
 	}

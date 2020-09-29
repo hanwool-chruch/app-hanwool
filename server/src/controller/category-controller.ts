@@ -68,11 +68,11 @@ const findByServiceId = async (req: Request, res: Response, next: NextFunction) 
 const bulkInsert = async (req: Request, res: Response, next: NextFunction) => {
 	const { data } = req.body;
 	try {
-		const { insertedId, affectedRows } = await Category.bulkInsert(data);
+		const { insertId, affectedRows } = await Category.bulkInsert(data);
 		res
 			.status(HttpStatus.CREATED)
 			.json(
-				JsonResponse(`category bulk insert success: ${affectedRows}`, { insertedId, affectedRows })
+				JsonResponse(`category bulk insert success: ${affectedRows}`, { insertId, affectedRows })
 			);
 	} catch (err) {
 		next(err);
