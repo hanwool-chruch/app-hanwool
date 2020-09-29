@@ -104,19 +104,18 @@ const days = ['일', '월', '화', '수', '목', '금', '토'];
 function createTodayHeader(date: Date, sum: { earned?: number; spent?: number }): HTMLDivElement {
 	const header = document.createElement('div');
 	header.classList.add('history-today-header');
+	let price = 0;
+	if (sum.earned) price += sum.earned;
+	if (sum.spent) price -= sum.spent;
 	header.innerHTML = `
 	<div class="hheader-date">${date.getMonth() + 1} 월 ${date.getDate()} 일</div>
 	<div class="hheader-day">${days[date.getDay()]}</div>
 	${
-		typeof sum.earned === 'number'
-			? `<div class="hheader-price earned">${formatPrice(sum.earned, true)}</div>`
-			: ''
-	}
-	${
-		typeof sum.spent === 'number'
-			? `<div class="hheader-price spent">${formatPrice(sum.spent, false)}</div>`
-			: ''
+		price > 0
+			? `<div class="hheader-price earned">${formatPrice(price)}</div>`
+			: `<div class="hheader-price spent">${formatPrice(price)}</div>`
 	}`;
+
 	return header;
 }
 
@@ -150,8 +149,6 @@ function createHistoryLi(history: History): HTMLLIElement {
 	return list;
 }
 
-function formatPrice(price: number, earned?: boolean): string {
-	if (typeof earned === 'undefined')
-		return `${price > 0 ? '+' : '-'}${Math.abs(price).toLocaleString()}원`;
-	return `${earned ? '+' : '-'}${Math.abs(price).toLocaleString()}원`;
+function formatPrice(price: number): string {
+	return `${price > 0 ? '+' : '-'}${Math.abs(price).toLocaleString()}원`;
 }
