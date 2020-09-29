@@ -166,7 +166,7 @@ class Editor extends Component {
 	}
 
 	private async fetchSelectorData() {
-		let payments = null;
+		let payments = [];
 		let categories = null;
 		try {
 			payments = await PaymentApi.findByServiceId(this.serviceId);
@@ -175,7 +175,7 @@ class Editor extends Component {
 			throw err;
 		}
 
-		if (payments) {
+		if (payments.length) {
 			ActionManager.notify({ key: DISABLE_BULK_PAYMENT, data: {} });
 		}
 
