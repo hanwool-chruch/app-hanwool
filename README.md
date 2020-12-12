@@ -1,6 +1,5 @@
-# 우아한 가계부 - 5팀
+# 한울교회 청년부 Application 
 
-우아한테크캠프 3번째 프로젝트. - 이종구, 김현영
 
 ## 데이터베이스 ERD
 
@@ -9,7 +8,7 @@
 ## 서비스 배포 링크
 
 <div>
-<a href="http://ec2-13-125-62-72.ap-northeast-2.compute.amazonaws.com:4003" target="_blank">
+<a href="http://jesus4u.co.kr:3000" target="_blank">
 <img src="https://user-images.githubusercontent.com/48426991/90333516-6dcd9480-e001-11ea-8edd-d7f700449713.jpg" alt="live demo" width="295px" />
 </a>
 </div>
@@ -29,8 +28,8 @@ pm2 v4.4.1
 ### 코드 빌드
 
 ```
-git clone https://github.com/woowa-techcamp-2020/hkb-5.git
-cd hkb-5
+git clone https://github.com/hanwool-chruch/app-hanwool.git
+cd app-hanwool
 cd client
 npm install
 npm build
@@ -96,3 +95,6 @@ cd server
 npm install
 npm start
 ```
+
+### Fork  https://github.com/woowa-techcamp-2020/hkb-5
+ - 우아한테크캠프 3번째 프로젝트.
