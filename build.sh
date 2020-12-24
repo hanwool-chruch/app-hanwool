@@ -1,6 +1,5 @@
 cd server
 rm -rf build
-rm -rf public
 echo "terminating pm2 instances"
 npm run pm2 delete all
 npm i
