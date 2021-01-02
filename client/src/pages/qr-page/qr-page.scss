@@ -1,0 +1,72 @@
+@import '../../styles/mixins';
+
+.qr-page {
+	display: flex;
+	flex-direction: column;
+	flex-wrap: nowrap;
+	align-items: center;
+
+	width: 500px;
+	margin: 100px;
+	border: 1.5px solid rgba(0, 0, 0, 0.25);
+	padding: 60px 60px 20px;
+
+	.login-row {
+		display: flex;
+		justify-content: center;
+		width: 100%;
+		margin: 20px 0px;
+		input,
+		button {
+			width: 100%;
+		}
+	}
+
+	.title-label {
+		padding-bottom: 8px;
+		font-size: xx-large;
+		font-weight: 700;
+	}
+
+	.social-sector {
+		font-size: x-large;
+		text-align: center;
+		vertical-align: middle;
+		.socialBtn {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			cursor: pointer;
+			width: 100%;
+			padding: 10px 15px;
+			span {
+				margin-left: 10px;
+			}
+		}
+		img {
+			width: 30px;
+			height: 30px;
+		}
+		.githubBtn {
+			border: 1.5px solid rgba(0, 0, 0, 0.25);
+			border-radius: 4px;
+			margin-right: 10px;
+		}
+		.googleBtn {
+			border: 1.5px solid rgba(0, 0, 0, 0.25);
+			border-radius: 4px;
+			margin-left: 10px;
+		}
+	}
+
+	.login-sector {
+		flex-direction: column;
+	}
+
+	.signup-sector {
+		.signup-page-btn {
+			padding-left: 20px;
+			@include clickable();
+		}
+	}
+}
