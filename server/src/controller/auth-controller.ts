@@ -31,6 +31,7 @@ const emailLogin = async (req: Request, res: Response, next: NextFunction) => {
 				.json(
 					JsonResponse(`Log in success ${req.body.email}`, {
 						serviceId: isValidUser.service_id,
+						userId: isValidUser.user_id
 					})
 				);
 		} else {
@@ -121,6 +122,8 @@ const googleRedirect = async (req: Request, res: Response, next: NextFunction) =
 		provider: googleUser.provider,
 	};
 
+	console.log(googleUser)
+
 	const { user, serviceId } = await userController.findOrCreate(tokenUser, 'google');
 	const token = jwt.sign(
 		{
@@ -174,7 +177,8 @@ const isValidToken = async (req: Request, res: Response, next: NextFunction) => 
 
 		res
 			.status(HttpStatus.OK)
-			.json(JsonResponse('valid token user', { serviceId: tokenUser.service_id }));
+			.json(JsonResponse('valid token user', { serviceId: tokenUser.service_id,
+				userId: tokenUser.user_id }));
 	} else res.status(HttpStatus.UNAUTHORIZED).json(JsonResponse('expired token', {}));
 };
 
