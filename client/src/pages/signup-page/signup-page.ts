@@ -39,8 +39,9 @@ class SignupPage extends Component {
 			if (response.status === HttpStatus.CREATED) {
 				const data = await response.json();
 				const serviceId = data.result.user.service_id;
+				const userId = data.result.user.user_id;
 				console.info(data.message);
-				ActionManager.notify({ key: LOGIN_ACTION, data: { serviceId } });
+				ActionManager.notify({ key: LOGIN_ACTION, data: { serviceId, userId } });
 			} else {
 				console.error('no status CREATED', response.status);
 			}

@@ -6,6 +6,7 @@ enum ACTION_KEYS {
 	CHANGE_DATE_ACTION = 'changeDate',
 	CHANGE_TAB_ACTION = 'changeTab',
 	LOGIN_ACTION = 'login',
+	MAIN_ACTION = 'main',
 }
 
 export default ACTION_KEYS;

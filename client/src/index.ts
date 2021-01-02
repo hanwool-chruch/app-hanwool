@@ -5,6 +5,8 @@ import Component from './components/component';
 import ServicePage from './pages/service-page';
 import LoginPage from './pages/login-page';
 import SignupPage from './pages/signup-page';
+import QRPage from './pages/qr-page';
+import MainPage from './pages/main-page';
 import NotFoundPage from './pages/not-found-page';
 import ActionManager, { POP_STATE_ACTION } from './utils/action-manager';
 
@@ -36,11 +38,15 @@ class App {
 		const loginPage = new LoginPage();
 		const signupPage = new SignupPage();
 		const notFoundPage = new NotFoundPage();
+		const qrPage = new QRPage();
+		const mainPage = new MainPage();
 
 		this.pages.set('service', servicePage);
 		this.pages.set('login', loginPage);
 		this.pages.set('signup', signupPage);
 		this.pages.set('not-found', notFoundPage);
+		this.pages.set('qr', qrPage);
+		this.pages.set('main', mainPage);
 	}
 
 	initEventManager() {
@@ -76,7 +82,7 @@ class App {
 				const popData: popstateType = { serviceId, year, month, viewName };
 				ActionManager.notify({ key: POP_STATE_ACTION, data: popData });
 			} catch (err) {
-				this.changePage(route);
+				this.changePage('login');
 			}
 		});
 	}
