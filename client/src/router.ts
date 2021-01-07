@@ -4,6 +4,7 @@ import ActionManager, {
 	CHANGE_TAB_ACTION,
 	POP_STATE_ACTION,
 	LOGIN_ACTION,
+	MAIN_ACTION
 } from './utils/action-manager';
 import { MonthSelectorState } from './components/month-selector';
 import { popstateType } from './index';
@@ -19,6 +20,10 @@ interface CurrentData {
 	pageName: string;
 }
 
+interface UserData {
+	userId: number;
+}
+
 export interface YearAndMonth {
 	year: number;
 	month: number;
@@ -27,6 +32,7 @@ export interface YearAndMonth {
 class Router extends Observable {
 	private root: string;
 	private current: CurrentData;
+	private user: UserData;
 
 	constructor() {
 		super();
@@ -39,6 +45,7 @@ class Router extends Observable {
 			viewName: 'history',
 			pageName: 'service',
 		};
+		this.user = { userId: 0}
 
 		this.initEventManager();
 	}
@@ -56,8 +63,12 @@ class Router extends Observable {
 				this.notify({ key: 'loadPage', data: { pageName: 'login' } });
 				return;
 			}
-			const serviceId = (await response.json()).result.serviceId;
+
+			const responseData = (await response.json()).result;
+
+			const serviceId = responseData.serviceId;
 			this.setServiceId(serviceId);
+			this.setUserId(responseData.userId)
 
 			//(temp) send serviceId to Header for bulk insert
 			this.notify({ key: 'publishServiceId', data: { serviceId } });
@@ -143,7 +154,7 @@ class Router extends Observable {
 
 		ActionManager.subscribe({
 			key: LOGIN_ACTION,
-			observer: (data: { serviceId: number }) => {
+			observer: (data) => {
 				this.setServiceId(data.serviceId);
 				this.notify({
 					key: 'loadHistory',
@@ -154,14 +165,13 @@ class Router extends Observable {
 					},
 				});
 				this.notify({
-					key: 'loadView',
-					data: { viewName: this.current.viewName, serviceId: this.current.serviceId },
+					key: 'loadView-qr',
+					data: { viewName: this.current.viewName, userId: data.userId },
 				});
-				location.href = `${(this.current.serviceId + 3000).toString()}/${this.current.year}-${
-					this.current.month
-				}/history`;
+				this.notify({ key: 'loadPage', data: { pageName: 'main' } });
 			},
 		});
+
 
 		this.subscribe({
 			key: 'loadPage',
@@ -201,6 +211,14 @@ class Router extends Observable {
 
 	private setPageName(pageName: string) {
 		this.current.pageName = pageName;
+	}
+
+	private setUserId(userId: number) {
+		this.user.userId = userId;
+	}
+
+	public getUserId() {
+		return this.user.userId;
 	}
 }
 

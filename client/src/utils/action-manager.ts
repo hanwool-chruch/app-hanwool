@@ -13,6 +13,7 @@ export const LOGIN_ACTION = 'login' as const;
 export const DISABLE_BULK_CATEGORY = 'disableBulkCategory' as const;
 export const DISABLE_BULK_PAYMENT = 'disableBulkPayment' as const;
 export const RELOAD_HISTORY_ACTION = 'reloadHistory' as const;
+export const MAIN_ACTION = 'main' as const;
 
 type ACTION_KEYS =
 	| typeof POP_STATE_ACTION
@@ -25,17 +26,24 @@ type ACTION_KEYS =
 	| typeof LOGIN_ACTION
 	| typeof DISABLE_BULK_CATEGORY
 	| typeof DISABLE_BULK_PAYMENT
-	| typeof RELOAD_HISTORY_ACTION;
+	| typeof RELOAD_HISTORY_ACTION
+	| typeof MAIN_ACTION;
 
 // TODO: find a way to integrate Action/Subscriber types
 
 //login
 type LoginData = {
-	serviceId: number;
+	serviceId: number,
+	userId: number
 };
 
 type LoginAction = {
 	key: typeof LOGIN_ACTION;
+	data: LoginData;
+};
+
+type MainAction = {
+	key: typeof MAIN_ACTION;
 	data: LoginData;
 };
 
@@ -205,6 +213,7 @@ type NotifyType =
 	| ChangeDateAction
 	| ChangeTabAction
 	| LoginAction
+	| MainAction
 	| DisableBulkPaymentAction
 	| DisableBulkCategoryAction
 	| ReloadHistoryAction;
