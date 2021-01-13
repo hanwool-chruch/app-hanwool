@@ -39,7 +39,10 @@ export default class Header extends Component {
 	}
 
 	render() {
+	    //화면을 구성하는 view를 만드는 것
+       //여기서 주석처리 하면 그것과 관련된 control 버튼들도 지워져야함.
 		this.dom.innerHTML = `
+			<!--
 			<div class="bulk-sector">
 				<span class='bulk-insert payment-bulk ${
 					this.disalbedButtons[PAYMENT_INDEX] ? 'disabled' : ''
@@ -51,28 +54,33 @@ export default class Header extends Component {
 					this.disalbedButtons[HISTORY_INDEX] ? 'disabled' : ''
 				}'>내역 자동 추가</span>
 			</div>
+			-->
 			<h1 class="title-sector">
 				가계부
 			</h1>
 			<div class="button-sector">
 				<span class="logout-btn">로그아웃</span>
+				<!--
 				<span class="open-payment-btn">결제 수단 관리</span>
+				-->
 			</div>
 		`;
 	}
 
 	listener() {
 		const logoutBtn = this.dom.querySelector('.logout-btn') as HTMLSpanElement;
-		const openPaymentBtn = this.dom.querySelector('.open-payment-btn') as HTMLSpanElement;
-		const paymentBulk = this.dom.querySelector('.payment-bulk') as HTMLSpanElement;
-		const categoryBulk = this.dom.querySelector('.category-bulk') as HTMLSpanElement;
-		const historyBulk = this.dom.querySelector('.history-bulk') as HTMLSpanElement;
+		//const openPaymentBtn = this.dom.querySelector('.open-payment-btn') as HTMLSpanElement;
+        //여기에서 html 객체에 이런식으로 이벤트를 걸어놓는 것.
+		//const paymentBulk = this.dom.querySelector('.payment-bulk') as HTMLSpanElement;
+		//html 객체 중 class가 payment-bulk인 애를 찾아서
+		//const categoryBulk = this.dom.querySelector('.category-bulk') as HTMLSpanElement;
+		//const historyBulk = this.dom.querySelector('.history-bulk') as HTMLSpanElement;
 
 		logoutBtn.addEventListener('click', (e: Event) => {
 			deleteCookie('authorization');
 			Router.notify({ key: 'loadPage', data: { pageName: 'login' } });
 		});
-
+/*
 		paymentBulk.addEventListener('click', async () => {
 			let data = this.initPaymentData();
 			const response = await BulkApi.bulkInsertPayment(data);
@@ -100,6 +108,7 @@ export default class Header extends Component {
 			await BulkApi.bulkInsertHistory(data);
 			actionManager.notify({ key: RELOAD_HISTORY_ACTION, data: {} });
 		});
+ */
 	}
 
 	private async initBulkReq() {
@@ -148,8 +157,8 @@ export default class Header extends Component {
 				['현금', this.serviceId],
 				['신용카드', this.serviceId],
 				['체크카드', this.serviceId],
-				['배민페이', this.serviceId],
-				['토스', this.serviceId],
+				//['배민페이', this.serviceId],
+				//['토스', this.serviceId],
 			],
 		};
 	}

@@ -21,17 +21,12 @@ class LoginPage extends Component {
 	listener() {
 		const signinBtn = this.dom.querySelector('.signinBtn') as HTMLButtonElement;
 		const signupBtn = this.dom.querySelector('.signup-page-btn') as HTMLSpanElement;
-		const githubBtn = this.dom.querySelector('.githubBtn') as HTMLSpanElement;
 		const googleBtn = this.dom.querySelector('.googleBtn') as HTMLSpanElement;
 
 		signinBtn.addEventListener('click', this.signinBtnClickHandler.bind(this));
 		signupBtn.addEventListener('click', () =>
 			Router.notify({ key: 'loadPage', data: { pageName: 'signup' } })
 		);
-
-		githubBtn.addEventListener('click', () => {
-			location.href = '/api/auth/github';
-		});
 
 		googleBtn.addEventListener('click', () => {
 			location.href = '/api/auth/google';
@@ -68,16 +63,12 @@ class LoginPage extends Component {
 		</span>
 		
 		<div class="social-sector login-row">
-			<span class="githubBtn socialBtn">
-				<img src="/images/icon-github.png" alt="GITHUB">
-				<span>Github</span>
-			</span>
+	
 			<span class="googleBtn socialBtn">
 				<img src="/images/icon-google.png" alt="GOOGLE">
 				<span>Google</span>
 			</span>
 		</div>
-
 		<div class="login-sector login-row">
 			<div class="">
 				<span class="">
