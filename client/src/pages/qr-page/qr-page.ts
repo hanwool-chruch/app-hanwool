@@ -14,7 +14,7 @@ class QRPage extends Component {
 	}
 
 	init() {
-		this.dom.classList.add('qr-page');
+		this.dom.classList.add('app-page');
 		this.render();
 		this.listener();
 	}
@@ -52,13 +52,11 @@ class QRPage extends Component {
 
 	render() {
 		this.dom.innerHTML = `
-		<span class="title-label login-row">
-			한울 청년부 환영합니다
-		</span>
-		<div class="login-sector login-row">
 		  <div class="container">
+		  	<span class="title-label">
+				한울 청년부 환영합니다
+		    </span>
 			<div class="row">
-			  <div class="col-lg-6 offset-lg-3 col-md-12 mb-4">
 				<div class="card">
 				  <div class="card-body">
 					<div id="code" class="code"></div>
@@ -66,8 +64,6 @@ class QRPage extends Component {
 				</div>
 			  </div>
 			</div>
-		  </div>
-		</div>
 		`;
 	}
 

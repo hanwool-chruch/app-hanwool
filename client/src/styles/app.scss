@@ -1,0 +1,42 @@
+#app {
+	width: 100%;
+	height: 100%;
+	position: fixed;
+	display: flex;
+	flex-wrap: nowrap;
+	top:0;
+	left:0;
+
+	.app-page {
+		@extend .card;
+		flex-wrap: nowrap;
+		align-items: center;
+		width: 95%;
+		padding: 15px;
+		margin: 10px;
+	}
+
+	.title-label {
+		padding-bottom: 10px;
+		align-items: center;
+		font-size: xx-large;
+		font-weight: 500;
+	}
+
+	.form-group {
+		width:100%;
+	}
+
+	.sector {
+		@extend .container;
+		font-size: large;
+		text-align: center;
+	}
+
+	.large-button {
+		@extend .btn;
+		@extend .btn-lg;
+		@extend .btn-outline-primary;
+		font-size: large;
+	}
+}

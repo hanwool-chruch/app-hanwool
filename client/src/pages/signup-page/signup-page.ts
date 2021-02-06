@@ -13,13 +13,13 @@ class SignupPage extends Component {
 	}
 
 	init() {
-		this.dom.classList.add('signup-page');
+		this.dom.classList.add('app-page');
 		this.render();
 		this.listener();
 	}
 
 	listener() {
-		const signinBtn = this.dom.querySelector('.signinBtn') as HTMLButtonElement;
+		const signinBtn = this.dom.querySelector('#signinBtn') as HTMLButtonElement;
 		signinBtn.addEventListener('click', this.signinBtnClickHandler.bind(this));
 	}
 
@@ -52,44 +52,29 @@ class SignupPage extends Component {
 
 	render() {
 		this.dom.innerHTML = `
-		<span class="title-label signup-row">
-			Sign Up With Email
-		</span>
 
-		<div class="signup-sector signup-row">
-			<div class="">
-				<span class="">
-					이메일 ID
-				</span>
-			</div>
-			<div class="">
-				<input class="input-email" type="text" name="email" placeholder="hkb05@gmail.com" />
-			</div>
 
-			<div class="">
-				<span class="">
-					비밀번호
-				</span>
+		<form>
+		<div class="container">
+			<span class="title-label">
+				한울 청년부 회원가입
+			</span>
+			<div class="form-group">
+				<label for="input-email">Email</label>
+				<input id="input-email" class="form-control" type="email" name="email"  placeholder="a123@naver.com" />
 			</div>
-			<div class="">
-				<input class="input-password" type="password" name="pw" placeholder="비밀번호(영문+숫자, 8~20자)" >
+			<div class="form-group">
+				<label for="input-email">Password</label>
+				<input id="input-password" class="form-control" type="password" name="pw" aria-describedby="passwordHelp" />
+				<small id="passwordHelp" class="form-text text-muted">비밀번호(영문+숫자, 8~20자)</small>
 			</div>
-
-			<div class="">
-				<span class="">
-					이름
-				</span>
+			<div class="form-group">
+				<label for="input-username">Name</label>
+				<input id="input-username" class="form-control" type="text" name="username" placeholder="이름" />
 			</div>
-			<div class="">
-				<input class="input-username" type="text" name="username" placeholder="이름" >
-			</div>
-
-			<div class="">
-				<button class="signinBtn">
-					Sign Up
-				</button>
-			</div>			
-		</div>
+			<button id="signinBtn" class="large-button">회원가입</button>			
+		</div>	
+		</form>
 		`;
 	}
 

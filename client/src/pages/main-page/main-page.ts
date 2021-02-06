@@ -19,14 +19,14 @@ class MainPage extends Component {
 	}
 
 	listener() {
-		const calculatorBtn = this.dom.querySelector('#calculatorBtn') as HTMLSpanElement;
-		const qrLoginBtn = this.dom.querySelector('#qrLoginBtn') as HTMLSpanElement;
+		const accountingBtn = this.dom.querySelector('#accountingBtn') as HTMLButtonElement;
+		const qrLoginBtn = this.dom.querySelector('#qrLoginBtn') as HTMLButtonElement;
 
-		calculatorBtn.addEventListener('click', () => {
+		accountingBtn.addEventListener('click', () => {
 			Router.notify({
 				key: 'loadHistory',
 				data: {
-					serviceId: 1,
+					serviceId: 23000,
 					year: 2020,
 					month: 1,
 				},
@@ -49,20 +49,19 @@ class MainPage extends Component {
 
 	render() {
 		this.dom.innerHTML = `
-			<span class="title-label login-row">
+		  <div class="container">
+		  	<div class="title-label">
 				Main Page
-			</span>
-			
-			<div class="social-sector login-row">
-				<span id="calculatorBtn" class="socialBtn">
-					<img src="https://img.icons8.com/ios-glyphs/60/000000/calculator.png"/>
-					<span>계산기</span>
-				</span>
-				<span id="qrLoginBtn" class="socialBtn">
-					<img src="https://img.icons8.com/ios-glyphs/60/000000/qr-code--v2.png"/>
-					<span>QR Login</span>
-				</span>
+		    </div>
+			<div class="row">
+				<div class="card">
+				  <div class="card-body">
+					<button id="qrLoginBtn" class="large-button"><img src="https://img.icons8.com/ios-glyphs/60/000000/qr-code--v2.png" alt="QR-LOGIN"> QR Login </button>
+					<button id="accountingBtn" class="large-button"><img src="https://img.icons8.com/ios-glyphs/60/000000/calculator.png" alt="회계관리"> 회계 관리 </button>
+				  </div>
+				</div>
 			</div>
+		  </div>
 		`;
 	}
 }
